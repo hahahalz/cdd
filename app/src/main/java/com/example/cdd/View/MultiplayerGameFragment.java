@@ -1,5 +1,6 @@
 package com.example.cdd.View;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,7 +17,7 @@ import com.example.cdd.R;
  * create an instance of this fragment.
  */
 // 多人联机游戏主界面
-public class MultiplayerGameFragment extends Fragment {
+public class MultiplayerGameFragment extends BaseFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,5 +64,20 @@ public class MultiplayerGameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
+    }
+
+    @Override
+    protected int layoutId() {
+        return 0;
+    }
+
+    @Override
+    protected void initView(View view) {
+
+    }
+
+    @Override
+    protected void initData(Context context) {
+
     }
 }

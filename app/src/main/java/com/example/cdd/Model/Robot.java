@@ -1,5 +1,5 @@
 package com.example.cdd.Model;
 
-public class Robot implements Actor{
-    // 机器人玩家实体
+public class Robot implements Actor{            // 机器人玩家实体
+
 }

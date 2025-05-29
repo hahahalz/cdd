@@ -13,12 +13,6 @@
         android:theme="@style/Theme.Cdd"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.InGameActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.ChoosingRobotsActivity"
-            android:exported="false" />
-        <activity
             android:name=".View.MainActivity"
             android:exported="true"
             android:screenOrientation="landscape"

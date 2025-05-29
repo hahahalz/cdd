@@ -7,17 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".View.MainActivity">
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/bg"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:contentDescription="First image"-->
-    <!--        android:src="@drawable/bg"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="1.0" />-->
-
     <ImageView
         android:id="@+id/bg"
         android:layout_width="0dp"
@@ -36,12 +25,14 @@
         android:id="@+id/logo"
         android:layout_width="222dp"
         android:layout_height="274dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="92dp"
         android:contentDescription="First image"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
+
 
     <Button
         android:id="@+id/button"
@@ -49,21 +40,9 @@
         android:layout_height="87dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="112dp"
-        android:text="开始游戏"
+        android:text="注册"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="197dp"
-        android:layout_height="87dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="112dp"
-        android:text="退出游戏"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
-        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button4"
@@ -71,9 +50,26 @@
         android:layout_height="87dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="112dp"
-        android:text="排行榜"
+        android:text="单人游戏"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="197dp"
+        android:layout_height="87dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="112dp"
+        android:text="多人游戏"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/framelayout"></FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

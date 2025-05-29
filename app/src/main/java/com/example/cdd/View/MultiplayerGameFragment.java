@@ -11,6 +11,12 @@ import android.view.ViewGroup;
 
 import com.example.cdd.R;
 
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.ImageView;
+
+import java.util.*;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MultiplayerGameFragment#newInstance} factory method to
@@ -27,6 +33,27 @@ public class MultiplayerGameFragment extends BaseFragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    //游戏相关控件
+    private ArrayList<Button> playerCardsImage;
+    private TextView whoPlay;
+    private TextView whoseTurn;
+    private TextView player1CardsText;
+    private TextView player2CardsText;
+    private TextView player3CardsText;
+    private Button playButton;
+    private Button passButton;
+	private Button startButton;
+
+    //游戏数据
+    private ArrayList<Integer> myCards;
+    private ArrayList<Integer> player1Cards;
+    private ArrayList<Integer> player2Cards;
+    private ArrayList<Integer> player3Cards;
+    private ArrayList<Integer> currentPlayCards;
+    int currentPlayer;
+    public static final int ME = 0, PLAYER1 = 1, PLAYER2 = 2, PLAYER3 = 3;
+
 
     public MultiplayerGameFragment() {
         // Required empty public constructor
@@ -63,21 +90,392 @@ public class MultiplayerGameFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
+        View view = inflater.inflate(layoutId(), container, false);
+		initView(view);
+		initData(context);
+		return view;
     }
 
-    @Override
+   // @Override
     protected int layoutId() {
-        return 0;
+        return R.layout.fragment_multiplayer_game;
     }
 
-    @Override
+    //@Override
     protected void initView(View view) {
+        // 初始化玩家和电脑的牌面显示控件
+        playerCardsImage = new ArrayList<>();
+        playerCardsImage.add(view.findViewById(R.id.cluba));
+        playerCardsImage.add(view.findViewById(R.id.club2));
+        playerCardsImage.add(view.findViewById(R.id.club3));
+        playerCardsImage.add(view.findViewById(R.id.club4));
+        playerCardsImage.add(view.findViewById(R.id.club5));
+        playerCardsImage.add(view.findViewById(R.id.club6));
+        playerCardsImage.add(view.findViewById(R.id.club7));
+        playerCardsImage.add(view.findViewById(R.id.club8));
+        playerCardsImage.add(view.findViewById(R.id.club9));
+        playerCardsImage.add(view.findViewById(R.id.club10));
+        playerCardsImage.add(view.findViewById(R.id.clubj));
+        playerCardsImage.add(view.findViewById(R.id.clubq));
+        playerCardsImage.add(view.findViewById(R.id.clubk));
 
+        playerCardsImage.add(view.findViewById(R.id.hearta));
+        playerCardsImage.add(view.findViewById(R.id.heart2));
+        playerCardsImage.add(view.findViewById(R.id.heart3));
+        playerCardsImage.add(view.findViewById(R.id.heart4));
+        playerCardsImage.add(view.findViewById(R.id.heart5));
+        playerCardsImage.add(view.findViewById(R.id.heart6));
+        playerCardsImage.add(view.findViewById(R.id.heart7));
+        playerCardsImage.add(view.findViewById(R.id.heart8));
+        playerCardsImage.add(view.findViewById(R.id.heart9));
+        playerCardsImage.add(view.findViewById(R.id.heart10));
+        playerCardsImage.add(view.findViewById(R.id.heartj));
+        playerCardsImage.add(view.findViewById(R.id.heartq));
+        playerCardsImage.add(view.findViewById(R.id.heartk));
+
+        playerCardsImage.add(view.findViewById(R.id.diamonda));
+        playerCardsImage.add(view.findViewById(R.id.diamond2));
+        playerCardsImage.add(view.findViewById(R.id.diamond3));
+        playerCardsImage.add(view.findViewById(R.id.diamond4));
+        playerCardsImage.add(view.findViewById(R.id.diamond5));
+        playerCardsImage.add(view.findViewById(R.id.diamond6));
+        playerCardsImage.add(view.findViewById(R.id.diamond7));
+        playerCardsImage.add(view.findViewById(R.id.diamond8));
+        playerCardsImage.add(view.findViewById(R.id.diamond9));
+        playerCardsImage.add(view.findViewById(R.id.diamond10));
+        playerCardsImage.add(view.findViewById(R.id.diamondj));
+        playerCardsImage.add(view.findViewById(R.id.diamondq));
+        playerCardsImage.add(view.findViewById(R.id.diamondk));
+
+        playerCardsImage.add(view.findViewById(R.id.spadea));
+        playerCardsImage.add(view.findViewById(R.id.spade2));
+        playerCardsImage.add(view.findViewById(R.id.spade3));
+        playerCardsImage.add(view.findViewById(R.id.spade4));
+        playerCardsImage.add(view.findViewById(R.id.spade5));
+        playerCardsImage.add(view.findViewById(R.id.spade6));
+        playerCardsImage.add(view.findViewById(R.id.spade7));
+        playerCardsImage.add(view.findViewById(R.id.spade8));
+        playerCardsImage.add(view.findViewById(R.id.spade9));
+        playerCardsImage.add(view.findViewById(R.id.spade10));
+        playerCardsImage.add(view.findViewById(R.id.spadej));
+        playerCardsImage.add(view.findViewById(R.id.spadeq));
+        playerCardsImage.add(view.findViewById(R.id.spadek));
+
+        //初始化其他三个人剩余牌数显示文本
+        player1CardsText = view.findViewById(R.id.player1_cards_text);
+        player2CardsText = view.findViewById(R.id.player2_cards_text);
+        player3CardsText = view.findViewById(R.id.player3_cards_text);
+
+        //初始化出牌者
+        whoPlay = view.findViewById(R.id.who_play);
+
+        //初始化该轮到谁
+        whoseTurn = view.findViewById(R.id.whose_turn);
+
+        // 初始化操作按钮
+        playButton = view.findViewById(R.id.play_button);
+        passButton = view.findViewById(R.id.pass_button);
+		startButton = view.findViewById(R.id.start_button);
+
+        //设置按钮点击事件
+        playButton.setOnClickListener(v -> handlePlayCards());
+		playButton.setEnabled(false);
+        passButton.setOnClickListener(v -> handlePass());
+		passButton.setEnabled(false);
+        for (int i = 0; i < 52; ++i) {
+            final int tmp = i;
+			playerCardsImage.get(i).setEnabled(false);
+            playerCardsImage.get(i).setOnClickListener(v -> handleCardClicked(tmp));
+        }
+		startButton.setEnabled(true);
+		startButton.setOnClickListener(v -> startGame());
     }
 
     @Override
     protected void initData(Context context) {
+        myCards = new ArrayList<>();
+        player1Cards = new ArrayList<>();
+        player2Cards = new ArrayList<>();
+        player3Cards = new ArrayList<>();
+        currentPlayCards = new ArrayList<>();
+		currentPlayer = -1; //游戏开始后从后端程序获取
+    }
+	
+	void startGame() {
+		startButton.setEnabled(false);
+		
+		//从后端程序获取第一个开始游戏的玩家是谁
+        //currentPlayer = 后端();
 
+        //从后端程序获取分配给自己和其他三个人的牌
+        //myCards = 后端();
+		//player1Cards = 后端();
+		//player2Cards = 后端();
+		//player3Cards = 后端();
+
+        //初始化UI界面
+        if (currentPlayer == ME) {
+            whoPlay.setText("等待你出牌");
+            whoseTurn.setText("目前轮到你出牌");
+            player1CardsText.setText("玩家1剩余13张牌");
+            player2CardsText.setText("玩家2剩余13张牌");
+            player3CardsText.setText("玩家3剩余13张牌");
+            playButton.setEnabled(true);
+            passButton.setEnabled(true);
+
+            for (int i = 0; i < 52; ++i) {
+                if (myCards.contains(i)) {
+                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                    playerCardsImage.get(i).setEnabled(true);
+                }
+                else playerCardsImage.get(i).setVisibility(View.GONE);
+            }
+        }
+        else if (currentPlayer == PLAYER1) {
+            whoPlay.setText("等待玩家1出牌");
+            whoseTurn.setText("目前轮到玩家1出牌");
+            player1CardsText.setText("玩家1剩余13张牌");
+            player2CardsText.setText("玩家2剩余13张牌");
+            player3CardsText.setText("玩家3剩余13张牌");
+            playButton.setEnabled(false);
+            passButton.setEnabled(false);
+
+            for (int i = 0; i < 52; ++i) {
+                if (myCards.contains(i)) {
+                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                    playerCardsImage.get(i).setEnabled(false);
+                }
+                else playerCardsImage.get(i).setVisibility(View.GONE);
+            }
+
+            player1Play();
+        }
+        else if (currentPlayer == PLAYER2) {
+            whoPlay.setText("等待玩家2出牌");
+            whoseTurn.setText("目前轮到玩家2出牌");
+            player1CardsText.setText("玩家1剩余13张牌");
+            player2CardsText.setText("玩家2剩余13张牌");
+            player3CardsText.setText("玩家3剩余13张牌");
+            playButton.setEnabled(false);
+            passButton.setEnabled(false);
+
+            for (int i = 0; i < 52; ++i) {
+                if (myCards.contains(i)) {
+                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                    playerCardsImage.get(i).setEnabled(false);
+                }
+                else playerCardsImage.get(i).setVisibility(View.GONE);
+            }
+
+            player2Play();
+        }
+        else {
+            whoPlay.setText("等待玩家3出牌");
+            whoseTurn.setText("目前轮到玩家3出牌");
+            player1CardsText.setText("玩家1剩余13张牌");
+            player2CardsText.setText("玩家2剩余13张牌");
+            player3CardsText.setText("玩家3剩余13张牌");
+            playButton.setEnabled(false);
+            passButton.setEnabled(false);
+
+            for (int i = 0; i < 52; ++i) {
+                if (myCards.contains(i)) {
+                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                    playerCardsImage.get(i).setEnabled(false);
+                }
+                else playerCardsImage.get(i).setVisibility(View.GONE);
+            }
+
+            player3Play();
+        }
+	}
+
+    String currentPlayCardsToString() {
+        StringBuilder s = new StringBuilder("\n");
+        for (Integer card : currentPlayCards) {
+            if (card >= 0 && card <= 12) {
+                s.append("♣");
+                if (card == 0)
+                    s.append("A");
+                else if (card == 10)
+                    s.append("J");
+                else if (card == 11)
+                    s.append("Q");
+                else if (card == 12)
+                    s.append("K");
+                else s.append(card + 1);
+            }
+            else if (card >= 13 && card <= 25) {
+                s.append("♥");
+                if (card == 13)
+                    s.append("A");
+                else if (card == 23)
+                    s.append("J");
+                else if (card == 24)
+                    s.append("Q");
+                else if (card == 25)
+                    s.append("K");
+                else s.append(card - 12);
+            }
+            else if (card >= 26 && card <= 38) {
+                s.append("♦");
+                if (card == 26)
+                    s.append("A");
+                else if (card == 36)
+                    s.append("J");
+                else if (card == 37)
+                    s.append("Q");
+                else if (card == 38)
+                    s.append("K");
+                else s.append(card - 25);
+            }
+            else {
+                s.append("♠");
+                if (card == 39)
+                    s.append("A");
+                else if (card == 49)
+                    s.append("J");
+                else if (card == 50)
+                    s.append("Q");
+                else if (card == 51)
+                    s.append("K");
+                else s.append(card - 38);
+            }
+            s.append(" ");
+        }
+        return s.toString();
+    }
+
+    private void handlePlayCards() {
+        for (Integer card : currentPlayCards)
+            myCards.remove(card);
+		
+        currentPlayer = (currentPlayer + 1) % 4;
+
+        //更新UI，设置按钮使能
+        playButton.setEnabled(false);
+        passButton.setEnabled(false);
+        whoPlay.setText(new StringBuilder("你出的牌为：").append(currentPlayCardsToString()).toString());
+        whoseTurn.setText("目前轮到玩家1出牌");
+        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
+        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
+        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
+        for (int i = 0; i < 52; ++i) {
+            if (myCards.contains(i)) {
+                playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                playerCardsImage.get(i).setEnabled(false);
+            }
+            else playerCardsImage.get(i).setVisibility(View.GONE);
+        }
+
+        currentPlayCards = new ArrayList<>();
+
+        player1Play();
+    }
+
+    private void handlePass() {
+        currentPlayer = (currentPlayer + 1) % 4;
+        currentPlayCards = new ArrayList<>();
+
+        //更新UI，设置按钮使能
+        playButton.setEnabled(false);
+        passButton.setEnabled(false);
+        whoPlay.setText("你未出牌");
+        whoseTurn.setText("目前轮到玩家1出牌");
+        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
+        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player1Cards.size()).append("张牌").toString());
+        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player1Cards.size()).append("张牌").toString());
+        for (int i = 0; i < 52; ++i) {
+            if (myCards.contains(i)) {
+                playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                playerCardsImage.get(i).setEnabled(false);
+            }
+            else playerCardsImage.get(i).setVisibility(View.GONE);
+        }
+
+        player1Play();
+    }
+
+    private void handleCardClicked(int i) {
+        currentPlayCards.add(i);
+    }
+
+    private void player1Play() {
+        //通过联网程序得到玩家1出的牌
+        //currentPlayCards = network();
+
+        if (!currentPlayCards.isEmpty())
+            for (Integer card : currentPlayCards)
+                player1Cards.remove(card);
+			
+		currentPlayer = (currentPlayer + 1) % 4;
+
+        //更新UI，设置按钮使能
+        if (currentPlayCards.isEmpty())
+            whoPlay.setText(new StringBuilder("玩家1出的牌为：").append(currentPlayCardsToString()).toString());
+        else whoPlay.setText("玩家1未出牌");
+        whoseTurn.setText("目前轮到玩家2出牌");
+        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
+        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
+        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
+
+        currentPlayCards = new ArrayList<>();
+
+        player2Play();
+    }
+
+    private void player2Play() {
+        //通过联网程序得到玩家2出的牌
+        //currentPlayCards = network();
+
+        if (!currentPlayCards.isEmpty())
+            for (Integer card : currentPlayCards)
+                player2Cards.remove(card);
+			
+		currentPlayer = (currentPlayer + 1) % 4;
+
+        //更新UI，设置按钮使能
+        if (currentPlayCards.isEmpty())
+            whoPlay.setText(new StringBuilder("玩家2出的牌为：").append(currentPlayCardsToString()).toString());
+        else whoPlay.setText("玩家2未出牌");
+        whoseTurn.setText("目前轮到玩家3出牌");
+        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
+        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
+        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
+
+        currentPlayCards = new ArrayList<>();
+
+        player3Play();
+    }
+
+    private void player3Play() {
+        //通过联网程序得到玩家3出的牌
+        //currentPlayCards = network();
+
+        if (!currentPlayCards.isEmpty())
+            for (Integer card : currentPlayCards)
+                player3Cards.remove(card);
+			
+		currentPlayer = (currentPlayer + 1) % 4;
+
+        //更新UI，设置按钮使能
+        playButton.setEnabled(true);
+        passButton.setEnabled(true);
+        if (currentPlayCards.isEmpty())
+            whoPlay.setText(new StringBuilder("玩家3出的牌为：").append(currentPlayCardsToString()).toString());
+        else whoPlay.setText("玩家3未出牌");
+        whoseTurn.setText("目前轮到你出牌");
+        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
+        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
+        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
+        for (int i = 0; i < 52; ++i) {
+            if (myCards.contains(i)) {
+                playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                playerCardsImage.get(i).setEnabled(true);
+            }
+            else playerCardsImage.get(i).setVisibility(View.GONE);
+        }
+
+        currentPlayCards = new ArrayList<>();
     }
 }

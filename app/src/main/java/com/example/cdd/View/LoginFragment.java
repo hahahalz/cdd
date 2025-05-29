@@ -2,50 +2,48 @@ package com.example.cdd.View;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cdd.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-// 登录/注册界面
 public class LoginFragment extends BaseFragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_USER_TYPE = "user_type";
+    private static final String ARG_AUTO_LOGIN = "auto_login";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mUserType;
+    private boolean mAutoLogin;
+
+    private EditText editTextUsername;
+    private EditText editTextPassword;
+    private ImageView togglePassword;
+    private boolean isPasswordVisible = false;
+    private ImageView btnBack;
+    private Button btnLogin;
+    private Button btnRegister;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Login4Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
+    public static LoginFragment newInstance(String userType, boolean autoLogin) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_USER_TYPE, userType);
+        args.putBoolean(ARG_AUTO_LOGIN, autoLogin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,30 +52,67 @@ public class LoginFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mUserType = getArguments().getString(ARG_USER_TYPE);
+            mAutoLogin = getArguments().getBoolean(ARG_AUTO_LOGIN);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
-    @Override
+    //@Override
     protected int layoutId() {
-        return 0;
+        return R.layout.fragment_login;
     }
 
-    @Override
+    //@Override
     protected void initView(View view) {
+        editTextUsername = view.findViewById(R.id.editTextUsername);
+        editTextPassword = view.findViewById(R.id.editTextPassword);
+        togglePassword = view.findViewById(R.id.togglePassword);
+        btnBack = view.findViewById(R.id.btn_back);
+        btnLogin = view.findViewById(R.id.btn_login);
+        btnRegister = view.findViewById(R.id.btn_register);
 
+        // 切换密码可见性
+        togglePassword.setOnClickListener(v -> {
+            isPasswordVisible = !isPasswordVisible;
+            if (isPasswordVisible) {
+                editTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                togglePassword.setImageResource(R.drawable.ic_eye_open);
+            } else {
+                editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                togglePassword.setImageResource(R.drawable.ic_eye_closed);
+            }
+            editTextPassword.setSelection(editTextPassword.length());
+        });
+
+        // 返回按钮
+        btnBack.setOnClickListener(v -> {
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        });
+
+        // 登录按钮
+        btnLogin.setOnClickListener(v -> {
+            String username = editTextUsername.getText().toString();
+            String password = editTextPassword.getText().toString();
+            Toast.makeText(getContext(), "登录点击：" + username, Toast.LENGTH_SHORT).show();
+            // TODO: 后续添加验证逻辑
+        });
+
+        // 注册按钮
+        btnRegister.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "点击注册按钮", Toast.LENGTH_SHORT).show();
+            // TODO: 可跳转至注册页面
+        });
     }
 
-    @Override
+    //@Override
     protected void initData(Context context) {
-
+        // 初始化数据，如果有自动登录信息可以在这里处理
     }
 }

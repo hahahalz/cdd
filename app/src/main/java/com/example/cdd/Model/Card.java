@@ -42,17 +42,17 @@ public class Card {
     }
     public boolean compareTo(Card c)
     {
-        if(this.rank.getValue()>c.rank.getValue())
+        if(this.rank.getValue()>c.getRank().getValue())
         {
             return true;
         }//当牌值比c大时返回true
-        else if(this.rank.getValue()<c.rank.getValue())
+        else if(this.rank.getValue()<c.getRank().getValue())
         {
             return false;
         }//当牌值比c小时返回false
-        else if(this.rank.getValue()==c.rank.getValue())
+        else if(this.rank.getValue()==c.getRank().getValue())
         {
-            if(this.suit.ordinal()>c.suit.ordinal())
+            if(this.suit.ordinal()>c.getSuit().ordinal())
             {
                 return true;
             }
@@ -65,7 +65,7 @@ public class Card {
     }//判断两个牌的大小
     public boolean equals(Card c)
     {
-        if(this.rank.getValue()==c.rank.getValue()&&this.suit.ordinal()==c.suit.ordinal())
+        if(this.rank.getValue()==c.getRank().getValue()&&this.suit.ordinal()==c.getSuit().ordinal())
         {
             return true;
         }

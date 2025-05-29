@@ -1,5 +1,7 @@
 package com.example.cdd.Model;
 
+import androidx.annotation.NonNull;
+
 public class Card {
     public enum Rank {
         THREE(3), FOUR(4), FIVE(5), SIX(6), SEVEN(7), EIGHT(8), NINE(9), TEN(10),
@@ -37,6 +39,7 @@ public class Card {
     public Suit getSuit() {
         return suit;
     }
+    @NonNull
     public String toString() {
         return suit + " of " + rank;
     }

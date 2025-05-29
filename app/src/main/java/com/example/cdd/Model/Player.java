@@ -5,9 +5,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class Player implements Actor{           // 人类玩家实体
+
+    List<Card> HandCards = new ArrayList<>();
     private PlayerInformation playerInformation;        //储存玩家相关信息：ID，得分的变量
-    public List<Card> getHandCards(){
-        return Collections.unmodifiableList(new ArrayList<>(HandCards));
+    public List<Card> getHandCards()
+    {
+        return HandCards;
+    }
+
+    public void setHandCards(List<Card> cards){
+        HandCards=cards;
     }
 
     public void playCards(List<Card> Cards){     //出牌成功或失败（假设已经判断了传入的手牌符合出牌规则）

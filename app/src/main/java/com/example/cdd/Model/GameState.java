@@ -14,7 +14,9 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     private Actor winner;
     private boolean gameOver;
 
-    public GameState(List<Actor> players) {
+    private static GameState instance;    // 单例实例
+
+    private GameState(List<Actor> players) {                 //权限已修改过
         this.players = Objects.requireNonNull(players);
         this.currentPlayerIndex = 0; // 默认从第一个玩家开始
         this.cardsOnTable = new ArrayList<>();
@@ -22,6 +24,19 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.roundNumber = 1;
         this.gameOver = false;
         this.winner = null;
+    }
+
+    // 静态方法获取单例实例
+    public static synchronized GameState getInstance(List<Actor> players) {    //第一次创建实例
+        if (instance == null) {
+            instance = new GameState(players);
+        }
+        return instance;
+    }
+
+    // 获取已存在的单例实例（不创建新实例）
+    public static GameState getInstance() {
+        return instance;
     }
 
     public List<Actor> getPlayers() {

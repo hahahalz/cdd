@@ -21,8 +21,6 @@ public class MultiplayerGameManager {
         gameState=GameState.getInstance(players);
         deck=Deck;
 
-
-
     }
 
     /*void PlayingGame()
@@ -56,12 +54,13 @@ public class MultiplayerGameManager {
 
     void endRound()
     {
-        //默认0是玩家，不是就改,玩家赢了加分
+        //玩家赢了加分
         if(gameState.getWinner() instanceof Player)
         {
             int a=thePlayer.getPlayerInformation().getScore();
             thePlayer.getPlayerInformation().setScore(a+1);
         }
+
 
     }
 
@@ -69,6 +68,7 @@ public class MultiplayerGameManager {
     {
         //
         gameState.resetRound();
+        deck=new Deck();
     }
 
 
@@ -76,7 +76,7 @@ public class MultiplayerGameManager {
     {
         //调用deck发牌
         for(Actor actor:players)
-        actor.setHandCards(deck.dealCard());
+         actor.setHandCards(deck.dealCard());
 
     }
 

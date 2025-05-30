@@ -43,28 +43,32 @@ public class Card {
     public String toString() {
         return suit + " of " + rank;
     }
-    public boolean compareTo(Card c)
+    public int compareTo(Card c)
     {
         if(this.rank.getValue()>c.getRank().getValue())
         {
-            return true;
+            return 1;
         }//当牌值比c大时返回true
         else if(this.rank.getValue()<c.getRank().getValue())
         {
-            return false;
+            return -1;
         }//当牌值比c小时返回false
         else if(this.rank.getValue()==c.getRank().getValue())
         {
             if(this.suit.ordinal()>c.getSuit().ordinal())
             {
-                return true;
+                return 1;
+            }
+            else if(this.suit.ordinal()<c.getSuit().ordinal())
+            {
+                return -1;
             }
             else
             {
-                return false;
+                return 0;
             }
         }//当牌值相等时，比较花色
-        return false;
+    return 0;
     }//判断两个牌的大小
     public boolean equals(Card c)
     {

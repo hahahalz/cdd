@@ -17,7 +17,8 @@ public class Player implements Actor{           // 人类玩家实体
         HandCards=cards;
     }
 
-    public void playCards(List<Card> Cards){     //出牌成功或失败（假设已经判断了传入的手牌符合出牌规则）
+    @Override
+    public List<Card> playCards(List<Card> Cards){     //出牌成功或失败（假设已经判断了传入的手牌符合出牌规则）
         for (int i=0;i<Cards.size();i++){
             for (int j=0;j<HandCards.size();j++){
                 if (Cards.get(i).equals(HandCards.get(j))){
@@ -26,6 +27,7 @@ public class Player implements Actor{           // 人类玩家实体
                 }
             }
         }
+        return Cards;
     }
 
 

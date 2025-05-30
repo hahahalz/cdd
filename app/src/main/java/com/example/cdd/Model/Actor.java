@@ -10,7 +10,7 @@ public interface Actor {        //玩家（人/AI）接口
 
     void setHandCards(List<Card> cards);
 
-    void playCards(List<Card> Cards);
+    List<Card> playCards(List<Card> Cards);
 
     void pass();
 }

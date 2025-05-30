@@ -92,7 +92,8 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.winner = winner;
     }
 
-    public boolean isTerminal(){
-
+    public int getCurrentPlayerIndex()
+    {
+        return this.currentPlayerIndex;
     }
 }

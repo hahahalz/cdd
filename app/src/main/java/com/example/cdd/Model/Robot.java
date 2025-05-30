@@ -10,12 +10,14 @@ import com.example.cdd.Model.GameRuleConfig;
 public class Robot implements Actor{            // 机器人玩家实体
 
     List<Card> HandCards = new ArrayList<>();
+    int level =0;
 
     GameRuleConfig gameRuleConfig;
 
-    public Robot(GameRuleConfig g)
+    public Robot(GameRuleConfig g,int l)
     {
         gameRuleConfig=g;
+        level=l;
     }
 
     public List<Card> playCards(List<Card> lastcards)

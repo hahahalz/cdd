@@ -2,7 +2,7 @@ package com.example.cdd.Controller;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 
-import com.example.cdd.View.BaseFragment;
+
 
 // BaseController 可以是一个抽象类，定义通用的生命周期方法和与 Model 的交互接口
 public abstract class BaseController<V extends Fragment, M extends ViewModel> {

@@ -20,6 +20,11 @@ public class Player implements Actor{           // 人类玩家实体
         this.playerInformation = playerInformation;
     }
 
+    public  Player(PlayerInformation playerInformation){
+
+        this.playerInformation = playerInformation;
+    }
+
     public List<Card> getHandCards() {
         return HandCards;
     }

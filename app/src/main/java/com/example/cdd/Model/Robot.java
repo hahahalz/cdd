@@ -13,6 +13,10 @@ public class Robot implements Actor{            // 机器人玩家实体
 
     GameRuleConfig gameRuleConfig;
 
+    public Robot(GameRuleConfig g)
+    {
+        gameRuleConfig=g;
+    }
 
     public List<Card> playCards(List<Card> lastcards)
     {
@@ -53,8 +57,9 @@ public class Robot implements Actor{            // 机器人玩家实体
             // 同牌型比较最小牌值
             Card minA = getMinCard(a, typeA, gameRuleConfig.RULE_TYPE);
             Card minB = getMinCard(b, typeB, gameRuleConfig.RULE_TYPE);
+            boolean min=minA.compareTo(minB);// 升序排列，取最小牌型
 
-            return minA.compareTo(minB); // 升序排列，取最小牌型
+            return min==true?1:-1;
         }
         );
 
@@ -88,7 +93,9 @@ public class Robot implements Actor{            // 机器人玩家实体
                 .sorted((a, b) -> {
                     Card minA = a.stream().min(Comparator.comparingInt(c -> c.getRank().getValue())).orElse(null);
                     Card minB = b.stream().min(Comparator.comparingInt(c -> c.getRank().getValue())).orElse(null);
-                    return minA.compareTo(minB);
+                    boolean min=minA.compareTo(minB);// 升序排列，取最小牌型
+
+                    return min==true?1:-1;
                 })
                 .collect(Collectors.toList());
     }

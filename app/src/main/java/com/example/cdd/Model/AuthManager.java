@@ -27,16 +27,16 @@ public class AuthManager {      // 处理用户登录、注册的业务逻辑\
         }
     }
 
-    boolean login(String userid, String password) {          //1表示登录成功
+    PlayerInformation login(String userid, String password) {          //1表示登录成功
         for (PlayerInformation playerInformation : playList) {         //遍历比对查找
             String s = playerInformation.getUserID();
             String pwd = playerInformation.getPassword();
             if (Objects.equals(userid, s)) {
                 if (Objects.equals(password, pwd)) {
-                    return true;                            //后续逻辑可在此基础上增加
+                    return playerInformation;                            //后续逻辑可在此基础上增加
                 }
             }
         }
-        return false;
+        return null;
     }
 }

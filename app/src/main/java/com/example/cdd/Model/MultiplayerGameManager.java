@@ -13,26 +13,38 @@ public class MultiplayerGameManager {
 
     Deck deck;
 
-    void startGame(int rule, List<Actor> Players,Deck Deck)//players里面的玩家应该本身就包含个人信息
+
+    public MultiplayerGameManager(int rule,PlayerInformation playerInformation)
     {
-        //开始游戏,只负责初始化
-        players=Players;
         gameRuleConfig=new GameRuleConfig(rule);
         gameState=GameState.getInstance(players);
-        deck=Deck;
-
+        deck=new Deck();
+        thePlayer=new Player(playerInformation);
+        Robot r1=new Robot(gameRuleConfig);
+        players.add(thePlayer);
+        players.add(r1);
     }
 
-    /*void PlayingGame()
+
+
+
+    void PlayingGame()
     {
         //具体游戏过程
-        if(!gameState.isGameOver())
+        while(!gameState.isGameOver())
         {
-
+            //根据页面的指令选择是过牌还是出牌
+            //handlePlayerPass();or handlePlayerPlay
+            //handleAIPlay();
+            //
         }
+
+            endGame();
+
+
 //jiaogeiqitahanshu
 
-    }*/
+    }
 
 
     void endGame()
@@ -60,13 +72,13 @@ public class MultiplayerGameManager {
             int a=thePlayer.getPlayerInformation().getScore();
             thePlayer.getPlayerInformation().setScore(a+1);
         }
-
-
+        //等待页面选择退出游戏还是下一轮，调用selectNextRound
+        //selectNextRound();
     }
 
     void selectNextRound()
     {
-        //
+        //选择下一轮
         gameState.resetRound();
         deck=new Deck();
     }
@@ -109,6 +121,12 @@ public class MultiplayerGameManager {
         if(aIplay!=null)
         {
             gameState.setLastPlayedCards(aIplay);
+        }
+        if(AI.getHandCards().isEmpty())
+        {
+            gameState.setGameOver(true);
+            gameState.setWinner(AI);
+            endRound();
         }
         if(gameState.getCurrentPlayer() instanceof Robot)
         {

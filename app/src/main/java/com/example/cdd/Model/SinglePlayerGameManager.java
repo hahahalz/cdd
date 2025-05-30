@@ -1,27 +1,40 @@
 package com.example.cdd.Model;
 
+import androidx.lifecycle.ViewModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class SinglePlayerGameFragment {
+public class SinglePlayerGameManager extends ViewModel {
     // 管理整个游戏流程、状态、调用规则、AI、网络等（单人模式）
     GameRuleConfig gameRuleConfig;//配置游戏规则
     GameState gameState;//获取游戏状态实例，endgame时要修改
     List<Actor> players;//参与者列表，要改
 
     Player thePlayer;//获取真人玩家的索引，要改
+    Robot r1;
+    Robot r2;
+    Robot r3;
 
     Deck deck;
 
 
-    public SinglePlayerGameFragment(int rule,PlayerInformation playerInformation)
+
+    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,List<Integer> levelOfRobot )
     {
         gameRuleConfig=new GameRuleConfig(rule);
-        gameState=GameState.getInstance(players);
         deck=new Deck();
         thePlayer=new Player(playerInformation);
-        Robot r1=new Robot(gameRuleConfig);
-        players.add(thePlayer);
+        players.add(thePlayer);//玩家第一个
+        Robot r1=new Robot(gameRuleConfig,levelOfRobot.get(0));
+        Robot r2=new Robot(gameRuleConfig,levelOfRobot.get(1));
+        Robot r3=new Robot(gameRuleConfig,levelOfRobot.get(2));//定死3个机器人
         players.add(r1);
+        players.add(r2);
+        players.add(r3);
+        //数量定为四
+
+        gameState=GameState.getInstance(players);
     }
 
 
@@ -63,7 +76,19 @@ public class SinglePlayerGameFragment {
 
     }
 
-    void endRound()
+    public Actor checkWinner()
+    {
+        Actor nowPlay=gameState.getCurrentPlayer();
+        if(nowPlay.getHandCards().isEmpty())
+        {
+            gameState.setWinner(nowPlay);
+            return gameState.getCurrentPlayer();
+        }
+        return null;
+    }
+
+
+    public void endRound()
     {
         //玩家赢了加分
         if(gameState.getWinner() instanceof Player)
@@ -75,7 +100,7 @@ public class SinglePlayerGameFragment {
         //selectNextRound();
     }
 
-    void selectNextRound()
+    public void selectNextRound()
     {
         //选择下一轮
         gameState.resetRound();
@@ -83,27 +108,26 @@ public class SinglePlayerGameFragment {
     }
 
 
-    void dealCards(Deck deck,List<Actor> players)
+    List<List<Card>> dealCards(Deck deck,List<Actor> players)
     {
-        //调用deck发牌
+        //调用deck发牌,要返回二维数组List<List<Card>>
         for(Actor actor:players)
             actor.setHandCards(deck.dealCard());
 
+        List<List<Card>> allCards= new ArrayList<>();
+        for(Actor actor:players)
+            allCards.add(actor.getHandCards());
+
+        return allCards;
     }
 
-    Boolean handlePlayerPlay(Actor player, List<Card> cards,List<Card>lastCards)
+    public Boolean handlePlayerPlay(List<Card> cards)
     {
 
         //调用GameRuleConfig中的isValidPlay判断出牌是否合理，玩家如果有输入就调用
-        if(gameRuleConfig.isValidPlay(cards,lastCards))
+        if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards()))
         {
-            player.playCards(cards);
-            if(player.getHandCards().isEmpty())
-            {
-                gameState.setGameOver(true);
-                gameState.setWinner(player);
-                endRound();
-            }
+            thePlayer.playCards(cards);
             return true;
         }
         else
@@ -112,33 +136,43 @@ public class SinglePlayerGameFragment {
         }
     }
 
-    void handleAIPlay(Actor AI)
+
+
+    public void handleAIPlay()
     {
         //处理AI出牌
+        Robot AI=gameState.getCurrentPlayer();
         List<Card> aIplay=AI.playCards(gameState.getLastPlayedCards());
         gameState.nextPlayer();
         if(aIplay!=null)
         {
             gameState.setLastPlayedCards(aIplay);
-        }
-        if(AI.getHandCards().isEmpty())
-        {
-            gameState.setGameOver(true);
-            gameState.setWinner(AI);
-            endRound();
-        }
-        if(gameState.getCurrentPlayer() instanceof Robot)
-        {
-            handlePlayerPass(gameState.getCurrentPlayer());
+            if(AI.getHandCards().isEmpty())
+            {
+                gameState.setGameOver(true);
+                gameState.setWinner(AI);
+                endRound();
+            }
         }
 
+        else if(gameState.getCurrentPlayer() instanceof Robot)
+        {
+            handleAIPass();
+        }
 
     }
 
 
 
 
-    void handlePlayerPass(Actor player)
+    public void handlePlayerPass()
+    {
+        //处理过牌
+        gameState.nextPlayer();
+
+    }
+
+    public void handleAIPass()
     {
         //处理过牌
         gameState.nextPlayer();
@@ -146,9 +180,7 @@ public class SinglePlayerGameFragment {
     }
 
 
-
-
-    GameState getGameState()
+    public GameState getGameState()
     {
         //获取游戏状态
         return gameState;

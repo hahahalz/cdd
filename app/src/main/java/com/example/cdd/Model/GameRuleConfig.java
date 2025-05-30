@@ -2,10 +2,12 @@ package com.example.cdd.Model;
 import java.util.List;
 import java.util.ArrayList;
 public class GameRuleConfig {
-    private int RULE_TYPE;
+    public int RULE_TYPE;
     private CardType cardType;
 
-    public enum CardType {
+
+
+    public  enum CardType {
         SINGLE, PAIR, THREE_OF_A_KIND, STRAIGHT, SAME_SUIT, THREE_WITH_PAIR, FOUR_WITH_SINGLE, SAME_SUIT_STRAIGHT, FOUR_OF_A_KIND, N;//单牌，对子，三个,顺子，同花五，三带一对，四带一，同花顺，四条，无
 
         public static CardType getCardType(List<Card> cards, int RULE_TYPE) {

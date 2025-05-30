@@ -91,4 +91,8 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     public void setWinner(Actor winner) {
         this.winner = winner;
     }
+
+    public boolean isTerminal(){
+
+    }
 }

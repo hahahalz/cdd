@@ -59,12 +59,16 @@ public class Card {
             {
                 return true;
             }
+            else if(this.suit.ordinal()<c.getSuit().ordinal())
+            {
+                return false;
+            }
             else
             {
                 return false;
             }
         }//当牌值相等时，比较花色
-        return false;
+    return false;
     }//判断两个牌的大小
     public boolean equals(Card c)
     {

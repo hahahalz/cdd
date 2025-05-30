@@ -23,314 +23,314 @@
     
 			<Button
 				android:id="@+id/cluba"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/cluba" />
 
 			<Button
 				android:id="@+id/club2"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club2" />
 			
 			<Button
 				android:id="@+id/club3"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club3" />
 				
 			<Button
 				android:id="@+id/club4"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club4" />
 				
 			<Button
 				android:id="@+id/club5"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club5" />
 				
 			<Button
 				android:id="@+id/club6"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club6" />
 				
 			<Button
 				android:id="@+id/club7"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club7" />
 				
 			<Button
 				android:id="@+id/club8"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club8" />
 				
 			<Button
 				android:id="@+id/club9"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club9" />
 				
 			<Button
 				android:id="@+id/club10"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/club10" />
 				
 			<Button
 				android:id="@+id/clubj"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/clubj" />
 				
 			<Button
 				android:id="@+id/clubq"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/clubq" />
 
 			<Button
 				android:id="@+id/clubk"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/clubk" />
 				
 			<Button
 				android:id="@+id/hearta"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/hearta" />
 				
 			<Button
 				android:id="@+id/heart2"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart2" />
 				
 			<Button
 				android:id="@+id/heart3"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart3" />
 				
 			<Button
 				android:id="@+id/heart4"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart4" />
 				
 			<Button
 				android:id="@+id/heart5"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart5" />
 				
 			<Button
 				android:id="@+id/heart6"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart6" />
 				
 			<Button
 				android:id="@+id/heart7"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart7" />
 				
 			<Button
 				android:id="@+id/heart8"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart8" />
 				
 			<Button
 				android:id="@+id/heart9"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart9" />
 				
 			<Button
 				android:id="@+id/heart10"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heart10" />
 				
 			<Button
 				android:id="@+id/heartj"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heartj" />
 				
 			<Button
 				android:id="@+id/heartq"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heartq" />
 				
 			<Button
 				android:id="@+id/heartk"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/heartk" />
 				
 			<Button
 				android:id="@+id/diamonda"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamonda" />
 				
 			<Button
 				android:id="@+id/diamond2"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond2" />
 				
 			<Button
 				android:id="@+id/diamond3"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond3" />
 				
 			<Button
 				android:id="@+id/diamond4"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond4" />
 				
 			<Button
 				android:id="@+id/diamond5"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond5" />
 				
 			<Button
 				android:id="@+id/diamond6"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond6" />
 				
 			<Button
 				android:id="@+id/diamond7"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond7" />
 				
 			<Button
 				android:id="@+id/diamond8"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond8" />
 				
 			<Button
 				android:id="@+id/diamond9"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond9" />
 				
 			<Button
 				android:id="@+id/diamond10"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamond10" />
 				
 			<Button
 				android:id="@+id/diamondj"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamondj" />
 				
 			<Button
 				android:id="@+id/diamondq"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamondq" />
 				
 			<Button
 				android:id="@+id/diamondk"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/diamondk" />
 				
 			<Button
 				android:id="@+id/spadea"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spadea" />
 				
 			<Button
 				android:id="@+id/spade2"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade2" />
 				
 			<Button
 				android:id="@+id/spade3"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade3" />
 				
 			<Button
 				android:id="@+id/spade4"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade4" />
 				
 			<Button
 				android:id="@+id/spade5"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade5" />
 				
 			<Button
 				android:id="@+id/spade6"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade6" />
 				
 			<Button
 				android:id="@+id/spade7"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade7" />
 				
 			<Button
 				android:id="@+id/spade8"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade8" />
 				
 			<Button
 				android:id="@+id/spade9"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade9" />
 				
 			<Button
 				android:id="@+id/spade10"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spade10" />
 				
 			<Button
 				android:id="@+id/spadej"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spadej" />
 				
 			<Button
 				android:id="@+id/spadeq"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spadeq" />
 				
 			<Button
 				android:id="@+id/spadek"
-				android:layout_width="100dp"
-				android:layout_height="200dp"
+				android:layout_width="80dp"
+				android:layout_height="120dp"
 				android:background="@drawable/spadek" />
 		
 		</LinearLayout>
@@ -338,18 +338,17 @@
 	</HorizontalScrollView>
 	
 	<LinearLayout
-			android:id="@+id/text_layout"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:layout_gravity="center">
+		android:id="@+id/text_layout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_gravity="center">
 			
 		<LinearLayout
 			android:id="@+id/remain_text_layout"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:layout_gravity="center">
+			android:orientation="vertical" >
 		
 			<TextView
 				android:id="@+id/player1_cards_text"
@@ -398,36 +397,33 @@
 			android:gravity="center"
 			android:layout_margin="5dp" />
 			
-	</LinearLayout>
-
-	<LinearLayout
+		<LinearLayout
 			android:id="@+id/button_layout"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:orientation="horizontal"
+			android:orientation="vertical"
 			android:layout_gravity="center" >
 	
-		<Button
-			android:id="@+id/play_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="出牌"
-			android:layout_margin="30dp" />
+			<Button
+				android:id="@+id/play_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="出牌" />
 
-		<Button
-			android:id="@+id/pass_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="过牌"
-			android:layout_margin="30dp" />
+			<Button
+				android:id="@+id/pass_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="过牌" />
+					
+			<Button
+				android:id="@+id/start_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="开始游戏" />
+			
+		</LinearLayout>
 			
 	</LinearLayout>
-	
-	<Button
-			android:id="@+id/start_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="开始游戏"
-			android:layout_margin="30dp" />
 
 </LinearLayout>

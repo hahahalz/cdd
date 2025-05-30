@@ -7,6 +7,16 @@ import java.util.List;
 public class Robot implements Actor{            // 机器人玩家实体
 
     List<Card> HandCards = new ArrayList<>();
+
+    public  Robot(){               //无参构造函数，不需要初始化变量
+
+    }
+
+    public Robot(List<Card> handCards){
+        if (handCards != null){
+            HandCards = handCards;
+        }
+    }
     public List<Card> getHandCards(){
         return Collections.unmodifiableList(new ArrayList<>(HandCards));
     }

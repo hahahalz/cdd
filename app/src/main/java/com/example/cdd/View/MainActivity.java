@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cdd.R;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class  MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +37,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button button = findViewById(R.id.button);
         button.setOnClickListener(this);
         Button button1 = findViewById(R.id.button1);
-        button.setOnClickListener(this);
+        button1.setOnClickListener(this);
         Button button4 = findViewById(R.id.button4);
-        button.setOnClickListener(this);
+        button4.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-         if (view.getId() == R.id.button){
-             replaceFragement(new LoginFragment());
-         }
-         else if (view.getId() == R.id.button1){
-             replaceFragement(new MultiplayerGameFragment());
-         }
-         else if (view.getId() == R.id.button4){
-             replaceFragement(new SingleplayerGameFragment());
-         }
+        if (view.getId() == R.id.button){
+            replaceFragement(new LoginFragment());
+        }
+        else if (view.getId() == R.id.button1){
+            replaceFragement(new MultiplayerGameFragment());
+        }
+        else if (view.getId() == R.id.button4){
+            replaceFragement(new SingleplayerGameFragment());
+        }
     }
     private void replaceFragement(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();

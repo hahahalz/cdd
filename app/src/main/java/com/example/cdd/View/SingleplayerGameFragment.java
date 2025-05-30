@@ -85,9 +85,9 @@ public class SingleplayerGameFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(layoutId(), container, false);
-		initView(view);
-		initData(context);
-		return view;
+        initView(view);
+        initData(context);
+        return view;
     }
 
     //@Override
@@ -344,7 +344,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 
         //更新UI，设置按钮使能
         playButton.setEnabled(true);
-        passButton.setEnabled(false);
+        passButton.setEnabled(true);
         if (currentPlayCards.isEmpty())
             whoPlay.setText(new StringBuilder("机器人出的牌为：").append(currentPlayCardsToString()).toString());
         else whoPlay.setText("机器人未出牌");

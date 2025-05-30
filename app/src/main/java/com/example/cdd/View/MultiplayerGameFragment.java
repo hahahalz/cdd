@@ -43,7 +43,7 @@ public class MultiplayerGameFragment extends BaseFragment {
     private TextView player3CardsText;
     private Button playButton;
     private Button passButton;
-	private Button startButton;
+    private Button startButton;
 
     //游戏数据
     private ArrayList<Integer> myCards;
@@ -91,12 +91,12 @@ public class MultiplayerGameFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(layoutId(), container, false);
-		initView(view);
-		initData(context);
-		return view;
+        initView(view);
+        initData(context);
+        return view;
     }
 
-   // @Override
+    // @Override
     protected int layoutId() {
         return R.layout.fragment_multiplayer_game;
     }
@@ -175,20 +175,20 @@ public class MultiplayerGameFragment extends BaseFragment {
         // 初始化操作按钮
         playButton = view.findViewById(R.id.play_button);
         passButton = view.findViewById(R.id.pass_button);
-		startButton = view.findViewById(R.id.start_button);
+        startButton = view.findViewById(R.id.start_button);
 
         //设置按钮点击事件
         playButton.setOnClickListener(v -> handlePlayCards());
-		playButton.setEnabled(false);
+        playButton.setEnabled(false);
         passButton.setOnClickListener(v -> handlePass());
-		passButton.setEnabled(false);
+        passButton.setEnabled(false);
         for (int i = 0; i < 52; ++i) {
             final int tmp = i;
-			playerCardsImage.get(i).setEnabled(false);
+            playerCardsImage.get(i).setEnabled(false);
             playerCardsImage.get(i).setOnClickListener(v -> handleCardClicked(tmp));
         }
-		startButton.setEnabled(true);
-		startButton.setOnClickListener(v -> startGame());
+        startButton.setEnabled(true);
+        startButton.setOnClickListener(v -> startGame());
     }
 
     @Override
@@ -198,20 +198,20 @@ public class MultiplayerGameFragment extends BaseFragment {
         player2Cards = new ArrayList<>();
         player3Cards = new ArrayList<>();
         currentPlayCards = new ArrayList<>();
-		currentPlayer = -1; //游戏开始后从后端程序获取
+        currentPlayer = -1; //游戏开始后从后端程序获取
     }
-	
-	void startGame() {
-		startButton.setEnabled(false);
-		
-		//从后端程序获取第一个开始游戏的玩家是谁
+
+    void startGame() {
+        startButton.setEnabled(false);
+
+        //从后端程序获取第一个开始游戏的玩家是谁
         //currentPlayer = 后端();
 
         //从后端程序获取分配给自己和其他三个人的牌
         //myCards = 后端();
-		//player1Cards = 后端();
-		//player2Cards = 后端();
-		//player3Cards = 后端();
+        //player1Cards = 后端();
+        //player2Cards = 后端();
+        //player3Cards = 后端();
 
         //初始化UI界面
         if (currentPlayer == ME) {
@@ -288,7 +288,7 @@ public class MultiplayerGameFragment extends BaseFragment {
 
             player3Play();
         }
-	}
+    }
 
     String currentPlayCardsToString() {
         StringBuilder s = new StringBuilder("\n");
@@ -349,7 +349,7 @@ public class MultiplayerGameFragment extends BaseFragment {
     private void handlePlayCards() {
         for (Integer card : currentPlayCards)
             myCards.remove(card);
-		
+
         currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
@@ -407,8 +407,8 @@ public class MultiplayerGameFragment extends BaseFragment {
         if (!currentPlayCards.isEmpty())
             for (Integer card : currentPlayCards)
                 player1Cards.remove(card);
-			
-		currentPlayer = (currentPlayer + 1) % 4;
+
+        currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
         if (currentPlayCards.isEmpty())
@@ -431,8 +431,8 @@ public class MultiplayerGameFragment extends BaseFragment {
         if (!currentPlayCards.isEmpty())
             for (Integer card : currentPlayCards)
                 player2Cards.remove(card);
-			
-		currentPlayer = (currentPlayer + 1) % 4;
+
+        currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
         if (currentPlayCards.isEmpty())
@@ -455,8 +455,8 @@ public class MultiplayerGameFragment extends BaseFragment {
         if (!currentPlayCards.isEmpty())
             for (Integer card : currentPlayCards)
                 player3Cards.remove(card);
-			
-		currentPlayer = (currentPlayer + 1) % 4;
+
+        currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
         playButton.setEnabled(true);

@@ -3,23 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="10dp"
+    android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".View.SingleplayerGameFragment"
-	android:background="@drawable/bg"
-	android:id="@+id/singleplayer_fragment">
+    android:background="@drawable/bg"
+    android:id="@+id/singleplayer_fragment">
 
     <!-- TODO: Update blank fragment layout -->
 	
 	<LinearLayout
-		android:id="@+id/text_layout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:layout_gravity="center">
 	
 	<LinearLayout
-		android:id="@+id/text_layout"
 		android:layout_width="310dp"
 		android:layout_height="200dp"
 		android:orientation="horizontal"
@@ -117,7 +115,6 @@
 	</LinearLayout>
 	
 	<LinearLayout
-		android:id="@+id/button_layout"
 		android:layout_width="300dp"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
@@ -148,7 +145,6 @@
 				android:layout_height="wrap_content" >
 				
 				<LinearLayout
-					android:id="@+id/cards_image_layout"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="horizontal">
@@ -490,7 +486,6 @@
 				android:layout_height="wrap_content" >
 				
 				<LinearLayout
-					android:id="@+id/cards_image_layout"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="horizontal">
@@ -832,7 +827,6 @@
 				android:layout_height="wrap_content" >
 				
 				<LinearLayout
-					android:id="@+id/cards_image_layout"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="horizontal">
@@ -1188,7 +1182,6 @@
 		android:layout_marginTop="5dp">
 		
 		<LinearLayout
-			android:id="@+id/cards_layout"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal">

@@ -116,7 +116,8 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public Boolean handlePlayerPlay(List<Card> cards)
     {
-
+        if(gameState.isGameOver())
+        return false;
         //调用GameRuleConfig中的isValidPlay判断出牌是否合理，玩家如果有输入就调用
         if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards(),gameState.getPasstime()))
         {
@@ -136,6 +137,9 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public List<Card> handleAIPlay()
     {
+        if(gameState.isGameOver())
+            return new ArrayList<>();
+
         //处理AI出牌
         Actor AI=gameState.getCurrentPlayer();
         List<Card> aIplay=AI.playCards(gameState.getLastPlayedCards(),gameState.getPasstime());

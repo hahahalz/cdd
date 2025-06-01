@@ -132,7 +132,7 @@ public class SinglePlayerGameManager extends ViewModel {
     {
 
         //调用GameRuleConfig中的isValidPlay判断出牌是否合理，玩家如果有输入就调用
-        if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards()))
+        if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards(),gameState.getPasstime()))
         {
             thePlayer.playCards(cards);
             return true;
@@ -154,6 +154,10 @@ public class SinglePlayerGameManager extends ViewModel {
         {
             gameState.setLastPlayedCards(aIplay);
         }
+        else
+        {
+            AI.pass();
+        }
         return aIplay;
     }
 
@@ -163,7 +167,7 @@ public class SinglePlayerGameManager extends ViewModel {
     public void handlePlayerPass()
     {
         //处理过牌
-        gameState.nextPlayer();
+        gameState.getCurrentPlayer().pass();
 
     }
 

@@ -28,6 +28,7 @@ public class Robot implements Actor{            // 机器人玩家实体
 
     public void pass(){
         GameState.getInstance().nextPlayer();
+        GameState.getInstance().PassTimePlus();
     }
     public List<Card> getHandCards(){
         return Collections.unmodifiableList(new ArrayList<>(HandCards));
@@ -91,7 +92,7 @@ public class Robot implements Actor{            // 机器人玩家实体
 
         // 过滤合法牌型并按牌值升序排序
         return allCombinations.stream()
-                .filter(cards -> ruleConfig.isValidPlay(cards, lastPlayedCards))
+                .filter(cards -> ruleConfig.isValidPlay(cards, lastPlayedCards,GameState.getInstance().getPasstime()))
                 .sorted((a, b) -> {
                     Card minA = a.stream().min(Comparator.comparingInt(c -> c.getRank().getValue())).orElse(null);
                     Card minB = b.stream().min(Comparator.comparingInt(c -> c.getRank().getValue())).orElse(null);

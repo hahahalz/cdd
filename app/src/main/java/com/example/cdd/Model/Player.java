@@ -49,6 +49,7 @@ public class Player implements Actor{           // 人类玩家实体
 
     public void pass(){
         GameState.getInstance().nextPlayer();
+        GameState.getInstance().PassTimePlus();
     }
 
     public PlayerInformation getPlayerInformation() {

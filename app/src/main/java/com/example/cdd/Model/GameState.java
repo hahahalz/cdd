@@ -14,6 +14,8 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     private Actor winner;
     private boolean gameOver;
 
+    private int passtime;
+
     private int roundscore;
 
     private static GameState instance;    // 单例实例
@@ -135,5 +137,18 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     public void quitPunishment()
     {
         roundscore--;
+    }
+
+    public int getPasstime() {
+        return passtime;
+    }
+
+    public void setPasstime(int passtime) {
+        this.passtime = passtime;
+    }
+
+    public void PassTimePlus()
+    {
+        this.passtime++;
     }
 }

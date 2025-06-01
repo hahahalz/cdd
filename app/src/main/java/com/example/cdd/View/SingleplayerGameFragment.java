@@ -379,11 +379,25 @@ public class SingleplayerGameFragment extends BaseFragment {
         playButton.setOnClickListener(v -> handlePlayCards());
         passButton.setOnClickListener(v -> handlePass());
         quitButton.setOnClickListener(v -> {
-            controller.quitgame();
+            new AlertDialog.Builder(context)
+                    .setTitle("退出游戏")
+                    .setMessage("提前退出是有惩罚的哦，确定退出吗？")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            controller.quitgame();
 
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .show();
         });
         for (int i = 0; i < 52; ++i) {
             final int tmp = i;
@@ -437,17 +451,60 @@ public class SingleplayerGameFragment extends BaseFragment {
 
         cnt_click_card = 0;
 
-        List<List<Card>> allocateCards = controller.initialize(0,new PlayerInformation(),1);
-        //allocateCards.add(new ArrayList<>());
-        //allocateCards.add(new ArrayList<>());
-        //allocateCards.add(new ArrayList<>());
-        //allocateCards.add(new ArrayList<>());
-        //allocateCards = controller.initialize(传入参数);
+        //先暂时随便传几个参数，等菜单界面完善了再说
+        List<List<Card>> allocateCards = controller.initialize(0, new PlayerInformation(), 0);
 
         ArrayList<Card> _playerCards = (ArrayList<Card>) allocateCards.get(0);
         ArrayList<Card> _computer1Cards = (ArrayList<Card>) allocateCards.get(1);
         ArrayList<Card> _computer2Cards = (ArrayList<Card>) allocateCards.get(2);
         ArrayList<Card> _computer3Cards = (ArrayList<Card>) allocateCards.get(3);
+        for (Card card : _playerCards)
+            playerCards.add(cardToInteger(card));
+        for (Card card : _computer1Cards)
+            computer1Cards.add(cardToInteger(card));
+        for (Card card : _computer2Cards)
+            computer2Cards.add(cardToInteger(card));
+        for (Card card : _computer3Cards)
+            computer3Cards.add(cardToInteger(card));
+
+        //初始化UI界面
+        firstPlay.setText("等待你出牌");
+        secondPlay.setVisibility(View.GONE);
+        thirdPlay.setVisibility(View.GONE);
+        whoseTurn.setText("目前轮到你出牌");
+        computer1CardsText.setText("机器人1剩余13张牌");
+        computer2CardsText.setText("机器人2剩余13张牌");
+        computer3CardsText.setText("机器人3剩余13张牌");
+        playButton.setEnabled(false);
+        passButton.setEnabled(true);
+        for (int i = 0; i < 52; ++i) {
+            if (playerCards.contains(i)) {
+                playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                playerCardsImage.get(i).setEnabled(true);
+            }
+            else playerCardsImage.get(i).setVisibility(View.GONE);
+        }
+    }
+
+    protected void initData2() {
+        controller = new GameController();
+
+        playerCards = new ArrayList<>();
+        computer1Cards = new ArrayList<>();
+        computer2Cards = new ArrayList<>();
+        computer3Cards = new ArrayList<>();
+        currentPlayCards = new ArrayList<>();
+
+        currentPlayer = 0;
+
+        cnt_click_card = 0;
+
+        List<List<Card>> allocateCards = controller.selectNextRound();
+
+        List<Card> _playerCards = allocateCards.get(0);
+        List<Card> _computer1Cards = allocateCards.get(1);
+        List<Card> _computer2Cards = allocateCards.get(2);
+        List<Card> _computer3Cards = allocateCards.get(3);
         for (Card card : _playerCards)
             playerCards.add(cardToInteger(card));
         for (Card card : _computer1Cards)
@@ -506,8 +563,6 @@ public class SingleplayerGameFragment extends BaseFragment {
             else computer3Cards.add(cards.get(i));
         }
     }
-
-
 
     String currentPlayCardsToString() {
         StringBuilder s = new StringBuilder("\n");
@@ -620,15 +675,13 @@ public class SingleplayerGameFragment extends BaseFragment {
                     .setPositiveButton("再来一轮", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            controller.selectNextRound();
-
                             for (int i = 0; i < 52; ++i) {
                                 playImage.get(i).setVisibility(View.GONE);
                                 playImage2.get(i).setVisibility(View.GONE);
                                 playImage3.get(i).setVisibility(View.GONE);
                             }
 
-                            initData(context);
+                            initData2();
                         }
                     }).setNegativeButton("退出游戏", new DialogInterface.OnClickListener() {
                         @Override
@@ -649,10 +702,15 @@ public class SingleplayerGameFragment extends BaseFragment {
     private void handlePass() {
         controller.pass();
 
+        firstPlay.setText("机器人1");
+
         cnt_click_card = 0;
 
-        for (int i = 0; i < 52; ++i)
+        for (int i = 0; i < 52; ++i) {
             playImage.get(i).setVisibility(View.GONE);
+            playImage2.get(i).setVisibility(View.GONE);
+            playImage3.get(i).setVisibility(View.GONE);
+        }
 
         currentPlayer = (currentPlayer + 1) % 4;
         currentPlayCards = new ArrayList<>();
@@ -734,7 +792,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 
     private void computerPlay() {
         //通过后端AI算法得到机器人出的卡牌
-        List<Card> cards =  controller.robotPlayCard();
+        List<Card> cards = controller.robotPlayCard();
         for (Card card : cards) {
             currentPlayCards.add(cardToInteger(card));
         }
@@ -751,15 +809,13 @@ public class SingleplayerGameFragment extends BaseFragment {
                         .setPositiveButton("再来一轮", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                controller.selectNextRound();
-
                                 for (int i = 0; i < 52; ++i) {
                                     playImage.get(i).setVisibility(View.GONE);
                                     playImage2.get(i).setVisibility(View.GONE);
                                     playImage3.get(i).setVisibility(View.GONE);
                                 }
 
-                                initData(context);
+                                initData2();
                             }
                         }).setNegativeButton("退出游戏", new DialogInterface.OnClickListener() {
                             @Override
@@ -775,7 +831,7 @@ public class SingleplayerGameFragment extends BaseFragment {
             }
         }
 
-        cards = (ArrayList<Card>) controller.robotPlayCard();
+        cards = controller.robotPlayCard();
         ArrayList<Integer> currentPlayCards2 = new ArrayList<>();
         for (Card card : cards) {
             currentPlayCards2.add(cardToInteger(card));
@@ -793,15 +849,13 @@ public class SingleplayerGameFragment extends BaseFragment {
                         .setPositiveButton("再来一轮", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                controller.selectNextRound();
-
                                 for (int i = 0; i < 52; ++i) {
                                     playImage.get(i).setVisibility(View.GONE);
                                     playImage2.get(i).setVisibility(View.GONE);
                                     playImage3.get(i).setVisibility(View.GONE);
                                 }
 
-                                initData(context);
+                                initData2();
                             }
                         }).setNegativeButton("退出游戏", new DialogInterface.OnClickListener() {
                             @Override
@@ -817,7 +871,7 @@ public class SingleplayerGameFragment extends BaseFragment {
             }
         }
 
-        cards = (ArrayList<Card>) controller.robotPlayCard();
+        cards = controller.robotPlayCard();
         ArrayList<Integer> currentPlayCards3 = new ArrayList<>();
         for (Card card : cards) {
             currentPlayCards3.add(cardToInteger(card));
@@ -835,15 +889,13 @@ public class SingleplayerGameFragment extends BaseFragment {
                         .setPositiveButton("再来一轮", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                controller.selectNextRound();
-
                                 for (int i = 0; i < 52; ++i) {
                                     playImage.get(i).setVisibility(View.GONE);
                                     playImage2.get(i).setVisibility(View.GONE);
                                     playImage3.get(i).setVisibility(View.GONE);
                                 }
 
-                                initData(context);
+                                initData2();
                             }
                         }).setNegativeButton("退出游戏", new DialogInterface.OnClickListener() {
                             @Override
@@ -863,15 +915,15 @@ public class SingleplayerGameFragment extends BaseFragment {
         secondPlay.setVisibility(View.VISIBLE);
         thirdPlay.setVisibility(View.VISIBLE);
 		
-		currentPlayer = PLAYER;
+	currentPlayer = PLAYER;
 		
         //更新UI，设置按钮使能
         playButton.setEnabled(false);
         passButton.setEnabled(true);
         whoseTurn.setText("目前轮到你出牌");
         computer1CardsText.setText(new StringBuilder("机器人1剩余").append(computer1Cards.size()).append("张牌").toString());
-        computer1CardsText.setText(new StringBuilder("机器人2剩余").append(computer2Cards.size()).append("张牌").toString());
-        computer1CardsText.setText(new StringBuilder("机器人3剩余").append(computer3Cards.size()).append("张牌").toString());
+        computer2CardsText.setText(new StringBuilder("机器人2剩余").append(computer2Cards.size()).append("张牌").toString());
+        computer3CardsText.setText(new StringBuilder("机器人3剩余").append(computer3Cards.size()).append("张牌").toString());
         for (int i = 0; i < 52; ++i) {
             if (playerCards.contains(i)) {
                 playerCardsImage.get(i).setVisibility(View.VISIBLE);

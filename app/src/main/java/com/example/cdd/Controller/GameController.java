@@ -58,7 +58,7 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
     }
 
     // 抽象方法，强制子类实现各自的初始化逻辑
-    public  void initialize(int rule, PlayerInformation playerInformation, List<Integer> levelOfRobot)
+    public  void initialize(int rule, PlayerInformation playerInformation, int levelOfRobot)
     {
         this.model=new SinglePlayerGameManager(rule,playerInformation,levelOfRobot);
         this.view=new SingleplayerGameFragment();

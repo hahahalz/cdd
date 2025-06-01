@@ -20,15 +20,15 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,List<Integer> levelOfRobot )
+    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,int levelOfRobot)
     {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();
         thePlayer=new Player(playerInformation);
         players.add(thePlayer);//玩家第一个
-        Robot r1=new Robot(gameRuleConfig,levelOfRobot.get(0));
-        Robot r2=new Robot(gameRuleConfig,levelOfRobot.get(1));
-        Robot r3=new Robot(gameRuleConfig,levelOfRobot.get(2));//定死3个机器人
+        Robot r1=new Robot(gameRuleConfig,levelOfRobot);
+        Robot r2=new Robot(gameRuleConfig,levelOfRobot);
+        Robot r3=new Robot(gameRuleConfig,levelOfRobot);//定死3个机器人
         players.add(r1);
         players.add(r2);
         players.add(r3);
@@ -63,6 +63,7 @@ public class SinglePlayerGameManager extends ViewModel {
     {
         //退出游戏,对玩家分数进行处理。只有打完了不玩了的情况调用
         //清空游戏状态、牌堆和每个人的手牌，加分
+        endRound();
         int a=thePlayer.getPlayerInformation().getScore();
         thePlayer.getPlayerInformation().setScore(a+gameState.getRoundscore());
         deck=null;
@@ -104,12 +105,13 @@ public class SinglePlayerGameManager extends ViewModel {
         //selectNextRound();
     }
 
-    public void selectNextRound()
+    public List<List<Card>> selectNextRound()
     {
         endRound();
         //选择下一轮
         gameState.resetRound();
         deck=new Deck();
+        return dealCards(deck,players);
     }
 
 

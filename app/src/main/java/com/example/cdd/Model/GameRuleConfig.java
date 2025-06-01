@@ -9,6 +9,7 @@ public class GameRuleConfig {
 
         public static CardType getCardType(List<Card> cards, int RULE_TYPE) {
             int cardNum = cards.size();
+
             if (cardNum == 1) {
                 return SINGLE;
             } else if (cardNum == 2) {

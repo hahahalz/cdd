@@ -70,7 +70,8 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     }
 
     public Actor getCurrentPlayer() {
-        if (players.isEmpty()) return null;
+        if (players.isEmpty())
+            return null;
         return players.get(currentPlayerIndex);
     }
 

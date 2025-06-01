@@ -734,7 +734,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 
     private void computerPlay() {
         //通过后端AI算法得到机器人出的卡牌
-        ArrayList<Card> cards = (ArrayList<Card>) controller.robotPlayCard();
+        List<Card> cards =  controller.robotPlayCard();
         for (Card card : cards) {
             currentPlayCards.add(cardToInteger(card));
         }

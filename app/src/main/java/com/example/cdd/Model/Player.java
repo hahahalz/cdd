@@ -46,6 +46,11 @@ public class Player implements Actor{           // 人类玩家实体
         return Cards;
     }
 
+    @Override
+    public List<Card> playCards(List<Card> Cards, int passTime) {
+        return Collections.emptyList();
+    }
+
 
     public void pass(){
         GameState.getInstance().nextPlayer();

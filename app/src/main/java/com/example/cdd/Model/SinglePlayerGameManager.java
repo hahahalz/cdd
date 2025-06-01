@@ -25,7 +25,7 @@ public class SinglePlayerGameManager extends ViewModel {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();
         thePlayer=new Player(playerInformation);
-        gameState=GameState.getInstance(players);
+
         players=new ArrayList<>();
 
         players.add(thePlayer);//玩家第一个
@@ -36,7 +36,7 @@ public class SinglePlayerGameManager extends ViewModel {
         players.add(r2);
         players.add(r3);
         //数量定为四
-
+        gameState=GameState.getInstance(players);
     }
 
 
@@ -121,6 +121,9 @@ public class SinglePlayerGameManager extends ViewModel {
         if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards(),gameState.getPasstime()))
         {
             thePlayer.playCards(cards);
+            gameState.setLastPlayedCards(cards);
+            gameState.nextPlayer();
+            gameState.setPasstime(0);
             return true;
         }
         else
@@ -135,10 +138,12 @@ public class SinglePlayerGameManager extends ViewModel {
     {
         //处理AI出牌
         Actor AI=gameState.getCurrentPlayer();
-        List<Card> aIplay=AI.playCards(gameState.getLastPlayedCards());
-        if(aIplay!=null)
+        List<Card> aIplay=AI.playCards(gameState.getLastPlayedCards(),gameState.getPasstime());
+        if(!aIplay.isEmpty())
         {
             gameState.setLastPlayedCards(aIplay);
+            gameState.nextPlayer();
+            gameState.setPasstime(0);
         }
         else
         {

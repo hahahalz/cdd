@@ -4,9 +4,6 @@ import java.util.ArrayList;
 public class GameRuleConfig {
     public int RULE_TYPE;
     private CardType cardType;
-
-
-
     public  enum CardType {
         SINGLE, PAIR, THREE_OF_A_KIND, STRAIGHT, SAME_SUIT, THREE_WITH_PAIR, FOUR_WITH_SINGLE, SAME_SUIT_STRAIGHT, FOUR_OF_A_KIND, N;//单牌，对子，三个,顺子，同花五，三带一对，四带一，同花顺，四条，无
 
@@ -39,6 +36,17 @@ public class GameRuleConfig {
                 return FOUR_OF_A_KIND;
             }//判断是不是四条
             else if (cardNum == 5) {
+                if(cards.get(0).getRank().getValue() == 14 && RULE_TYPE == 0)
+                {   if(cards.get(1).getRank().getValue() == 15&&cards.get(2).getRank().getValue() == 3&& cards.get(3).getRank().getValue() == 4&&cards.get(4).getRank().getValue() ==5)
+                   { 
+                       if (cards.get(0).getSuit() == cards.get(1).getSuit() && cards.get(1).getSuit() == cards.get(2).getSuit() && cards.get(2).getSuit() == cards.get(3).getSuit() && cards.get(3).getSuit() == cards.get(4).getSuit())
+                       {
+                       return SAME_SUIT_STRAIGHT;//判断同花顺类型
+                       }
+                    return STRAIGHT;
+                  }
+                    
+                }//当A为第一张牌时
                 if (cards.get(0).getRank().getValue() == cards.get(1).getRank().getValue() - 1 && cards.get(1).getRank().getValue() == cards.get(2).getRank().getValue() - 1 && cards.get(2).getRank().getValue() == cards.get(3).getRank().getValue() - 1 && cards.get(3).getRank().getValue() == cards.get(4).getRank().getValue() - 1)
                 {
                     for (int i = 0; i < 5; i++) {
@@ -92,7 +100,14 @@ public class GameRuleConfig {
 
     ;//传参0代表南方规则，1代表北方规则.
 
-    public boolean isValidPlay(List<Card> playerCards, List<Card> lastPlayedCards) {
+    public boolean isValidPlay(List<Card> playerCards, List<Card> lastPlayedCards,int passtime) {
+        if(passtime==3)
+        {
+            if (CardType.getCardType(playerCards, RULE_TYPE) != cardType.N)
+            {
+                return true;
+            }
+        }
         if(cardType.getCardType(playerCards, RULE_TYPE) ==cardType.N)
         {
             return false;
@@ -133,7 +148,7 @@ public class GameRuleConfig {
             List<Card> temp2 = new ArrayList<Card>();
             temp1.add(c1);
             temp2.add(c2);
-            return isValidPlay(temp1, temp2);
+            return isValidPlay(temp1, temp2,passtime);
         }//判断对子大小与判断单牌一样
         else if (lastPlayedCards.size() == 3 && cardType.getCardType(playerCards, RULE_TYPE) == cardType.THREE_OF_A_KIND) {
             Card c1 = lastPlayedCards.get(0);
@@ -142,7 +157,7 @@ public class GameRuleConfig {
             List<Card> temp2 = new ArrayList<Card>();
             temp1.add(c1);
             temp2.add(c2);
-            return isValidPlay(temp1, temp2);
+            return isValidPlay(temp1, temp2,passtime);
         }//判断三个一样的牌的大小
         else if (lastPlayedCards.size() == 4 && cardType.getCardType(playerCards, RULE_TYPE) == cardType.FOUR_OF_A_KIND)
         {
@@ -152,7 +167,7 @@ public class GameRuleConfig {
             List<Card> temp2 = new ArrayList<Card>();
             temp1.add(c1);
             temp2.add(c2);
-            return isValidPlay(temp1, temp2);
+            return isValidPlay(temp1, temp2,passtime);
         }//判断四条大小
         else if (cardType.getCardType(playerCards, RULE_TYPE) == cardType.STRAIGHT)
         {

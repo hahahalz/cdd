@@ -1,5 +1,7 @@
 package com.example.cdd.View;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cdd.Controller.GameController;
 import com.example.cdd.R;
 
 import android.widget.Button;
@@ -35,6 +38,7 @@ public class MultiplayerGameFragment extends BaseFragment {
     private String mParam2;
 
     //游戏相关控件
+	private ArrayList<ImageView> playImage;
     private ArrayList<Button> playerCardsImage;
     private TextView whoPlay;
     private TextView whoseTurn;
@@ -43,9 +47,10 @@ public class MultiplayerGameFragment extends BaseFragment {
     private TextView player3CardsText;
     private Button playButton;
     private Button passButton;
-    private Button startButton;
+	private Button startButton;
 
     //游戏数据
+    private GameController controller;
     private ArrayList<Integer> myCards;
     private ArrayList<Integer> player1Cards;
     private ArrayList<Integer> player2Cards;
@@ -53,6 +58,7 @@ public class MultiplayerGameFragment extends BaseFragment {
     private ArrayList<Integer> currentPlayCards;
     int currentPlayer;
     public static final int ME = 0, PLAYER1 = 1, PLAYER2 = 2, PLAYER3 = 3;
+	private int cnt_click_card;
 
 
     public MultiplayerGameFragment() {
@@ -91,18 +97,79 @@ public class MultiplayerGameFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(layoutId(), container, false);
-        initView(view);
-        initData(context);
-        return view;
+		initView(view);
+		initData(context);
+		return view;
     }
 
-    // @Override
+   // @Override
     protected int layoutId() {
         return R.layout.fragment_multiplayer_game;
     }
 
     //@Override
     protected void initView(View view) {
+		//初始化出牌图片控件
+		playImage = new ArrayList<>();
+        playImage.add(view.findViewById(R.id.i_cluba));
+        playImage.add(view.findViewById(R.id.i_club2));
+        playImage.add(view.findViewById(R.id.i_club3));
+        playImage.add(view.findViewById(R.id.i_club4));
+        playImage.add(view.findViewById(R.id.i_club5));
+        playImage.add(view.findViewById(R.id.i_club6));
+        playImage.add(view.findViewById(R.id.i_club7));
+        playImage.add(view.findViewById(R.id.i_club8));
+        playImage.add(view.findViewById(R.id.i_club9));
+        playImage.add(view.findViewById(R.id.i_club10));
+        playImage.add(view.findViewById(R.id.i_clubj));
+        playImage.add(view.findViewById(R.id.i_clubq));
+        playImage.add(view.findViewById(R.id.i_clubk));
+
+        playImage.add(view.findViewById(R.id.i_hearta));
+        playImage.add(view.findViewById(R.id.i_heart2));
+        playImage.add(view.findViewById(R.id.i_heart3));
+        playImage.add(view.findViewById(R.id.i_heart4));
+        playImage.add(view.findViewById(R.id.i_heart5));
+        playImage.add(view.findViewById(R.id.i_heart6));
+        playImage.add(view.findViewById(R.id.i_heart7));
+        playImage.add(view.findViewById(R.id.i_heart8));
+        playImage.add(view.findViewById(R.id.i_heart9));
+        playImage.add(view.findViewById(R.id.i_heart10));
+        playImage.add(view.findViewById(R.id.i_heartj));
+        playImage.add(view.findViewById(R.id.i_heartq));
+        playImage.add(view.findViewById(R.id.i_heartk));
+
+        playImage.add(view.findViewById(R.id.i_diamonda));
+        playImage.add(view.findViewById(R.id.i_diamond2));
+        playImage.add(view.findViewById(R.id.i_diamond3));
+        playImage.add(view.findViewById(R.id.i_diamond4));
+        playImage.add(view.findViewById(R.id.i_diamond5));
+        playImage.add(view.findViewById(R.id.i_diamond6));
+        playImage.add(view.findViewById(R.id.i_diamond7));
+        playImage.add(view.findViewById(R.id.i_diamond8));
+        playImage.add(view.findViewById(R.id.i_diamond9));
+        playImage.add(view.findViewById(R.id.i_diamond10));
+        playImage.add(view.findViewById(R.id.i_diamondj));
+        playImage.add(view.findViewById(R.id.i_diamondq));
+        playImage.add(view.findViewById(R.id.i_diamondk));
+
+        playImage.add(view.findViewById(R.id.i_spadea));
+        playImage.add(view.findViewById(R.id.i_spade2));
+        playImage.add(view.findViewById(R.id.i_spade3));
+        playImage.add(view.findViewById(R.id.i_spade4));
+        playImage.add(view.findViewById(R.id.i_spade5));
+        playImage.add(view.findViewById(R.id.i_spade6));
+        playImage.add(view.findViewById(R.id.i_spade7));
+        playImage.add(view.findViewById(R.id.i_spade8));
+        playImage.add(view.findViewById(R.id.i_spade9));
+        playImage.add(view.findViewById(R.id.i_spade10));
+        playImage.add(view.findViewById(R.id.i_spadej));
+        playImage.add(view.findViewById(R.id.i_spadeq));
+        playImage.add(view.findViewById(R.id.i_spadek));
+
+        for (int i = 0; i < 52; ++i)
+            playImage.get(i).setVisibility(View.GONE);
+		
         // 初始化玩家和电脑的牌面显示控件
         playerCardsImage = new ArrayList<>();
         playerCardsImage.add(view.findViewById(R.id.cluba));
@@ -171,24 +238,50 @@ public class MultiplayerGameFragment extends BaseFragment {
 
         //初始化该轮到谁
         whoseTurn = view.findViewById(R.id.whose_turn);
+        whoseTurn.setVisibility(View.GONE);
 
         // 初始化操作按钮
         playButton = view.findViewById(R.id.play_button);
         passButton = view.findViewById(R.id.pass_button);
-        startButton = view.findViewById(R.id.start_button);
+		startButton = view.findViewById(R.id.start_button);
 
         //设置按钮点击事件
         playButton.setOnClickListener(v -> handlePlayCards());
-        playButton.setEnabled(false);
+		playButton.setEnabled(false);
         passButton.setOnClickListener(v -> handlePass());
-        passButton.setEnabled(false);
+		passButton.setEnabled(false);
         for (int i = 0; i < 52; ++i) {
             final int tmp = i;
-            playerCardsImage.get(i).setEnabled(false);
-            playerCardsImage.get(i).setOnClickListener(v -> handleCardClicked(tmp));
+			playerCardsImage.get(i).setEnabled(false);
+            playerCardsImage.get(i).setOnClickListener(v -> {
+				++cnt_click_card;
+
+                if (cnt_click_card == 1) {
+                    for (int j = 0; j < 52; ++j)
+                        playImage.get(j).setVisibility(View.GONE);
+                    whoPlay.setVisibility(View.GONE);
+                }
+				
+				currentPlayCards.add(tmp);
+				
+				playImage.get(tmp).setVisibility(View.VISIBLE);
+
+                // 上移动画 - 向上移动50像素
+                ObjectAnimator moveUp = ObjectAnimator.ofFloat(v, "translationY", -50f);
+                moveUp.setDuration(200); // 动画持续时间200毫秒
+
+                // 下移动画 - 回到原位
+                ObjectAnimator moveDown = ObjectAnimator.ofFloat(v, "translationY", 0f);
+                moveDown.setDuration(200);
+
+                // 按顺序执行动画
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playSequentially(moveUp, moveDown);
+                animatorSet.start();
+			});
         }
-        startButton.setEnabled(true);
-        startButton.setOnClickListener(v -> startGame());
+		startButton.setEnabled(true);
+		startButton.setOnClickListener(v -> startGame());
     }
 
     @Override
@@ -198,20 +291,21 @@ public class MultiplayerGameFragment extends BaseFragment {
         player2Cards = new ArrayList<>();
         player3Cards = new ArrayList<>();
         currentPlayCards = new ArrayList<>();
-        currentPlayer = -1; //游戏开始后从后端程序获取
+		currentPlayer = -1; //游戏开始后从后端程序获取
+		cnt_click_card = 0;
     }
-
-    void startGame() {
-        startButton.setEnabled(false);
-
-        //从后端程序获取第一个开始游戏的玩家是谁
+	
+	void startGame() {
+		startButton.setEnabled(false);
+		
+		//从后端程序获取第一个开始游戏的玩家是谁
         //currentPlayer = 后端();
 
         //从后端程序获取分配给自己和其他三个人的牌
         //myCards = 后端();
-        //player1Cards = 后端();
-        //player2Cards = 后端();
-        //player3Cards = 后端();
+		//player1Cards = 后端();
+		//player2Cards = 后端();
+		//player3Cards = 后端();
 
         //初始化UI界面
         if (currentPlayer == ME) {
@@ -288,7 +382,7 @@ public class MultiplayerGameFragment extends BaseFragment {
 
             player3Play();
         }
-    }
+	}
 
     String currentPlayCardsToString() {
         StringBuilder s = new StringBuilder("\n");
@@ -347,9 +441,16 @@ public class MultiplayerGameFragment extends BaseFragment {
     }
 
     private void handlePlayCards() {
-        for (Integer card : currentPlayCards)
+		cnt_click_card = 0;
+		
+		for (int i = 0; i < 52; ++i) {
+            playImage.get(i).setVisibility(View.GONE);
+        }
+		
+        for (Integer card : currentPlayCards) {
             myCards.remove(card);
-
+        }
+		
         currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
@@ -374,6 +475,11 @@ public class MultiplayerGameFragment extends BaseFragment {
     }
 
     private void handlePass() {
+		cnt_click_card = 0;
+
+        for (int i = 0; i < 52; ++i)
+            playImage.get(i).setVisibility(View.GONE);
+		
         currentPlayer = (currentPlayer + 1) % 4;
         currentPlayCards = new ArrayList<>();
 
@@ -396,19 +502,20 @@ public class MultiplayerGameFragment extends BaseFragment {
         player1Play();
     }
 
-    private void handleCardClicked(int i) {
-        currentPlayCards.add(i);
-    }
-
     private void player1Play() {
+		whoPlay.setVisibility(View.VISIBLE);
+		
         //通过联网程序得到玩家1出的牌
         //currentPlayCards = network();
 
-        if (!currentPlayCards.isEmpty())
-            for (Integer card : currentPlayCards)
+        if (!currentPlayCards.isEmpty()) {
+            for (Integer card : currentPlayCards) {
                 player1Cards.remove(card);
-
-        currentPlayer = (currentPlayer + 1) % 4;
+                playImage.get(card).setVisibility(View.VISIBLE);
+            }
+        }
+			
+		currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
         if (currentPlayCards.isEmpty())
@@ -427,12 +534,17 @@ public class MultiplayerGameFragment extends BaseFragment {
     private void player2Play() {
         //通过联网程序得到玩家2出的牌
         //currentPlayCards = network();
+		
+		whoPlay.setVisibility(View.VISIBLE);
 
-        if (!currentPlayCards.isEmpty())
-            for (Integer card : currentPlayCards)
+        if (!currentPlayCards.isEmpty()) {
+            for (Integer card : currentPlayCards) {
                 player2Cards.remove(card);
-
-        currentPlayer = (currentPlayer + 1) % 4;
+                playImage.get(card).setVisibility(View.VISIBLE);
+            }
+        }
+			
+		currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
         if (currentPlayCards.isEmpty())
@@ -451,12 +563,17 @@ public class MultiplayerGameFragment extends BaseFragment {
     private void player3Play() {
         //通过联网程序得到玩家3出的牌
         //currentPlayCards = network();
+		
+		whoPlay.setVisibility(View.VISIBLE);
 
-        if (!currentPlayCards.isEmpty())
-            for (Integer card : currentPlayCards)
+        if (!currentPlayCards.isEmpty()) {
+            for (Integer card : currentPlayCards) {
                 player3Cards.remove(card);
-
-        currentPlayer = (currentPlayer + 1) % 4;
+                playImage.get(card).setVisibility(View.VISIBLE);
+            }
+        }
+			
+		currentPlayer = (currentPlayer + 1) % 4;
 
         //更新UI，设置按钮使能
         playButton.setEnabled(true);

@@ -116,9 +116,10 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
     }//一局结束后，选择退出游戏，返回修改分数后的玩家信息，
 
 
-    public void selectNextRound()
+    public List<List<Card>> selectNextRound()
     {
-        this.model.selectNextRound();
+
+        return  this.model.selectNextRound();
     }//一轮结束后，选择再来一轮
 
 

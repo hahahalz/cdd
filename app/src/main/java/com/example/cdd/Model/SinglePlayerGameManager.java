@@ -117,7 +117,8 @@ public class SinglePlayerGameManager extends ViewModel {
     public Boolean handlePlayerPlay(List<Card> cards)
     {
         if(gameState.isGameOver())
-        return false;
+         return false;
+        
         //调用GameRuleConfig中的isValidPlay判断出牌是否合理，玩家如果有输入就调用
         if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards(),gameState.getPasstime()))
         {

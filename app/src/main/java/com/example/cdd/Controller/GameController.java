@@ -51,19 +51,24 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
 
     }
 
-    @Override
-    public void initialize() {
-        this.model=null;
-        this.view=null;
-    }
+
+
 
     // 抽象方法，强制子类实现各自的初始化逻辑
-    public  void initialize(int rule, PlayerInformation playerInformation, int levelOfRobot)
+    public  List<List<Card>> initialize(int rule, PlayerInformation playerInformation, int levelOfRobot)
     {
         this.model=new SinglePlayerGameManager(rule,playerInformation,levelOfRobot);
         this.view=new SingleplayerGameFragment();
+        return this.model.dealCards();
 
     };
+
+    public  void  initialize()
+    {
+        this.model=new SinglePlayerGameManager(0,new PlayerInformation(),1);
+        this.view=new SingleplayerGameFragment();
+    };
+
 
 
     // 抽象方法，强制子类实现各自的清理逻辑

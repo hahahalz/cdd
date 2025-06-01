@@ -21,7 +21,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     private static GameState instance;    // 单例实例
 
     private GameState(List<Actor> players) {                 //权限已修改过
-        this.players = Objects.requireNonNull(players);
+        this.players = players;
         this.currentPlayerIndex = 0; // 默认从第一个玩家开始
         this.cardsOnTable = new ArrayList<>();
         this.lastPlayedCards = new ArrayList<>();
@@ -38,7 +38,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         }
         else
         {
-            instance.players = Objects.requireNonNull(players);
+            instance.players = players;
             instance.currentPlayerIndex = 0; // 默认从第一个玩家开始
             instance.cardsOnTable = new ArrayList<>();
             instance.lastPlayedCards = new ArrayList<>();
@@ -57,7 +57,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     }
 
     public List<Actor> getPlayers() {
-        return Collections.unmodifiableList(players);
+        return players;
     }
 
     public int getRoundscore() {

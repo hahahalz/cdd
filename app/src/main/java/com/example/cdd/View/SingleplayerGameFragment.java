@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.example.cdd.Controller.GameController;
 import com.example.cdd.Model.Card;
+import com.example.cdd.Model.PlayerInformation;
 import com.example.cdd.R;
 
 import android.widget.Button;
@@ -436,11 +437,11 @@ public class SingleplayerGameFragment extends BaseFragment {
 
         cnt_click_card = 0;
 
-        List<List<Card>> allocateCards = new ArrayList<>();
-        allocateCards.add(new ArrayList<>());
-        allocateCards.add(new ArrayList<>());
-        allocateCards.add(new ArrayList<>());
-        allocateCards.add(new ArrayList<>());
+        List<List<Card>> allocateCards = controller.initialize(0,new PlayerInformation(),1);
+        //allocateCards.add(new ArrayList<>());
+        //allocateCards.add(new ArrayList<>());
+        //allocateCards.add(new ArrayList<>());
+        //allocateCards.add(new ArrayList<>());
         //allocateCards = controller.initialize(传入参数);
 
         ArrayList<Card> _playerCards = (ArrayList<Card>) allocateCards.get(0);

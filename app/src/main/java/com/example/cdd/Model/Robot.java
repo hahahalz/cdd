@@ -10,7 +10,7 @@ import com.example.cdd.Model.GameRuleConfig;
 public class Robot implements Actor{            // 机器人玩家实体
 
     List<Card> HandCards = new ArrayList<>();
-    int level =0;
+    int level;
 
     GameRuleConfig gameRuleConfig;
 
@@ -31,7 +31,7 @@ public class Robot implements Actor{            // 机器人玩家实体
         GameState.getInstance().PassTimePlus();
     }
     public List<Card> getHandCards(){
-        return Collections.unmodifiableList(new ArrayList<>(HandCards));
+        return HandCards;
     }
 
     public void setHandCards(List<Card> cards){

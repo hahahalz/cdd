@@ -98,7 +98,7 @@ public class GameRuleConfig {
         RULE_TYPE = temp;
     }
 
-    ;//传参0代表南方规则，1代表北方规则.
+    //传参0代表南方规则，1代表北方规则.
 
     public boolean isValidPlay(List<Card> playerCards, List<Card> lastPlayedCards,int passtime) {
         if(passtime==3)

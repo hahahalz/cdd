@@ -25,38 +25,24 @@ public class SinglePlayerGameManager extends ViewModel {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();
         thePlayer=new Player(playerInformation);
+        gameState=GameState.getInstance(players);
+        players=new ArrayList<>();
+
         players.add(thePlayer);//玩家第一个
-        Robot r1=new Robot(gameRuleConfig,levelOfRobot);
-        Robot r2=new Robot(gameRuleConfig,levelOfRobot);
-        Robot r3=new Robot(gameRuleConfig,levelOfRobot);//定死3个机器人
+        r1=new Robot(gameRuleConfig,levelOfRobot);
+        r2=new Robot(gameRuleConfig,levelOfRobot);
+        r3=new Robot(gameRuleConfig,levelOfRobot);//定死3个机器人
         players.add(r1);
         players.add(r2);
         players.add(r3);
         //数量定为四
 
-        gameState=GameState.getInstance(players);
     }
 
 
 
 
-     void PlayingGame()
-    {
-        //具体游戏过程
-        while(!gameState.isGameOver())
-        {
-            //根据页面的指令选择是过牌还是出牌
-            //handlePlayerPass();or handlePlayerPlay
-            //handleAIPlay();
-            //
-        }
 
-        endGame();
-
-
-//jiaogeiqitahanshu
-
-    }
 
 
     public void endGame()
@@ -111,11 +97,11 @@ public class SinglePlayerGameManager extends ViewModel {
         //选择下一轮
         gameState.resetRound();
         deck=new Deck();
-        return dealCards(deck,players);
+        return dealCards();
     }
 
 
-    List<List<Card>> dealCards(Deck deck,List<Actor> players)
+    public List<List<Card>> dealCards()
     {
         //调用deck发牌,要返回二维数组List<List<Card>>
         for(Actor actor:players)
@@ -171,12 +157,7 @@ public class SinglePlayerGameManager extends ViewModel {
 
     }
 
-    public void handleAIPass()
-    {
-        //处理过牌
-        gameState.nextPlayer();
 
-    }
 
 
     public GameState getGameState()

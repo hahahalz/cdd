@@ -79,10 +79,6 @@
         app:layout_constraintEnd_toEndOf="@id/editTextPassword" />
 
     <!-- 登录/注册按钮 -->
-
-
-    <!-- 注册提示文字 -->
-
     <Button
         android:id="@+id/btn_login"
         android:layout_width="147dp"
@@ -93,6 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
 
+        <!-- 注册提示文字 -->
     <TextView
         android:id="@+id/text_auto_register_hint"
         android:layout_width="0dp"

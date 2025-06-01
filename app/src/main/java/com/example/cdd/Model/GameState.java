@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameState {                 // 游戏当前状态（手牌、已出牌、当前轮次等）
-    private final List<Actor> players;
+    private  List<Actor> players;
     private int currentPlayerIndex;
     private List<Card> cardsOnTable;
     private List<Card> lastPlayedCards;
     private int roundNumber;                  //一共打了几把（有人胜出才算1把）
     private Actor winner;
     private boolean gameOver;
+
+    private int roundscore;
 
     private static GameState instance;    // 单例实例
 
@@ -24,6 +26,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.roundNumber = 1;
         this.gameOver = false;
         this.winner = null;
+        this.roundscore=0;
     }
 
     // 静态方法获取单例实例
@@ -31,6 +34,18 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         if (instance == null) {
             instance = new GameState(players);
         }
+        else
+        {
+            instance.players = Objects.requireNonNull(players);
+            instance.currentPlayerIndex = 0; // 默认从第一个玩家开始
+            instance.cardsOnTable = new ArrayList<>();
+            instance.lastPlayedCards = new ArrayList<>();
+            instance.roundNumber = 1;
+            instance.gameOver = false;
+            instance.winner = null;
+            instance.roundscore=0;
+        }
+
         return instance;
     }
 
@@ -41,6 +56,15 @@ public class GameState {                 // 游戏当前状态（手牌、已出
 
     public List<Actor> getPlayers() {
         return Collections.unmodifiableList(players);
+    }
+
+    public int getRoundscore() {
+        return roundscore;
+    }
+
+
+    public void setRoundscore(int roundscore) {
+        this.roundscore = roundscore;
     }
 
     public Actor getCurrentPlayer() {
@@ -72,6 +96,8 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     public void resetRound() {
         this.cardsOnTable.clear();
         this.lastPlayedCards.clear();
+        this.gameOver=false;
+        this.winner=null;
         this.roundNumber++;
         // 重置跳过状态等（如果需要）
     }
@@ -95,5 +121,19 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     public int getCurrentPlayerIndex()
     {
         return this.currentPlayerIndex;
+    }
+
+    public void clearGameState()
+    {
+        //退出游戏，清理类对象
+        this.players = null;
+        this.cardsOnTable = null;
+        this.lastPlayedCards = null;
+        this.winner = null;
+    }
+
+    public void quitPunishment()
+    {
+        roundscore--;
     }
 }

@@ -40,7 +40,7 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    void PlayingGame()
+     void PlayingGame()
     {
         //具体游戏过程
         while(!gameState.isGameOver())
@@ -59,21 +59,22 @@ public class SinglePlayerGameManager extends ViewModel {
     }
 
 
-    void endGame()
+    public void endGame()
     {
         //退出游戏,对玩家分数进行处理。只有打完了不玩了的情况调用
         //清空游戏状态、牌堆和每个人的手牌，加分
-        //在外面取消对这个类的引用
+        int a=thePlayer.getPlayerInformation().getScore();
+        thePlayer.getPlayerInformation().setScore(a+gameState.getRoundscore());
+        deck=null;
+        gameState.clearGameState();
 
     }
 
-    void quitgame()
+    public void quitgame()
     {
         //中途退出游戏，玩家扣分
+        gameState.quitPunishment();
         endGame();
-        int a=thePlayer.getPlayerInformation().getScore();
-        thePlayer.getPlayerInformation().setScore(a-1);
-
     }
 
     public Actor checkWinner()
@@ -84,24 +85,28 @@ public class SinglePlayerGameManager extends ViewModel {
             gameState.setWinner(nowPlay);
             return gameState.getCurrentPlayer();
         }
+        gameState.nextPlayer();
         return null;
     }
 
 
     public void endRound()
     {
-        //玩家赢了加分
-        if(gameState.getWinner() instanceof Player)
+        //玩家赢了加回合得分,是另外一个变量
+        if(gameState.getCurrentPlayer()== thePlayer)
         {
-            int a=thePlayer.getPlayerInformation().getScore();
-            thePlayer.getPlayerInformation().setScore(a+1);
+            int a=gameState.getRoundscore();
+            gameState.setRoundscore(a+1);
         }
+        //可以返回本回合得分
+
         //等待页面选择退出游戏还是下一轮，调用selectNextRound
         //selectNextRound();
     }
 
     public void selectNextRound()
     {
+        endRound();
         //选择下一轮
         gameState.resetRound();
         deck=new Deck();
@@ -138,28 +143,16 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public void handleAIPlay()
+    public List<Card> handleAIPlay()
     {
         //处理AI出牌
-        Robot AI=gameState.getCurrentPlayer();
+        Actor AI=gameState.getCurrentPlayer();
         List<Card> aIplay=AI.playCards(gameState.getLastPlayedCards());
-        gameState.nextPlayer();
         if(aIplay!=null)
         {
             gameState.setLastPlayedCards(aIplay);
-            if(AI.getHandCards().isEmpty())
-            {
-                gameState.setGameOver(true);
-                gameState.setWinner(AI);
-                endRound();
-            }
         }
-
-        else if(gameState.getCurrentPlayer() instanceof Robot)
-        {
-            handleAIPass();
-        }
-
+        return aIplay;
     }
 
 

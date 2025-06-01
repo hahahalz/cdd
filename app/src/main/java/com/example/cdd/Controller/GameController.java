@@ -78,8 +78,9 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
        return this.model.getGameState().getCurrentPlayerIndex();
     }
 
-    Actor CheckWinner()
+    public Actor CheckWinner()
     {
+        //
         return this.model.checkWinner();
     }
 
@@ -88,14 +89,32 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
        return this.model.handlePlayerPlay(list);
     }
 
-    void pass()
+    public void pass()
     {
         this.model.handlePlayerPass();
     }
 
-    List<Card>  robotPlayCard()
+    public List<Card>  robotPlayCard()
     {
-        this.model.handleAIPlay();
+       return  this.model.handleAIPlay();//null或者打出的牌
     }
+
+    public void quitgame()
+    {
+        this.model.quitgame();
+    }//中途退出游戏，计算扣分，返回玩家信息
+
+
+    public void endgame()
+    {
+        this.model.endGame();
+    }//一局结束后，选择退出游戏，返回修改分数后的玩家信息，
+
+
+    public void selectNextRound()
+    {
+        this.model.selectNextRound();
+    }//一轮结束后，选择再来一轮
+
 
 }

@@ -93,9 +93,9 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
         this.model.handlePlayerPass();
     }
 
-    List<Card>  robotPlayCard()
-    {
-        this.model.handleAIPlay();
-    }
+//    List<Card>  robotPlayCard()
+//    {
+//        this.model.handleAIPlay();
+//    }
 
 }

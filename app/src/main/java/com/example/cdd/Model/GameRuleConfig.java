@@ -92,7 +92,7 @@ public class GameRuleConfig {
 
     ;//传参0代表南方规则，1代表北方规则.
 
-    public boolean isValidPlay(List<Card> playerCards, List<Card> lastPlayedCards) {
+     public boolean isValidPlay(List<Card> playerCards, List<Card> lastPlayedCards) {
         if(cardType.getCardType(playerCards, RULE_TYPE) ==cardType.N)
         {
             return false;

@@ -11,6 +11,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
     private List<Card> cardsOnTable;
     private List<Card> lastPlayedCards;
     private int roundNumber;                  //一共打了几把（有人胜出才算1把）
+    private int passNum;                      //连续几个人pass（0，1，2，3只有四种取值）
     private Actor winner;
     private boolean gameOver;
 
@@ -24,6 +25,18 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.roundNumber = 1;
         this.gameOver = false;
         this.winner = null;
+        this.passNum = 0;
+    }
+
+    public GameState(GameState state){
+        this.players = new ArrayList<>(state.players);
+        this.currentPlayerIndex = state.currentPlayerIndex;
+        this.cardsOnTable = new ArrayList<>(state.cardsOnTable);
+        this.lastPlayedCards = new ArrayList<>(state.lastPlayedCards);
+        this.roundNumber = state.roundNumber;
+        this.gameOver = state.gameOver;
+        this.winner = null;
+        this.passNum = state.passNum;
     }
 
     // 静态方法获取单例实例
@@ -92,8 +105,25 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.winner = winner;
     }
 
+    public int getPassNum() {
+        return passNum;
+    }
+
+    public void setPassNum(int passNum){
+        this.passNum = passNum;
+    }
+
     public int getCurrentPlayerIndex()
     {
         return this.currentPlayerIndex;
+    }
+
+    public boolean isTerminal(){
+        if(players.get(currentPlayerIndex).getHandCards().isEmpty()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

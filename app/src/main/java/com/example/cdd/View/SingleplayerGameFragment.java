@@ -532,8 +532,6 @@ public class SingleplayerGameFragment extends BaseFragment {
             }
             else playerCardsImage.get(i).setVisibility(View.GONE);
         }
-
-
     }
 
 
@@ -694,6 +692,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                         }
                     })
                     .show();
+            return;
         }
 
         computerPlay();
@@ -834,6 +833,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                             }
                         })
                         .show();
+                return;
             }
         }
         else firstPlay.setText("机器人1\n过牌");
@@ -889,6 +889,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                             }
                         })
                         .show();
+                return;
             }
         }
         else secondPlay.setText("机器人2\n过牌");
@@ -944,6 +945,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                             }
                         })
                         .show();
+                return;
             }
         }
         else thirdPlay.setText("机器人3\n过牌");

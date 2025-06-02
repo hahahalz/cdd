@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cdd.R;
 
-public class  MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class  MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +51,14 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
             replaceFragement(new MultiplayerGameFragment());
         }
         else if (view.getId() == R.id.button4){
-            replaceFragement(new SingleplayerGameFragment());
+            replaceFragement(new RulesFragment());
         }
     }
-    private void replaceFragement(Fragment fragment) {
+    public void replaceFragement(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.framelayout,fragment);
         transaction.commit();
     }
+
 }

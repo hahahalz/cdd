@@ -1,39 +1,41 @@
 package com.example.cdd.Controller;
+
+import android.content.Context;
+
+import com.example.cdd.Pojo.LoginResult;
+import com.example.cdd.Pojo.PlayerInformation;
+import com.example.cdd.Service.LoginService;
 import com.example.cdd.View.LoginFragment;
-import com.example.cdd.Model.AuthManager;
-public class LoginController extends BaseController<LoginFragment,AuthManager > {
-    public LoginController() {
-        super();
-        model =new AuthManager();
+
+public class LoginController  {
+
+    private  LoginService loginService;
+
+    public LoginController(Context context) {
+
+        loginService = new LoginService(context);
     }
-    public void initialize() {
-        view.onCreateView(null,null,null);
+
+    public boolean checkUserExists(String username)
+    {
+        return loginService.checkUserExists(username);
     }
-    public void onDestroy() {
-        
+
+
+    public LoginResult login(String userid, String password)
+    {
+        LoginResult loginResult=this.loginService.login(userid, password);
+        if(loginResult.isSuccess())
+        {
+            PlayerInformation.setThePlayerInformation(userid,password,loginResult.getScore());
+        }
+
+        return loginResult;
     }
-    public boolean loginresult(String userid, String password) {
-        this.model.login(userid,password);
-        if(this.model.getLoginResult())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-       
-    }
-    public boolean registerresult(String userid, String password) {
-        if(this.model.register(userid,password))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+
+    public boolean registerresult(String userid, String password)
+    {
+        return this.loginService.register(userid, password);
     }
     // 负责登录/注册界面的逻辑
 }
-

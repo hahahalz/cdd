@@ -2,6 +2,8 @@ package com.example.cdd.Model;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.cdd.Pojo.PlayerInformation;
+
 import java.util.Objects;
 import java.util.Vector;
 

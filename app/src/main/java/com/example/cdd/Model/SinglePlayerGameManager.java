@@ -2,6 +2,8 @@ package com.example.cdd.Model;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.cdd.Pojo.PlayerInformation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,int levelOfRobot)
+    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation, int levelOfRobot)
     {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();

@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import com.example.cdd.Controller.GameController;
 import com.example.cdd.Model.Card;
-import com.example.cdd.Model.PlayerInformation;
+import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
 import android.widget.Button;

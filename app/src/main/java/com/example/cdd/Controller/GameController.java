@@ -2,7 +2,7 @@ package com.example.cdd.Controller;
 
 import com.example.cdd.Model.Actor;
 import com.example.cdd.Model.Card;
-import com.example.cdd.Model.PlayerInformation;
+import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.Model.SinglePlayerGameManager;
 import com.example.cdd.View.SingleplayerGameFragment;
 

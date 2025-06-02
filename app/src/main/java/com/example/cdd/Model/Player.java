@@ -1,5 +1,7 @@
 package com.example.cdd.Model;
 
+import com.example.cdd.Pojo.PlayerInformation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -621,7 +622,6 @@ public class SingleplayerGameFragment extends BaseFragment {
     }
 
     private void handlePlayCards() {
-
         ArrayList<Card> cards = new ArrayList<>();
         for (int i : currentPlayCards)
             cards.add(integerToCard(i));
@@ -700,6 +700,10 @@ public class SingleplayerGameFragment extends BaseFragment {
     }
 
     private void handlePass() {
+        firstPlay.setVisibility(View.GONE);
+        secondPlay.setVisibility(View.GONE);
+        thirdPlay.setVisibility(View.GONE);
+
         controller.pass();
 
         firstPlay.setText("机器人1");
@@ -797,7 +801,9 @@ public class SingleplayerGameFragment extends BaseFragment {
             currentPlayCards.add(cardToInteger(card));
         }
 
+        firstPlay.setVisibility(View.VISIBLE);
         if (!currentPlayCards.isEmpty()) {
+            firstPlay.setText("机器人1");
             for (Integer card : currentPlayCards) {
                 computer1Cards.remove(card);
                 playImage.get(card).setVisibility(View.VISIBLE);
@@ -830,6 +836,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                         .show();
             }
         }
+        else firstPlay.setText("机器人1\n过牌");
 
         cards = controller.robotPlayCard();
         ArrayList<Integer> currentPlayCards2 = new ArrayList<>();
@@ -837,10 +844,24 @@ public class SingleplayerGameFragment extends BaseFragment {
             currentPlayCards2.add(cardToInteger(card));
         }
 
+        // 使用Handler延迟显示
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                secondPlay.setVisibility(View.VISIBLE);
+            }
+        }, 2000);
         if (!currentPlayCards2.isEmpty()) {
+            secondPlay.setText("机器人2");
             for (Integer card : currentPlayCards2) {
                 computer2Cards.remove(card);
-                playImage2.get(card).setVisibility(View.VISIBLE);
+                // 使用Handler延迟显示
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        playImage2.get(card).setVisibility(View.VISIBLE);
+                    }
+                }, 2000);
             }
             if (computer2Cards.isEmpty()) {
                 new AlertDialog.Builder(context)
@@ -870,6 +891,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                         .show();
             }
         }
+        else secondPlay.setText("机器人2\n过牌");
 
         cards = controller.robotPlayCard();
         ArrayList<Integer> currentPlayCards3 = new ArrayList<>();
@@ -877,10 +899,24 @@ public class SingleplayerGameFragment extends BaseFragment {
             currentPlayCards3.add(cardToInteger(card));
         }
 
+        // 使用Handler延迟显示
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                thirdPlay.setVisibility(View.VISIBLE);
+            }
+        }, 4000);
         if (!currentPlayCards3.isEmpty()) {
+            thirdPlay.setText("机器人3");
             for (Integer card : currentPlayCards3) {
                 computer3Cards.remove(card);
-                playImage3.get(card).setVisibility(View.VISIBLE);
+                // 使用Handler延迟显示
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        playImage3.get(card).setVisibility(View.VISIBLE);
+                    }
+                }, 4000);
             }
             if (computer3Cards.isEmpty()) {
                 new AlertDialog.Builder(context)
@@ -910,27 +946,35 @@ public class SingleplayerGameFragment extends BaseFragment {
                         .show();
             }
         }
-
-        firstPlay.setVisibility(View.VISIBLE);
-        secondPlay.setVisibility(View.VISIBLE);
-        thirdPlay.setVisibility(View.VISIBLE);
-		
+        else thirdPlay.setText("机器人3\n过牌");
+	
 	currentPlayer = PLAYER;
-		
+	
         //更新UI，设置按钮使能
         playButton.setEnabled(false);
-        passButton.setEnabled(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                passButton.setEnabled(true);
+            }
+        }, 4000);
         whoseTurn.setText("目前轮到你出牌");
         computer1CardsText.setText(new StringBuilder("机器人1剩余").append(computer1Cards.size()).append("张牌").toString());
         computer2CardsText.setText(new StringBuilder("机器人2剩余").append(computer2Cards.size()).append("张牌").toString());
         computer3CardsText.setText(new StringBuilder("机器人3剩余").append(computer3Cards.size()).append("张牌").toString());
-        for (int i = 0; i < 52; ++i) {
-            if (playerCards.contains(i)) {
-                playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                playerCardsImage.get(i).setEnabled(true);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 52; ++i) {
+                    if (playerCards.contains(i)) {
+                        playerCardsImage.get(i).setVisibility(View.VISIBLE);
+                        playerCardsImage.get(i).setEnabled(true);
+                    }
+                    else playerCardsImage.get(i).setVisibility(View.GONE);
+                }
             }
-            else playerCardsImage.get(i).setVisibility(View.GONE);
-        }
+        }, 4000);
 
         currentPlayCards = new ArrayList<>();
     }

@@ -534,35 +534,6 @@ public class SingleplayerGameFragment extends BaseFragment {
         }
     }
 
-
-    //洗牌
-    private ArrayList<Integer> shuffleCards() {
-        ArrayList<Integer> cards = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < 52; ++i)
-            cards.add(i);
-        for (int i = 1; i < 52; ++i) {
-            int random_int = random.nextInt(i);
-            int tmp = cards.get(i);
-            cards.set(i, cards.get(random_int));
-            cards.set(random_int, tmp);
-        }
-        return cards;
-    }
-
-    //发牌
-    private void dealCards(ArrayList<Integer> cards) {
-        for (int i = 0; i < cards.size(); ++i) {
-            if (i % 4 == 0)
-                playerCards.add(cards.get(i));
-            else if (i % 4 == 1)
-                computer1Cards.add(cards.get(i));
-            else if (i % 4 == 2)
-                computer2Cards.add(cards.get(i));
-            else computer3Cards.add(cards.get(i));
-        }
-    }
-
     String currentPlayCardsToString() {
         StringBuilder s = new StringBuilder("\n");
         for (Integer card : currentPlayCards) {

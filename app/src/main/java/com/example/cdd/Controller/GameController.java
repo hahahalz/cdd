@@ -1,11 +1,7 @@
 package com.example.cdd.Controller;
 
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
-
 import com.example.cdd.Model.Actor;
 import com.example.cdd.Model.Card;
-import com.example.cdd.Model.MultiplayerGameManager;
 import com.example.cdd.Model.PlayerInformation;
 import com.example.cdd.Model.SinglePlayerGameManager;
 import com.example.cdd.View.SingleplayerGameFragment;
@@ -94,9 +90,9 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
        return this.model.handlePlayerPlay(list);
     }
 
-    public void pass()
+    public boolean pass()
     {
-        this.model.handlePlayerPass();
+        return this.model.handlePlayerPass();
     }
 
     public List<Card>  robotPlayCard()
@@ -122,5 +118,8 @@ public class GameController extends BaseController<SingleplayerGameFragment,Sing
         return  this.model.selectNextRound();
     }//一轮结束后，选择再来一轮
 
-
+    public int getCurrentPlayerIndex()
+    {
+        return  this.model.getGameState().getCurrentPlayerIndex();
+    }
 }

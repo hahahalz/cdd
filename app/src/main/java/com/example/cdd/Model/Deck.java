@@ -1,5 +1,6 @@
 package com.example.cdd.Model;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 import java.security.SecureRandom;
@@ -54,16 +55,14 @@ public class Deck {
                Card c=cardsList.get(randomNum);
                removeCard(c);
                hand.add(c);
+
+
            }
-            // 对hand中的牌按照Card类中定义的大小规则进行排序（从小到大）
-            hand.sort((card1, card2) -> {
-                if (card1.getRank().getValue() < card2.getRank().getValue()) return -1;
-                if (card1.getRank().getValue() > card2.getRank().getValue()) return 1;
-                if (card1.getSuit().ordinal() < card2.getSuit().ordinal()) return -1;
-                if (card1.getSuit().ordinal() > card2.getSuit().ordinal()) return 1;
-                return 0;
-            });
-             
+            // 对hand中的牌按照Card类中定义的大小规则进行排序（从小到大，先大小再花色）
+            hand.sort(Comparator.comparingInt((Card card) -> card.getRank().getValue())
+                .thenComparingInt(card -> card.getSuit().ordinal()));
+
+
              return hand;
     }//从牌堆中随机抽取13张牌分发出去
 

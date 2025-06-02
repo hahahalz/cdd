@@ -103,9 +103,22 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public List<List<Card>> dealCards()
     {
+        boolean find=false;
+
         //调用deck发牌,要返回二维数组List<List<Card>>
         for(Actor actor:players)
             actor.setHandCards(deck.dealCard());
+        for(int i=0;i<players.size();i++) {
+            for (Card c : players.get(i).getHandCards()) {
+                if (c.getRank() == Card.Rank.THREE && c.getSuit() == Card.Suit.Diamond) {
+                    gameState.setCurrentPlayerIndex(i);
+                    find=true;
+                    break;
+                }
+            }
+            if(find)
+                break;
+        }
 
         List<List<Card>> allCards= new ArrayList<>();
         for(Actor actor:players)
@@ -160,10 +173,16 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public void handlePlayerPass()
+    public boolean handlePlayerPass()
     {
         //处理过牌
-        gameState.getCurrentPlayer().pass();
+        if(gameState.getLastPlayedCards().isEmpty()||gameState.getPasstime()==3)
+            return false;
+        else
+        {
+            gameState.getCurrentPlayer().pass();
+            return true;
+        }
 
     }
 

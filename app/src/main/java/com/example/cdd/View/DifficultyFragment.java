@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import android.widget.FrameLayout;
 
 import com.example.cdd.R;
 
@@ -49,14 +50,21 @@ public class DifficultyFragment extends Fragment implements View.OnClickListener
         button_difficult.setOnClickListener(this);
         button_back.setOnClickListener(this);
     }
-
+    private FrameLayout fragmentContainer;
     private void SwitchFragment(Fragment fragment) {
-        Fragment Fragment = new Fragment();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        // 替换 FrameLayout 中的内容
-        transaction.replace(R.id.framelayout,fragment);
-        transaction.commit();
+        if (fragmentContainer == null) {
+            fragmentContainer = getActivity().findViewById(R.id.framelayout);
+        }
+        if (fragmentContainer != null && fragment != null) {
+            fragmentContainer.setClickable(true); // 启用点击拦截
+            fragmentContainer.setVisibility(View.VISIBLE); // 显示容器
+            Fragment Fragment = new Fragment();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            // 替换 FrameLayout 中的内容
+            transaction.replace(R.id.framelayout, fragment);
+            transaction.commit();
+        }
     }
 
     @Override

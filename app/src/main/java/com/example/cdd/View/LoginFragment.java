@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
+import android.widget.FrameLayout;
 import com.example.cdd.Controller.LoginController;
 import com.example.cdd.R;
 
@@ -37,6 +37,8 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     private ImageView btnBack;
     private Button btnLogin;
     private LoginController loginController;
+
+    private FrameLayout fragmentContainer;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -108,10 +110,17 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
             editTextPassword.setSelection(editTextPassword.length()); // 保持光标在末尾
         }
         else if (id == R.id.btn_back) {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().finish();
+            if (fragmentContainer == null) {
+                fragmentContainer = getActivity().findViewById(R.id.framelayout);
+            }
+            if (fragmentContainer != null ) {
+                fragmentContainer.setClickable(false); // 禁用点击拦截
+                fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
             }
         }
         else if (id == R.id.btn_login) {
@@ -150,11 +159,18 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
     // 导航到主页面
     private void navigateToMainPage() {
+        if (fragmentContainer == null) {
+            fragmentContainer = getActivity().findViewById(R.id.framelayout);
+        }
         // 实现跳转到主页面的逻辑
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        startActivity(intent);
-        if (getActivity() != null) {
-            getActivity().finish();
+        if (fragmentContainer != null ) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+            fragmentContainer.setClickable(false); // 禁用点击拦截
+            fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
         }
     }
 }

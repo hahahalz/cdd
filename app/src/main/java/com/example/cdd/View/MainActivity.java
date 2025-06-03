@@ -19,11 +19,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import android.widget.FrameLayout;
 
 import com.example.cdd.R;
 
 public class  MainActivity extends AppCompatActivity implements View.OnClickListener {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +42,26 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
         button4.setOnClickListener(this);
     }
 
+    private FrameLayout fragmentContainer;
+    public void showFragment(Fragment fragment) {
+        fragmentContainer.setClickable(true); // 启用点击拦截
+        fragmentContainer.setVisibility(View.VISIBLE); // 显示容器
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.framelayout, fragment)
+                .commit();
+    }
+
+    // 隐藏 Fragment 时禁用拦截
+    public void hideFragment() {
+        fragmentContainer.setClickable(false); // 禁用点击拦截
+        fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
+
+        getSupportFragmentManager().beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentById(R.id.framelayout))
+                .commit();
+    }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button){
@@ -55,10 +75,16 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     public void replaceFragement(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.framelayout,fragment);
-        transaction.commit();
+        if (fragmentContainer == null) {
+            fragmentContainer = findViewById(R.id.framelayout);
+        }
+        if (fragmentContainer != null && fragment != null) {
+            fragmentContainer.setClickable(true); // 启用点击拦截
+            fragmentContainer.setVisibility(View.VISIBLE); // 显示容器
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.framelayout, fragment);
+            transaction.commit();
+        }
     }
-
 }

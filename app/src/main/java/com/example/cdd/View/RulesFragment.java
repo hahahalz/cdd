@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import android.widget.FrameLayout;
 
 import com.example.cdd.R;
 
@@ -53,14 +54,21 @@ public class RulesFragment extends Fragment implements View.OnClickListener {
         button_south.setOnClickListener(this);
         button_back.setOnClickListener(this);
     }
-
+    private FrameLayout fragmentContainer;
     private void SwitchFragment(Fragment fragment) {
-        Fragment Fragment = new Fragment();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        // 替换 FrameLayout 中的内容
-        transaction.replace(R.id.framelayout,fragment);
-        transaction.commit();
+        if (fragmentContainer == null) {
+            fragmentContainer = getActivity().findViewById(R.id.framelayout);
+        }
+        if (fragmentContainer != null && fragment != null) {
+            fragmentContainer.setClickable(true); // 启用点击拦截
+            fragmentContainer.setVisibility(View.VISIBLE); // 显示容器
+            Fragment Fragment = new Fragment();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            // 替换 FrameLayout 中的内容
+            transaction.replace(R.id.framelayout, fragment);
+            transaction.commit();
+        }
     }
     @Override
     public void onClick(View view) {
@@ -73,14 +81,19 @@ public class RulesFragment extends Fragment implements View.OnClickListener {
             SwitchFragment(new DifficultyFragment());
         }
         else if (view.getId() == R.id.btn_back){
-            Intent intent = new Intent(getActivity(), MainActivity.class);//返回主界面
-            startActivity(intent);
-
-            if (getActivity() != null) {
-                getActivity().finish();
+            if (fragmentContainer == null) {
+                fragmentContainer = getActivity().findViewById(R.id.framelayout);
+            }
+            if (fragmentContainer != null ) {
+                fragmentContainer.setClickable(false); // 禁用点击拦截
+                fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
+                Intent intent = new Intent(getActivity(), MainActivity.class);//返回主界面
+                startActivity(intent);
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
             }
         }
 
     }
-
 }

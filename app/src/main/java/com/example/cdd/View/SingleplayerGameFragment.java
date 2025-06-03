@@ -27,6 +27,8 @@ import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import android.widget.FrameLayout;
+
 import java.util.*;
 
 /**
@@ -45,6 +47,9 @@ public class SingleplayerGameFragment extends BaseFragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    //用于点击穿透相关
+    private FrameLayout fragmentContainer;
 
     // 游戏相关控件
     private GameController controller;
@@ -376,6 +381,7 @@ public class SingleplayerGameFragment extends BaseFragment {
         passButton = view.findViewById(R.id.pass_button);
         quitButton = view.findViewById(R.id.quit_button);
 
+
         // 设置按钮点击事件
         playButton.setOnClickListener(v -> handlePlayCards());
         passButton.setOnClickListener(v -> handlePass());
@@ -391,6 +397,8 @@ public class SingleplayerGameFragment extends BaseFragment {
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
+                            fragmentContainer.setClickable(false); // 禁用点击拦截
+                            fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
                         }
                     }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
@@ -660,6 +668,8 @@ public class SingleplayerGameFragment extends BaseFragment {
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 清除Activity栈
                             startActivity(intent);
+                            fragmentContainer.setClickable(false); // 禁用点击拦截
+                            fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
                         }
                     })
                     .show();
@@ -801,6 +811,8 @@ public class SingleplayerGameFragment extends BaseFragment {
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
+                                fragmentContainer.setClickable(false); // 禁用点击拦截
+                                fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
                             }
                         })
                         .show();
@@ -857,6 +869,8 @@ public class SingleplayerGameFragment extends BaseFragment {
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 清除Activity栈
                                 startActivity(intent);
+                                fragmentContainer.setClickable(false); // 禁用点击拦截
+                                fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
                             }
                         })
                         .show();
@@ -913,6 +927,8 @@ public class SingleplayerGameFragment extends BaseFragment {
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 清除Activity栈
                                 startActivity(intent);
+                                fragmentContainer.setClickable(false); // 禁用点击拦截
+                                fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
                             }
                         })
                         .show();

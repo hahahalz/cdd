@@ -49,4 +49,14 @@ public class PlayerInformation {    // 玩家账号信息
         thePlayerInformation.password=password;
         thePlayerInformation.score=score;
     }
+
+    public static PlayerInformation getThePlayerInformation()
+    {
+        return thePlayerInformation;
+    }
+
+    public static void plusThePlayerInformation(int a)
+    {
+         thePlayerInformation.score+=a;
+    }
 }

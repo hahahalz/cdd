@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.cdd.Controller.LoginController;
 import com.example.cdd.R;
 
 public class LoginFragment extends BaseFragment implements View.OnClickListener {
@@ -35,7 +36,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     private boolean isPasswordVisible = false;
     private ImageView btnBack;
     private Button btnLogin;
-    private Button btnRegister;
+    private LoginController loginController;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -57,12 +58,13 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
             mUserType = getArguments().getString(ARG_USER_TYPE);
             mAutoLogin = getArguments().getBoolean(ARG_AUTO_LOGIN);
         }
+        loginController = new LoginController(requireContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        initView(view);  // 一定要调用！
+        initView(view); // 一定要调用！
         return view;
     }
 
@@ -86,6 +88,11 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     }
 
     @Override
+    protected void initData(Context context) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         int id = v.getId();
 
@@ -100,28 +107,54 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
             }
             editTextPassword.setSelection(editTextPassword.length()); // 保持光标在末尾
         }
-
         else if (id == R.id.btn_back) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
-
             if (getActivity() != null) {
                 getActivity().finish();
             }
-
         }
-
         else if (id == R.id.btn_login) {
             String username = editTextUsername.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
-            Toast.makeText(getContext(), "登录/注册点击：" + username, Toast.LENGTH_SHORT).show();
-            // TODO: 添加登录验证逻辑
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(requireContext(), "用户名和密码不能为空", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // 先检查用户是否存在
+            boolean userExists = loginController.checkUserExists(username);
+
+            if (userExists) {
+                // 用户存在，执行登录
+                boolean loginSuccess = loginController.login(username, password).isSuccess();
+                if (loginSuccess) {
+                    Toast.makeText(requireContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                    navigateToMainPage(); // 登录成功后跳转到主页面
+                } else {
+                    Toast.makeText(requireContext(), "登录失败，密码错误", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                // 用户不存在，执行注册
+                boolean registerSuccess = loginController.registerresult(username, password);
+                if (registerSuccess) {
+                    Toast.makeText(requireContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                    // 注册成功后自动登录
+                    navigateToMainPage();
+                } else {
+                    Toast.makeText(requireContext(), "注册失败，请稍后重试", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
-    @Override
-    protected void initData(Context context) {
-        // 自动登录等初始化逻辑
+    // 导航到主页面
+    private void navigateToMainPage() {
+        // 实现跳转到主页面的逻辑
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 }
-

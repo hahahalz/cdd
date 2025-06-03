@@ -20,13 +20,11 @@ public class SinglePlayerGameManager extends ViewModel {
 
     Deck deck;
 
-
-
-    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation, int levelOfRobot)
+    public SinglePlayerGameManager(int rule, int levelOfRobot)
     {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();
-        thePlayer=new Player(playerInformation);
+        thePlayer=new Player(PlayerInformation.getThePlayerInformation());
 
         players=new ArrayList<>();
 
@@ -40,10 +38,6 @@ public class SinglePlayerGameManager extends ViewModel {
         //数量定为四
         gameState=GameState.getInstance(players);
     }
-
-
-
-
 
 
 
@@ -61,7 +55,7 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public void quitgame()
     {
-        //中途退出游戏，玩家扣分
+        //中途退出游戏，玩家扣分,其实扣分逻辑要写在这里
         gameState.quitPunishment();
         endGame();
     }

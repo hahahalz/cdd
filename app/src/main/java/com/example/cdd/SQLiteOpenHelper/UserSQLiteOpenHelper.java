@@ -10,13 +10,13 @@ import androidx.annotation.Nullable;
 import com.example.cdd.Pojo.LoginResult;
 import com.example.cdd.Pojo.PlayerInformation;
 
-public class LoginSQLiteOpenHelper extends SQLiteOpenHelper {
+public class UserSQLiteOpenHelper extends SQLiteOpenHelper {
     // 数据库名称
     private static final String DB_NAME = "MySqlite.db";
     // 创建用户表SQL语句
     private static final String CREATE_USERS = "create table users(userID varchar(32), password varchar(32), score integer)";
 
-    public LoginSQLiteOpenHelper(@Nullable Context context) {
+    public UserSQLiteOpenHelper(@Nullable Context context) {
         super(context, DB_NAME, null, 1);
     }
 
@@ -95,18 +95,32 @@ public class LoginSQLiteOpenHelper extends SQLiteOpenHelper {
         try {
             // 查询用户表中是否存在指定用户名的记录
             cursor = db.query("users",new String[]{"userID"},"userID = ?",new String[]{username},null, null, null);
-            exists = cursor != null && cursor.moveToFirst();
+            exists = cursor.moveToFirst();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             // 确保关闭游标和数据库
-            if (cursor != null)
-            {
+
                 cursor.close();
                 db.close();
-            }
+
         }
         return exists;
+    }
+
+    public boolean updateScore(String userID, int newScore) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("score", newScore);
+        // 条件：userID 匹配
+        int rowsAffected = db.update(
+                "users",
+                values,
+                "userID = ?",
+                new String[]{userID}
+        );
+        db.close();
+        return rowsAffected > 0; // 返回是否成功（影响行数 > 0）
     }
 
 }

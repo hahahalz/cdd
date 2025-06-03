@@ -165,6 +165,11 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.passtime++;
     }
 
+    public void setCurrentPlayerIndex(int a)
+    {
+        this.currentPlayerIndex=a;
+    }
+
     public boolean isTerminal(){
         if(players.get(currentPlayerIndex).getHandCards().isEmpty()){
             return true;

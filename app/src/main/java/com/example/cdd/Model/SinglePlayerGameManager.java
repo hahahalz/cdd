@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cdd.ai_algorithm.MCTS_Algorithm;
 
+import com.example.cdd.Pojo.PlayerInformation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +23,11 @@ public class SinglePlayerGameManager extends ViewModel {
 
     Deck deck;
 
-
-
-    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,int levelOfRobot)
+    public SinglePlayerGameManager(int rule, int levelOfRobot)
     {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();
-        thePlayer=new Player(playerInformation);
+        thePlayer=new Player(PlayerInformation.getThePlayerInformation());
 
         players=new ArrayList<>();
 
@@ -45,10 +45,6 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-
-
-
-
     public void endGame()
     {
         //退出游戏,对玩家分数进行处理。只有打完了不玩了的情况调用
@@ -63,7 +59,7 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public void quitgame()
     {
-        //中途退出游戏，玩家扣分
+        //中途退出游戏，玩家扣分,其实扣分逻辑要写在这里
         gameState.quitPunishment();
         endGame();
     }
@@ -107,9 +103,22 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public List<List<Card>> dealCards()
     {
+        boolean find=false;
+
         //调用deck发牌,要返回二维数组List<List<Card>>
         for(Actor actor:players)
             actor.setHandCards(deck.dealCard());
+        for(int i=0;i<players.size();i++) {
+            for (Card c : players.get(i).getHandCards()) {
+                if (c.getRank() == Card.Rank.THREE && c.getSuit() == Card.Suit.Diamond) {
+                    gameState.setCurrentPlayerIndex(i);
+                    find=true;
+                    break;
+                }
+            }
+            if(find)
+                break;
+        }
 
         List<List<Card>> allCards= new ArrayList<>();
         for(Actor actor:players)
@@ -165,10 +174,16 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public void handlePlayerPass()
+    public boolean handlePlayerPass()
     {
         //处理过牌
-        gameState.getCurrentPlayer().pass();
+        if(gameState.getLastPlayedCards().isEmpty()||gameState.getPasstime()==3)
+            return false;
+        else
+        {
+            gameState.getCurrentPlayer().pass();
+            return true;
+        }
 
     }
 

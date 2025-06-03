@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import com.example.cdd.Controller.GameController;
 import com.example.cdd.Model.Card;
-import com.example.cdd.Model.PlayerInformation;
+import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
 import android.widget.Button;
@@ -440,7 +440,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 
     @Override
     protected void initData(Context context) {
-        controller = new GameController();
+        controller = new GameController(requireContext());
 
         playerCards = new ArrayList<>();
         computer1Cards = new ArrayList<>();
@@ -453,7 +453,7 @@ public class SingleplayerGameFragment extends BaseFragment {
         cnt_click_card = 0;
 
         //先暂时随便传几个参数，等菜单界面完善了再说
-        List<List<Card>> allocateCards = controller.initialize(0, new PlayerInformation(), 0);
+        List<List<Card>> allocateCards = controller.initialize(0, 0);//不用传个人信息，传选的规则和机器人难度就行
 
         ArrayList<Card> _playerCards = (ArrayList<Card>) allocateCards.get(0);
         ArrayList<Card> _computer1Cards = (ArrayList<Card>) allocateCards.get(1);
@@ -488,7 +488,7 @@ public class SingleplayerGameFragment extends BaseFragment {
     }
 
     protected void initData2() {
-        controller = new GameController();
+
 
         playerCards = new ArrayList<>();
         computer1Cards = new ArrayList<>();

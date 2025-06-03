@@ -1,13 +1,15 @@
-package com.example.cdd.Model;
+package com.example.cdd.Pojo;
 
 public class PlayerInformation {    // 玩家账号信息
     private String userID;
     private String password;
     private int score;              //游戏得分
 
+    private static PlayerInformation thePlayerInformation=new PlayerInformation();
+
     public PlayerInformation() {
-        userID = "114514";
-        password = "114514";
+        userID = "";
+        password = "";
         score = 0;
     }
 
@@ -39,5 +41,22 @@ public class PlayerInformation {    // 玩家账号信息
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public static void setThePlayerInformation(String name,String password,int score)
+    {
+        thePlayerInformation.userID=name;
+        thePlayerInformation.password=password;
+        thePlayerInformation.score=score;
+    }
+
+    public static PlayerInformation getThePlayerInformation()
+    {
+        return thePlayerInformation;
+    }
+
+    public static void plusThePlayerInformation(int a)
+    {
+         thePlayerInformation.score+=a;
     }
 }

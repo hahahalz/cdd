@@ -2,6 +2,8 @@ package com.example.cdd.Model;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.cdd.ai_algorithm.MCTS_Algorithm;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,7 @@ public class SinglePlayerGameManager extends ViewModel {
     GameState gameState;//获取游戏状态实例，endgame时要修改
     List<Actor> players;//参与者列表，要改
 
+    MCTS_Algorithm.MCTS mcts;
     Player thePlayer;//获取真人玩家的索引，要改
     Robot r1;
     Robot r2;
@@ -20,60 +23,49 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,List<Integer> levelOfRobot )
+    public SinglePlayerGameManager(int rule, PlayerInformation playerInformation,int levelOfRobot)
     {
         gameRuleConfig=new GameRuleConfig(rule);
         deck=new Deck();
         thePlayer=new Player(playerInformation);
+
+        players=new ArrayList<>();
+
         players.add(thePlayer);//玩家第一个
-        Robot r1=new Robot(gameRuleConfig,levelOfRobot.get(0));
-        Robot r2=new Robot(gameRuleConfig,levelOfRobot.get(1));
-        Robot r3=new Robot(gameRuleConfig,levelOfRobot.get(2));//定死3个机器人
+        r1=new Robot(gameRuleConfig,levelOfRobot);
+        r2=new Robot(gameRuleConfig,levelOfRobot);
+        r3=new Robot(gameRuleConfig,levelOfRobot);//定死3个机器人
         players.add(r1);
         players.add(r2);
         players.add(r3);
         //数量定为四
-
         gameState=GameState.getInstance(players);
+        mcts = new MCTS_Algorithm().new MCTS();
     }
 
 
 
 
-    void PlayingGame()
-    {
-        //具体游戏过程
-        while(!gameState.isGameOver())
-        {
-            //根据页面的指令选择是过牌还是出牌
-            //handlePlayerPass();or handlePlayerPlay
-            //handleAIPlay();
-            //
-        }
-
-        endGame();
 
 
-//jiaogeiqitahanshu
 
-    }
-
-
-    void endGame()
+    public void endGame()
     {
         //退出游戏,对玩家分数进行处理。只有打完了不玩了的情况调用
         //清空游戏状态、牌堆和每个人的手牌，加分
-        //在外面取消对这个类的引用
+        endRound();
+        int a=thePlayer.getPlayerInformation().getScore();
+        thePlayer.getPlayerInformation().setScore(a+gameState.getRoundscore());
+        deck=null;
+        gameState.clearGameState();
 
     }
 
-    void quitgame()
+    public void quitgame()
     {
         //中途退出游戏，玩家扣分
+        gameState.quitPunishment();
         endGame();
-        int a=thePlayer.getPlayerInformation().getScore();
-        thePlayer.getPlayerInformation().setScore(a-1);
-
     }
 
     public Actor checkWinner()
@@ -84,31 +76,36 @@ public class SinglePlayerGameManager extends ViewModel {
             gameState.setWinner(nowPlay);
             return gameState.getCurrentPlayer();
         }
+        gameState.nextPlayer();
         return null;
     }
 
 
     public void endRound()
     {
-        //玩家赢了加分
-        if(gameState.getWinner() instanceof Player)
+        //玩家赢了加回合得分,是另外一个变量
+        if(gameState.getCurrentPlayer()== thePlayer)
         {
-            int a=thePlayer.getPlayerInformation().getScore();
-            thePlayer.getPlayerInformation().setScore(a+1);
+            int a=gameState.getRoundscore();
+            gameState.setRoundscore(a+1);
         }
+        //可以返回本回合得分
+
         //等待页面选择退出游戏还是下一轮，调用selectNextRound
         //selectNextRound();
     }
 
-    public void selectNextRound()
+    public List<List<Card>> selectNextRound()
     {
+        endRound();
         //选择下一轮
         gameState.resetRound();
         deck=new Deck();
+        return dealCards();
     }
 
 
-    List<List<Card>> dealCards(Deck deck,List<Actor> players)
+    public List<List<Card>> dealCards()
     {
         //调用deck发牌,要返回二维数组List<List<Card>>
         for(Actor actor:players)
@@ -123,11 +120,16 @@ public class SinglePlayerGameManager extends ViewModel {
 
     public Boolean handlePlayerPlay(List<Card> cards)
     {
-
+        if(gameState.isGameOver())
+         return false;
+        
         //调用GameRuleConfig中的isValidPlay判断出牌是否合理，玩家如果有输入就调用
-        if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards()))
+        if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards(),gameState.getPasstime()))
         {
             thePlayer.playCards(cards);
+            gameState.setLastPlayedCards(cards);
+            gameState.nextPlayer();
+            gameState.setPasstime(0);
             return true;
         }
         else
@@ -138,28 +140,26 @@ public class SinglePlayerGameManager extends ViewModel {
 
 
 
-    public void handleAIPlay()
+    public List<Card> handleAIPlay()
     {
+        if(gameState.isGameOver())
+            return new ArrayList<>();
+
         //处理AI出牌
-        Robot AI=gameState.getCurrentPlayer();
-        List<Card> aIplay=AI.playCards(gameState.getLastPlayedCards());
-        gameState.nextPlayer();
-        if(aIplay!=null)
+        Actor AI=gameState.getCurrentPlayer();
+        List<Card> aIplay=mcts.findNextMove(gameState);
+        if(!aIplay.isEmpty())
         {
+            AI.playCards(aIplay,gameState.getPasstime());
             gameState.setLastPlayedCards(aIplay);
-            if(AI.getHandCards().isEmpty())
-            {
-                gameState.setGameOver(true);
-                gameState.setWinner(AI);
-                endRound();
-            }
+            gameState.nextPlayer();
+            gameState.setPasstime(0);
         }
-
-        else if(gameState.getCurrentPlayer() instanceof Robot)
+        else
         {
-            handleAIPass();
+            AI.pass();
         }
-
+        return aIplay;
     }
 
 
@@ -168,16 +168,11 @@ public class SinglePlayerGameManager extends ViewModel {
     public void handlePlayerPass()
     {
         //处理过牌
-        gameState.nextPlayer();
+        gameState.getCurrentPlayer().pass();
 
     }
 
-    public void handleAIPass()
-    {
-        //处理过牌
-        gameState.nextPlayer();
 
-    }
 
 
     public GameState getGameState()

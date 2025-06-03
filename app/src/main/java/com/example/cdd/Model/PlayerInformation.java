@@ -6,8 +6,8 @@ public class PlayerInformation {    // 玩家账号信息
     private int score;              //游戏得分
 
     public PlayerInformation() {
-        userID = "";
-        password = "";
+        userID = "114514";
+        password = "114514";
         score = 0;
     }
 

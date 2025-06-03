@@ -2,16 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.MainActivity">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="4dp"
-        android:id="@+id/framelayout"></FrameLayout>
+    android:id="@+id/rules"
+    tools:context=".View.RulesFragment">
 
     <ImageView
         android:id="@+id/bg"
@@ -26,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
 
     <ImageView
         android:id="@+id/logo"
@@ -46,7 +41,7 @@
         android:layout_height="87dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="112dp"
-        android:text="登录"
+        android:text="南方规则"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,21 +51,21 @@
         android:layout_height="87dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="112dp"
-        android:text="单人游戏"
+        android:text="北方规则"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="197dp"
-        android:layout_height="87dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="112dp"
-        android:text="多人游戏"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
-        app:layout_constraintVertical_bias="0.0" />
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="返回"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

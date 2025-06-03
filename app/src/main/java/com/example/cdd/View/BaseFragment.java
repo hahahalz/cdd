@@ -18,29 +18,39 @@ import androidx.viewbinding.ViewBinding; // **新增：导入 ViewBinding 基类
 
 // **修改：BaseFragment 变为泛型类，T 代表具体的 ViewBinding 类型**
 public abstract class BaseFragment extends Fragment {
-    //获取TAG的fragment名称
+
     protected final String TAG = this.getClass().getSimpleName();
-    public Context context; // 注意：onAttach 方法中的赋值有误，下面会修正
+    public Context context;
 
-    // **新增：声明 ViewBinding 实例**
-
-    /**
-     * 封装toast对象
-     */
     private Toast toast;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // **修正：将传入的 context 赋值给成员变量 this.context**
         this.context = context;
     }
 
-    /**
-     * 初始化，绑定数据
-     * @param context 上下文
-     */
+    //由子类返回布局 ID
+    protected abstract int layoutId();
+
+    //由子类初始化视图控件
+    protected abstract void initView(View view);
+
+    // 原有方法：初始化数据
     protected abstract void initData(Context context);
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
+        View view = inflater.inflate(layoutId(), container, false);
+
+        // 调用子类的方法初始化控件与数据
+        initView(view);
+        initData(context);
+
+        return view;
+    }
 }

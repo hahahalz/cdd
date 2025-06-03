@@ -1,9 +1,11 @@
 package com.example.cdd.Model;
 
+import androidx.lifecycle.ViewModel;
+
 import java.util.Objects;
 import java.util.Vector;
 
-public class AuthManager {      // 处理用户登录、注册的业务逻辑\
+public class AuthManager extends ViewModel {      // 处理用户登录、注册的业务逻辑\
     private Vector<PlayerInformation> playList;       //注册了的用户名单
     boolean isLogin=false;
     public boolean getLoginResult() {
@@ -42,7 +44,7 @@ public class AuthManager {      // 处理用户登录、注册的业务逻辑\
                 }
             }
         }
-         isLogin=false;
+        isLogin=false;
         return null;
     }
 }

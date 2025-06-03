@@ -17,6 +17,9 @@ import java.util.Map;
 public class MCTS_Algorithm {
 
     private GameRuleConfig gameRuleConfig;
+    public MCTS_Algorithm(){
+        gameRuleConfig = new GameRuleConfig(0);
+    }
     public List<List<Card>> generateAllValidCombinations(List<Card> hand) {
         List<List<Card>> combinations = new ArrayList<>();
 
@@ -198,7 +201,7 @@ public class MCTS_Algorithm {
         List<List<Card>> moves = new ArrayList<>();
 
         // 如果是新回合或者上一轮获胜玩家出牌
-        if (gameState.getLastPlayedCards() == null || gameState.getPassNum() == 3) {
+        if (gameState.getLastPlayedCards() == null || gameState.getPasstime() == 3) {
             // 可以出任意合法牌型
             moves.addAll(generateAllValidCombinations(gameState.getCurrentPlayer().getHandCards()));
             // 也可以选择跳过（仅在不是起始玩家时）
@@ -209,7 +212,7 @@ public class MCTS_Algorithm {
             // 只能出比上家大的牌型
             List<List<Card>> validCombinations = generateAllValidCombinations(gameState.getCurrentPlayer().getHandCards());
             for (List<Card> combo : validCombinations) {
-                if(gameRuleConfig.isValidPlay(combo,gameState.getLastPlayedCards())){
+                if(gameRuleConfig.isValidPlay(combo,gameState.getLastPlayedCards(),gameState.getPasstime())){
                     moves.add(combo);
                 }
             }
@@ -311,16 +314,17 @@ public class MCTS_Algorithm {
         }
     }
 
-    class MCTS{
-        private static final int SIMULATION_LIMIT = 1000;
-        private static final int TIME_LIMIT_MS = 2000;
+    public class MCTS{
+        private static final int SIMULATION_LIMIT = 3000;
+        private static final int TIME_LIMIT_MS = 5000;
 
         public List<Card> findNextMove(GameState initialState) {
             long startTime = System.currentTimeMillis();
+            long nowTime = startTime;
             MCTSNode rootNode = new MCTSNode(initialState);
 
             int simulations = 0;
-            while (System.currentTimeMillis() - startTime < TIME_LIMIT_MS && simulations < SIMULATION_LIMIT) {
+            while (nowTime - startTime < TIME_LIMIT_MS && simulations < SIMULATION_LIMIT) {
                 // 1. 选择
                 MCTSNode promisingNode = selectPromisingNode(rootNode);
 
@@ -341,6 +345,8 @@ public class MCTS_Algorithm {
                 backPropagation(nodeToExplore, playoutResult);
 
                 simulations++;
+
+                nowTime = System.currentTimeMillis();
             }
 
             System.out.println("Performed " + simulations + " simulations");

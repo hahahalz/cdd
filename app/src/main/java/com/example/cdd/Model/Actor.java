@@ -12,5 +12,9 @@ public interface Actor {        //玩家（人/AI）接口
 
     List<Card> playCards(List<Card> Cards);
 
+    List<Card> playCards(List<Card> Cards,int passTime);
+
+    //List<Card> playCards(GameState gameState,List<Card> Cards,int passTime);
+
     void pass();
 }

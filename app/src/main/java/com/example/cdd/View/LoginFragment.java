@@ -1,6 +1,7 @@
 package com.example.cdd.View;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,7 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cdd.R;
 
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends BaseFragment implements View.OnClickListener {
 
     private static final String ARG_USER_TYPE = "user_type";
     private static final String ARG_AUTO_LOGIN = "auto_login";
@@ -58,61 +60,68 @@ public class LoginFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        initView(view);  // 一定要调用！
+        return view;
     }
 
-    //@Override
+    @Override
     protected int layoutId() {
         return R.layout.fragment_login;
     }
 
-    //@Override
+    @Override
     protected void initView(View view) {
         editTextUsername = view.findViewById(R.id.editTextUsername);
         editTextPassword = view.findViewById(R.id.editTextPassword);
         togglePassword = view.findViewById(R.id.togglePassword);
         btnBack = view.findViewById(R.id.btn_back);
         btnLogin = view.findViewById(R.id.btn_login);
-        btnRegister = view.findViewById(R.id.btn_register);
 
-        // 切换密码可见性
-        togglePassword.setOnClickListener(v -> {
+        // 所有按钮统一设置点击监听器
+        togglePassword.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        if (id == R.id.togglePassword) {
             isPasswordVisible = !isPasswordVisible;
             if (isPasswordVisible) {
-                editTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 togglePassword.setImageResource(R.drawable.ic_eye_open);
             } else {
                 editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 togglePassword.setImageResource(R.drawable.ic_eye_closed);
             }
-            editTextPassword.setSelection(editTextPassword.length());
-        });
+            editTextPassword.setSelection(editTextPassword.length()); // 保持光标在末尾
+        }
 
-        // 返回按钮
-        btnBack.setOnClickListener(v -> {
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            fragmentManager.popBackStack();
-        });
+        else if (id == R.id.btn_back) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
 
-        // 登录按钮
-        btnLogin.setOnClickListener(v -> {
-            String username = editTextUsername.getText().toString();
-            String password = editTextPassword.getText().toString();
-            Toast.makeText(getContext(), "登录点击：" + username, Toast.LENGTH_SHORT).show();
-            // TODO: 后续添加验证逻辑
-        });
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
 
-        // 注册按钮
-        btnRegister.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "点击注册按钮", Toast.LENGTH_SHORT).show();
-            // TODO: 可跳转至注册页面
-        });
+        }
+
+        else if (id == R.id.btn_login) {
+            String username = editTextUsername.getText().toString().trim();
+            String password = editTextPassword.getText().toString().trim();
+            Toast.makeText(getContext(), "登录/注册点击：" + username, Toast.LENGTH_SHORT).show();
+            // TODO: 添加登录验证逻辑
+        }
     }
 
-    //@Override
+    @Override
     protected void initData(Context context) {
-        // 初始化数据，如果有自动登录信息可以在这里处理
+        // 自动登录等初始化逻辑
     }
 }
+

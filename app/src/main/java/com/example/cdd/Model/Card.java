@@ -2,6 +2,10 @@ package com.example.cdd.Model;
 
 import androidx.annotation.NonNull;
 
+
+import java.util.List;
+
+
 public class Card {
     public enum Rank {
         THREE(3), FOUR(4), FIVE(5), SIX(6), SEVEN(7), EIGHT(8), NINE(9), TEN(10),
@@ -81,5 +85,23 @@ public class Card {
             return false;
         }
     }//重写equals方法
+    public static int findMajorityRank(List<Card> cards) {
+        int candidate = 0;  // 候选众数
+        int count = 0;      // 候选众数的计数
 
+        // 第一阶段：找出候选众数
+        for (Card card : cards) {
+            int rank = card.getRank().getValue();
+            if (count == 0) {
+                candidate = rank;
+                count = 1;
+            } else if (rank == candidate) {
+                count++;
+            } else {
+                count--;
+            }
+        }
+
+        return candidate;
+    }
 }

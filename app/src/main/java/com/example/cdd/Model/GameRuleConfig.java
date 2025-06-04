@@ -1,4 +1,5 @@
 package com.example.cdd.Model;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 public class GameRuleConfig {
@@ -102,6 +103,12 @@ public class GameRuleConfig {
     //传参0代表南方规则，1代表北方规则.
 
     public boolean isValidPlay(List<Card> playerCards, List<Card> lastPlayedCards,int passtime) {
+
+        playerCards.sort(Comparator.comparingInt((Card c) -> c.getRank().getValue())
+                .thenComparingInt(c -> c.getSuit().ordinal()));
+        lastPlayedCards.sort(Comparator.comparingInt((Card c) -> c.getRank().getValue())
+                .thenComparingInt(c -> c.getSuit().ordinal()));
+
         if(passtime==3)
         {
             if (CardType.getCardType(playerCards, RULE_TYPE) != cardType.N)
@@ -143,32 +150,32 @@ public class GameRuleConfig {
 
         }
         else if (lastPlayedCards.size() == 2 && cardType.getCardType(playerCards, RULE_TYPE) == cardType.PAIR) {
-            Card c1 = lastPlayedCards.get(0);
-            Card c2 = lastPlayedCards.get(1);
+            Card c1 = lastPlayedCards.get(1);
+            Card c2 = playerCards.get(1);
             List<Card> temp1 = new ArrayList<Card>();
             List<Card> temp2 = new ArrayList<Card>();
             temp1.add(c1);
             temp2.add(c2);
-            return isValidPlay(temp1, temp2,passtime);
+            return isValidPlay(temp2, temp1,passtime);
         }//判断对子大小与判断单牌一样
         else if (lastPlayedCards.size() == 3 && cardType.getCardType(playerCards, RULE_TYPE) == cardType.THREE_OF_A_KIND) {
-            Card c1 = lastPlayedCards.get(0);
-            Card c2 = lastPlayedCards.get(1);
+            Card c1 = lastPlayedCards.get(2);
+            Card c2 = playerCards.get(2);
             List<Card> temp1 = new ArrayList<Card>();
             List<Card> temp2 = new ArrayList<Card>();
             temp1.add(c1);
             temp2.add(c2);
-            return isValidPlay(temp1, temp2,passtime);
+            return isValidPlay(temp2, temp1,passtime);
         }//判断三个一样的牌的大小
         else if (lastPlayedCards.size() == 4 && cardType.getCardType(playerCards, RULE_TYPE) == cardType.FOUR_OF_A_KIND)
         {
-            Card c1 = lastPlayedCards.get(0);
-            Card c2 = lastPlayedCards.get(1);
+            Card c1 = lastPlayedCards.get(3);
+            Card c2 = playerCards.get(3);
             List<Card> temp1 = new ArrayList<Card>();
             List<Card> temp2 = new ArrayList<Card>();
             temp1.add(c1);
             temp2.add(c2);
-            return isValidPlay(temp1, temp2,passtime);
+            return isValidPlay(temp2, temp1,passtime);
         }//判断四条大小
         else if (cardType.getCardType(playerCards, RULE_TYPE) == cardType.STRAIGHT)
         {
@@ -204,19 +211,16 @@ public class GameRuleConfig {
                 return true;
             }//按照大小顺序判断牌数量为五的大小
             else if (temp.ordinal() == cardType.getCardType(playerCards, RULE_TYPE).ordinal()) {
-                Card c1 = lastPlayedCards.get(0);
-                Card c2 = playerCards.get(0);
+                Card c2 = lastPlayedCards.get(lastPlayedCards.size()-1);
+                Card c1 = playerCards.get(playerCards.size()-1);
                 if (temp == cardType.THREE_WITH_PAIR || temp == cardType.FOUR_WITH_SINGLE) {
-                    if (c1.compareTo(c2)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    int last = Card.findMajorityRank(lastPlayedCards);
+                    int play = Card.findMajorityRank(playerCards);
+                    return play>last;
                 }//判断多带一
                 else
-                {     Card c3 = lastPlayedCards.get(lastPlayedCards.size() - 1);
-                      Card c4 = playerCards.get(playerCards.size() - 1);
-                      return c4.compareTo(c3);
+                {
+                      return c1.compareTo(c2);
 
                 }//判断同花五
             }

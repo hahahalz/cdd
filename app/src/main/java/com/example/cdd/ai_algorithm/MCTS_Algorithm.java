@@ -19,9 +19,204 @@ import java.util.Random;
 public class MCTS_Algorithm {
 
     private GameRuleConfig gameRuleConfig;
+    //MCTS mcts;
+
     public MCTS_Algorithm(){
         gameRuleConfig = new GameRuleConfig(1);
+        //mcts = new MCTS();
     }
+
+    public MCTS_Algorithm(int rule){
+        gameRuleConfig = new GameRuleConfig(rule);
+        //mcts = new MCTS(difficulty);
+    }
+
+    class MCTSNode{
+        private GameState gameState;
+        private MCTSNode parent;
+        private List<Card> move;
+        private List<MCTSNode> children;
+        private int visitCount;
+        private double winScore;
+
+        public MCTSNode(GameState state) {
+            this(state, null, null);
+        }
+
+        public MCTSNode(GameState state, MCTSNode parent, List<Card> move) {
+            this.gameState = state;
+            this.parent = parent;
+            this.move = move;
+            this.children = new ArrayList<>();
+            this.visitCount = 0;
+            this.winScore = 0;
+        }
+
+        public List<MCTSNode> getChildren() {
+            return children;
+        }
+
+        public List<Card> getMove() {
+            return move;
+        }
+
+        public GameState getGameState() {
+            return gameState;
+        }
+
+        public MCTSNode getParent() {
+            return parent;
+        }
+
+        public int getVisitCount() {
+            return visitCount;
+        }
+
+        public double getWinScore() {
+            return winScore;
+        }
+
+        public void incrementVisit() {
+            visitCount++;
+        }
+
+        public void addScore(double score) {
+            winScore += score;
+        }
+
+        public boolean isFullyExpanded() {
+            if (gameState.isTerminal()) return true;
+            return children.size() == getLegalMoves(gameState).size();
+        }
+
+        public MCTSNode getRandomChild() {
+            int randomIndex = (int) (Math.random() * children.size());
+            return children.get(randomIndex);
+        }
+
+        public MCTSNode getChildWithMaxScore() {
+            return Collections.max(children,
+                    Comparator.comparingDouble(c -> c.winScore / c.visitCount +
+                            Math.sqrt(2 * Math.log(this.visitCount) / c.visitCount)));
+        }
+    }
+
+    public class MCTS{
+        private static final int SIMULATION_LIMIT = 3000;
+        private int TIME_LIMIT_MS;
+
+        public MCTS(){
+            TIME_LIMIT_MS = 3000;
+        }
+
+        public MCTS(int diffculty) {
+            if(diffculty == 2){
+                TIME_LIMIT_MS = 3000;
+            }
+            else{
+                TIME_LIMIT_MS = 6000;
+            }
+        }
+
+        public List<Card> findNextMove(GameState initialState) {
+            long startTime = System.currentTimeMillis();
+            long nowTime = startTime;
+            MCTSNode rootNode = new MCTSNode(initialState);
+
+            int simulations = 0;
+            while (nowTime - startTime < TIME_LIMIT_MS && simulations < SIMULATION_LIMIT) {
+                // 1. 选择
+                MCTSNode promisingNode = selectPromisingNode(rootNode);
+
+                // 2. 扩展
+                if (!promisingNode.getGameState().isTerminal()) {
+                    expandNode(promisingNode);
+                }
+
+                // 3. 模拟
+                MCTSNode nodeToExplore = promisingNode;
+                if (!promisingNode.getChildren().isEmpty()) {
+                    nodeToExplore = promisingNode.getRandomChild();
+                }
+
+                double playoutResult = simulateRandomPlayout(nodeToExplore);
+
+                // 4. 反向传播
+                backPropagation(nodeToExplore, playoutResult);
+
+                simulations++;
+
+                nowTime = System.currentTimeMillis();
+            }
+
+            System.out.println("Performed " + simulations + " simulations");
+
+            // 选择访问次数最多的节点
+            MCTSNode bestNode = rootNode.getChildren().stream()
+                    .max(Comparator.comparingInt(MCTSNode::getVisitCount))
+                    .orElseThrow(() -> new IllegalStateException("No moves available"));
+
+//            Optional<MCTSNode> bestNodeOpt = rootNode.getChildren().stream()
+//                    .max(Comparator.comparingInt(MCTSNode::getVisitCount));
+//
+//            if (bestNodeOpt.isEmpty()) {
+//                return new ArrayList<>(); // 或返回一个代表"Pass"的特殊值
+//            }
+//            MCTSNode bestNode = bestNodeOpt.get();
+            return bestNode.getMove();
+        }
+
+        private MCTSNode selectPromisingNode(MCTSNode rootNode) {
+            MCTSNode node = rootNode;
+            while (!node.getChildren().isEmpty()) {
+                node = node.getChildWithMaxScore();
+            }
+            return node;
+        }
+
+        private void expandNode(MCTSNode node) {
+            List<List<Card>> legalMoves = getLegalMoves(node.getGameState());
+            for (List<Card> move : legalMoves) {
+                GameState newState = new GameState(node.getGameState());
+                applyMove(move,newState);
+
+                MCTSNode childNode = new MCTSNode(newState, node, move);
+                node.getChildren().add(childNode);
+            }
+        }
+
+        private double simulateRandomPlayout(MCTSNode node) {
+            GameState tempState = new GameState(node.getGameState());
+            Actor originalPlayer = tempState.getCurrentPlayer();
+
+            // 随机模拟直到游戏结束
+            while (!tempState.isTerminal()) {
+                List<List<Card>> legalMoves = getLegalMoves(tempState);
+                if (legalMoves.isEmpty()) break;
+
+                // 随机选择一个移动
+                List<Card> randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
+                //List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
+                applyMove(randomMove,tempState);
+            }
+
+            // 计算得分：如果原始玩家赢了得1分，否则得0分
+            // 注意：在锄大地中，第一个出完牌的玩家获胜
+            // 这里简化处理：如果原始玩家是第一个出完牌的，得1分
+            return tempState.isTerminal() &&
+                    tempState.getCurrentPlayer() == originalPlayer ? 1.0 : 0.0;
+        }
+
+        private void backPropagation(MCTSNode node, double result) {
+            MCTSNode tempNode = node;
+            while (tempNode != null) {
+                tempNode.incrementVisit();
+                tempNode.addScore(result);
+                tempNode = tempNode.getParent();
+            }
+        }
+    }
+
     public List<List<Card>> generateAllValidCombinations(List<Card> hand) {
         List<List<Card>> combinations = new ArrayList<>();
 
@@ -249,177 +444,5 @@ public class MCTS_Algorithm {
         gameState.nextPlayer();
     }
 
-    class MCTSNode{
-        private GameState gameState;
-        private MCTSNode parent;
-        private List<Card> move;
-        private List<MCTSNode> children;
-        private int visitCount;
-        private double winScore;
-
-        public MCTSNode(GameState state) {
-            this(state, null, null);
-        }
-
-        public MCTSNode(GameState state, MCTSNode parent, List<Card> move) {
-            this.gameState = state;
-            this.parent = parent;
-            this.move = move;
-            this.children = new ArrayList<>();
-            this.visitCount = 0;
-            this.winScore = 0;
-        }
-
-        public List<MCTSNode> getChildren() {
-            return children;
-        }
-
-        public List<Card> getMove() {
-            return move;
-        }
-
-        public GameState getGameState() {
-            return gameState;
-        }
-
-        public MCTSNode getParent() {
-            return parent;
-        }
-
-        public int getVisitCount() {
-            return visitCount;
-        }
-
-        public double getWinScore() {
-            return winScore;
-        }
-
-        public void incrementVisit() {
-            visitCount++;
-        }
-
-        public void addScore(double score) {
-            winScore += score;
-        }
-
-        public boolean isFullyExpanded() {
-            if (gameState.isTerminal()) return true;
-            return children.size() == getLegalMoves(gameState).size();
-        }
-
-        public MCTSNode getRandomChild() {
-            int randomIndex = (int) (Math.random() * children.size());
-            return children.get(randomIndex);
-        }
-
-        public MCTSNode getChildWithMaxScore() {
-            return Collections.max(children,
-                    Comparator.comparingDouble(c -> c.winScore / c.visitCount +
-                            Math.sqrt(2 * Math.log(this.visitCount) / c.visitCount)));
-        }
-    }
-
-    public class MCTS{
-        private static final int SIMULATION_LIMIT = 3000;
-        private static final int TIME_LIMIT_MS = 5000;
-
-        public List<Card> findNextMove(GameState initialState) {
-            long startTime = System.currentTimeMillis();
-            long nowTime = startTime;
-            MCTSNode rootNode = new MCTSNode(initialState);
-
-            int simulations = 0;
-            while (simulations < SIMULATION_LIMIT&&nowTime-startTime<=TIME_LIMIT_MS) {
-                // 1. 选择
-                MCTSNode promisingNode = selectPromisingNode(rootNode);
-
-                // 2. 扩展
-                if (!promisingNode.getGameState().isTerminal()) {
-                    expandNode(promisingNode);
-                }
-
-                // 3. 模拟
-                MCTSNode nodeToExplore = promisingNode;
-                if (!promisingNode.getChildren().isEmpty()) {
-                    nodeToExplore = promisingNode.getRandomChild();
-                }
-
-                double playoutResult = simulateRandomPlayout(nodeToExplore);
-
-                // 4. 反向传播
-                backPropagation(nodeToExplore, playoutResult);
-
-                simulations++;
-
-                nowTime = System.currentTimeMillis();
-            }
-
-            System.out.println("Performed " + simulations + " simulations");
-
-            // 选择访问次数最多的节点
-            MCTSNode bestNode = rootNode.getChildren().stream()
-                    .max(Comparator.comparingInt(MCTSNode::getVisitCount))
-                    .orElseThrow(() -> new IllegalStateException("No moves available"));
-
-//            Optional<MCTSNode> bestNodeOpt = rootNode.getChildren().stream()
-//                    .max(Comparator.comparingInt(MCTSNode::getVisitCount));
-//
-//            if (bestNodeOpt.isEmpty()) {
-//                return new ArrayList<>(); // 或返回一个代表"Pass"的特殊值
-//            }
-//            MCTSNode bestNode = bestNodeOpt.get();
-            return bestNode.getMove();
-        }
-
-        private MCTSNode selectPromisingNode(MCTSNode rootNode) {
-            MCTSNode node = rootNode;
-            while (!node.getChildren().isEmpty()) {
-                node = node.getChildWithMaxScore();
-            }
-            return node;
-        }
-
-        private void expandNode(MCTSNode node) {
-            List<List<Card>> legalMoves = getLegalMoves(node.getGameState());
-            for (List<Card> move : legalMoves) {
-                GameState newState = new GameState(node.getGameState());
-                applyMove(move,newState);
-
-                MCTSNode childNode = new MCTSNode(newState, node, move);
-                node.getChildren().add(childNode);
-            }
-        }
-
-        private double simulateRandomPlayout(MCTSNode node) {
-            GameState tempState = new GameState(node.getGameState());
-            Actor originalPlayer = tempState.getCurrentPlayer();
-
-            // 随机模拟直到游戏结束
-            while (!tempState.isTerminal()) {
-                List<List<Card>> legalMoves = getLegalMoves(tempState);
-                if (legalMoves.isEmpty()) break;
-
-                // 随机选择一个移动
-                List<Card> randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
-                //List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
-                applyMove(randomMove,tempState);
-            }
-
-            // 计算得分：如果原始玩家赢了得1分，否则得0分
-            // 注意：在锄大地中，第一个出完牌的玩家获胜
-            // 这里简化处理：如果原始玩家是第一个出完牌的，得1分
-            return tempState.isTerminal() &&
-                    tempState.getCurrentPlayer() == originalPlayer ? 1.0 : 0.0;
-        }
-
-        private void backPropagation(MCTSNode node, double result) {
-            MCTSNode tempNode = node;
-            while (tempNode != null) {
-                tempNode.incrementVisit();
-                tempNode.addScore(result);
-                tempNode = tempNode.getParent();
-            }
-        }
-    }
 }
 

@@ -18,21 +18,31 @@ public class Robot extends Actor{            // 机器人玩家实体
 
     Greedy greedy;
 
-    MCTS_Algorithm.MCTS mcts;
+    MCTS_Algorithm mcts_algorithm;
 
     public Robot(GameRuleConfig g,int l)
     {
         gameRuleConfig=g;
         level=l;
         greedy = new Greedy();
-        mcts = (new MCTS_Algorithm()).new MCTS();
+        mcts_algorithm = new MCTS_Algorithm(g.RULE_TYPE);
     }
 
     @Override
-    public List<Card> playCards(List<Card> Cards)
+    public List<Card> playCards(GameState gameState)
     {
         //List<Card> AIPlay=greedy.greedyPlay(HandCards, lastcards, gameRuleConfig, passTime);
-        //List<Card> AIPlay = mcts.findNextMove();
+        MCTS_Algorithm.MCTS mcts = mcts_algorithm.new MCTS(level);
+        List<Card> Cards;
+        if(level == 1){
+            Cards = greedy.greedyPlay(HandCards,gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
+        }
+        else if(level == 2){
+            Cards = mcts.findNextMove(gameState);
+        }
+        else{
+            Cards = mcts.findNextMove(gameState);
+        }
         for (int i=0;i<Cards.size();i++){
             for (int j=0;j<HandCards.size();j++){
                 if (Cards.get(i).equals(HandCards.get(j))){
@@ -43,9 +53,6 @@ public class Robot extends Actor{            // 机器人玩家实体
         }
         return Cards;
     }
-
-
-
 
 
     public void pass(){

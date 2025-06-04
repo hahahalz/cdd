@@ -157,10 +157,10 @@ public class SinglePlayerGameManager extends ViewModel {
 
         //处理AI出牌
         Actor AI=gameState.getCurrentPlayer();
-        List<Card> aIplay=mcts.findNextMove(new GameState( gameState));
+        List<Card> aIplay=AI.playCards(new GameState(gameState));
+
         if(!aIplay.isEmpty())
         {
-            AI.playCards(aIplay);
             gameState.setLastPlayedCards(aIplay);
             gameState.nextPlayer();
             gameState.setPasstime(0);

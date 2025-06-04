@@ -22,6 +22,10 @@ public class Actor {        //玩家（人/AI）接口
         return null;
     }
 
+    public List<Card> playCards(GameState gameState) {
+        return null;
+    }
+
     List<Card> playCards(List<Card> Cards, int passTime) {
         return null;
     }

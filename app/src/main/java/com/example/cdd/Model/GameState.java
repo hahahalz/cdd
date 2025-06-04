@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameState {                 // 游戏当前状态（手牌、已出牌、当前轮次等）
-    private  List<Actor> players;
+    private  List<Actor> players=new ArrayList<>();
     private int currentPlayerIndex;
     private List<Card> cardsOnTable;
     private List<Card> lastPlayedCards;
@@ -29,10 +29,23 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         this.gameOver = false;
         this.winner = null;
         this.roundscore=0;
+        this.passtime=3;
     }
 
     public GameState(GameState state){
-        this.players = new ArrayList<>(state.players);
+
+        for(Actor actor:state.getPlayers())
+        {
+            Actor aaa=actor.copy() ;
+
+            List<Card>cards=new ArrayList<>();
+            for (Card c:actor.getHandCards())
+            {
+                cards.add(c);
+            }
+            aaa.setHandCards(cards);
+            this.players.add(aaa);
+        }
         this.currentPlayerIndex = state.currentPlayerIndex;
         this.cardsOnTable = new ArrayList<>(state.cardsOnTable);
         this.lastPlayedCards = new ArrayList<>(state.lastPlayedCards);

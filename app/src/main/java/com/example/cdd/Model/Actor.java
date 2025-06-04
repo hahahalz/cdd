@@ -3,18 +3,34 @@ package com.example.cdd.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface Actor {        //玩家（人/AI）接口
+public class Actor {        //玩家（人/AI）接口
 
 
-    List<Card> getHandCards();
+    Actor copy(){
+        return null;
+    };
 
-    void setHandCards(List<Card> cards);
+    public List<Card> getHandCards() {
+        return null;
+    }
 
-    List<Card> playCards(List<Card> Cards);
+    void setHandCards(List<Card> cards) {
 
-    List<Card> playCards(List<Card> Cards,int passTime);
+    }
+
+    public List<Card> playCards(List<Card> Cards) {
+        return null;
+    }
+
+    List<Card> playCards(List<Card> Cards, int passTime) {
+        return null;
+    }
 
     //List<Card> playCards(GameState gameState,List<Card> Cards,int passTime);
 
-    void pass();
+    void pass() {
+
+    }
+
+
 }

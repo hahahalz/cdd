@@ -13,12 +13,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 public class MCTS_Algorithm {
 
     private GameRuleConfig gameRuleConfig;
     public MCTS_Algorithm(){
-        gameRuleConfig = new GameRuleConfig(0);
+        gameRuleConfig = new GameRuleConfig(1);
     }
     public List<List<Card>> generateAllValidCombinations(List<Card> hand) {
         List<List<Card>> combinations = new ArrayList<>();
@@ -199,15 +201,13 @@ public class MCTS_Algorithm {
 
     public List<List<Card>> getLegalMoves(GameState gameState) {
         List<List<Card>> moves = new ArrayList<>();
-
+        List<Card> lastCards = gameState.getLastPlayedCards();
         // 如果是新回合或者上一轮获胜玩家出牌
-        if (gameState.getLastPlayedCards() == null || gameState.getPasstime() == 3) {
+        if (gameState.getPasstime() == 3) {
             // 可以出任意合法牌型
             moves.addAll(generateAllValidCombinations(gameState.getCurrentPlayer().getHandCards()));
             // 也可以选择跳过（仅在不是起始玩家时）
-            if (gameState.getLastPlayedCards() != null) {
-                moves.add(new ArrayList<>());
-            }
+            //moves.add(new ArrayList<>());
         } else {
             // 只能出比上家大的牌型
             List<List<Card>> validCombinations = generateAllValidCombinations(gameState.getCurrentPlayer().getHandCards());
@@ -223,8 +223,9 @@ public class MCTS_Algorithm {
     }
 
     public void applyMove(List<Card> move,GameState gameState) {
-        if (move == null) {
+        if (move.isEmpty()) {
             // 跳过，轮到下一位玩家
+            gameState.PassTimePlus();
         } else {
 //            CardMove cardMove = (CardMove) move;
 //            List<Card> playedCards = cardMove.getCards();
@@ -232,7 +233,7 @@ public class MCTS_Algorithm {
             // 从手牌中移除打出的牌
             gameState.getCurrentPlayer().playCards(move);
             gameState.setLastPlayedCards(move);
-
+            gameState.setPasstime(0);
             // 检查游戏是否结束
 //            if (currentPlayerHand.isEmpty()) {
 //                gameOver = true;
@@ -240,6 +241,10 @@ public class MCTS_Algorithm {
 //            }
         }
 
+//        gameState.getCurrentPlayer().playCards(move);
+//        if(!move.isEmpty()) {
+//            gameState.setLastPlayedCards(move);
+//        }
         // 切换到下一位玩家
         gameState.nextPlayer();
     }
@@ -324,7 +329,7 @@ public class MCTS_Algorithm {
             MCTSNode rootNode = new MCTSNode(initialState);
 
             int simulations = 0;
-            while (nowTime - startTime < TIME_LIMIT_MS && simulations < SIMULATION_LIMIT) {
+            while (simulations < SIMULATION_LIMIT&&nowTime-startTime<=TIME_LIMIT_MS) {
                 // 1. 选择
                 MCTSNode promisingNode = selectPromisingNode(rootNode);
 
@@ -356,6 +361,13 @@ public class MCTS_Algorithm {
                     .max(Comparator.comparingInt(MCTSNode::getVisitCount))
                     .orElseThrow(() -> new IllegalStateException("No moves available"));
 
+//            Optional<MCTSNode> bestNodeOpt = rootNode.getChildren().stream()
+//                    .max(Comparator.comparingInt(MCTSNode::getVisitCount));
+//
+//            if (bestNodeOpt.isEmpty()) {
+//                return new ArrayList<>(); // 或返回一个代表"Pass"的特殊值
+//            }
+//            MCTSNode bestNode = bestNodeOpt.get();
             return bestNode.getMove();
         }
 
@@ -388,7 +400,8 @@ public class MCTS_Algorithm {
                 if (legalMoves.isEmpty()) break;
 
                 // 随机选择一个移动
-                List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
+                List<Card> randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
+                //List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
                 applyMove(randomMove,tempState);
             }
 
@@ -406,7 +419,7 @@ public class MCTS_Algorithm {
                 tempNode.addScore(result);
                 tempNode = tempNode.getParent();
             }
+        }
     }
-}
 }
 

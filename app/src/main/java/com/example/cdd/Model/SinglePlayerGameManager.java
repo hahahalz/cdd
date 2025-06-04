@@ -108,10 +108,11 @@ public class SinglePlayerGameManager extends ViewModel {
         //调用deck发牌,要返回二维数组List<List<Card>>
         for(Actor actor:players)
             actor.setHandCards(deck.dealCard());
+
         for(int i=0;i<players.size();i++) {
             for (Card c : players.get(i).getHandCards()) {
                 if (c.getRank() == Card.Rank.THREE && c.getSuit() == Card.Suit.Diamond) {
-                    gameState.setCurrentPlayerIndex(i);
+                    //gameState.setCurrentPlayerIndex(i);
                     find=true;
                     break;
                 }
@@ -156,10 +157,10 @@ public class SinglePlayerGameManager extends ViewModel {
 
         //处理AI出牌
         Actor AI=gameState.getCurrentPlayer();
-        List<Card> aIplay=mcts.findNextMove(gameState);
+        List<Card> aIplay=mcts.findNextMove(new GameState( gameState));
         if(!aIplay.isEmpty())
         {
-            AI.playCards(aIplay,gameState.getPasstime());
+            AI.playCards(aIplay);
             gameState.setLastPlayedCards(aIplay);
             gameState.nextPlayer();
             gameState.setPasstime(0);

@@ -9,7 +9,7 @@ import com.example.cdd.Model.GameRuleConfig;
 import com.example.cdd.ai_algorithm.Greedy;
 import com.example.cdd.ai_algorithm.MCTS_Algorithm;
 
-public class Robot implements Actor{            // 机器人玩家实体
+public class Robot extends Actor{            // 机器人玩家实体
 
     List<Card> HandCards = new ArrayList<>();
     int level;
@@ -29,7 +29,7 @@ public class Robot implements Actor{            // 机器人玩家实体
     }
 
     @Override
-    public List<Card> playCards(List<Card> Cards,int passTime)
+    public List<Card> playCards(List<Card> Cards)
     {
         //List<Card> AIPlay=greedy.greedyPlay(HandCards, lastcards, gameRuleConfig, passTime);
         //List<Card> AIPlay = mcts.findNextMove();
@@ -45,6 +45,9 @@ public class Robot implements Actor{            // 机器人玩家实体
     }
 
 
+
+
+
     public void pass(){
         GameState.getInstance().nextPlayer();
         GameState.getInstance().PassTimePlus();
@@ -57,11 +60,11 @@ public class Robot implements Actor{            // 机器人玩家实体
         HandCards=cards;
     }
 
-    @Override
-    public List<Card> playCards(List<Card> Cards) {
-        return Collections.emptyList();
+
+    Robot copy()
+    {
+        return new Robot(this.gameRuleConfig,this.level);
     }
 
-    // 贪心出牌算法（接收游戏配置和状态作为参数）
 
 }

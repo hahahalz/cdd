@@ -34,12 +34,14 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(this);
-        Button button1 = findViewById(R.id.button1);
-        button1.setOnClickListener(this);
-        Button button4 = findViewById(R.id.button4);
-        button4.setOnClickListener(this);
+        Button button_login = findViewById(R.id.button_login);
+        button_login.setOnClickListener(this);
+        Button button_multi = findViewById(R.id.button_multi);
+        button_multi.setOnClickListener(this);
+        Button button_single = findViewById(R.id.button_single);
+        button_single.setOnClickListener(this);
+        Button button_top = findViewById(R.id.button_top);
+        button_top.setOnClickListener(this);
     }
 
     private FrameLayout fragmentContainer;
@@ -64,14 +66,17 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.button){
+        if (view.getId() == R.id.button_login){
             replaceFragement(new LoginFragment());
         }
-        else if (view.getId() == R.id.button1){
+        else if (view.getId() == R.id.button_multi){
             replaceFragement(new MultiplayerGameFragment());
         }
-        else if (view.getId() == R.id.button4){
+        else if (view.getId() == R.id.button_single){
             replaceFragement(new RulesFragment());
+        }
+        else if(view.getId() == R.id.button_top){
+            replaceFragement(new TopFragment());
         }
     }
     public void replaceFragement(Fragment fragment) {

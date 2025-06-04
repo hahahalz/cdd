@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Player implements Actor{           // 人类玩家实体
+public class Player extends Actor{           // 人类玩家实体
 
     List<Card> HandCards = new ArrayList<>();
     private PlayerInformation playerInformation;        //储存玩家相关信息：ID，得分的变量
@@ -65,5 +65,10 @@ public class Player implements Actor{           // 人类玩家实体
 
     public void setPlayerInformation(PlayerInformation playerInformation) {
         this.playerInformation = playerInformation;
+    }
+
+    public Player copy()
+    {
+        return new Player();
     }
 }

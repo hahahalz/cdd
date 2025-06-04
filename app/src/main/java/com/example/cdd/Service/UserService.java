@@ -16,7 +16,8 @@ import com.example.cdd.SQLiteOpenHelper.UserSQLiteOpenHelper;
 public class UserService extends Service {
     private UserSQLiteOpenHelper UserDbHelper;
 
-    public UserService(Context context) {
+    public UserService(Context context)
+    {
       super();
       UserDbHelper=new UserSQLiteOpenHelper(context);
     }

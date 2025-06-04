@@ -768,7 +768,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 //            public void run() {
 //                computerPlay();
 //            }
-//        });
+//        }).start();
     }
 
     private void handlePass() {
@@ -818,7 +818,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 //            public void run() {
 //                computerPlay();
 //            }
-//        });
+//        }).start();
     }
 
     public static int cardToInteger(Card card) {

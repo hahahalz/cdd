@@ -56,7 +56,8 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             mUserType = getArguments().getString(ARG_USER_TYPE);
             mAutoLogin = getArguments().getBoolean(ARG_AUTO_LOGIN);
         }

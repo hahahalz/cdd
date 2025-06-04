@@ -461,7 +461,7 @@ public class SingleplayerGameFragment extends BaseFragment {
         cnt_click_card = 0;
 
         //先暂时随便传几个参数，等菜单界面完善了再说
-        List<List<Card>> allocateCards = controller.initialize(0, 0);//不用传个人信息，传选的规则和机器人难度就行
+        List<List<Card>> allocateCards = controller.initialize(0, 1);//不用传个人信息，传选的规则和机器人难度就行
 
         ArrayList<Card> _playerCards = (ArrayList<Card>) allocateCards.get(0);
         ArrayList<Card> _computer1Cards = (ArrayList<Card>) allocateCards.get(1);

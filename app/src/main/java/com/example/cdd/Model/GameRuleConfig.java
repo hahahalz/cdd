@@ -106,8 +106,6 @@ public class GameRuleConfig {
 
         playerCards.sort(Comparator.comparingInt((Card c) -> c.getRank().getValue())
                 .thenComparingInt(c -> c.getSuit().ordinal()));
-        lastPlayedCards.sort(Comparator.comparingInt((Card c) -> c.getRank().getValue())
-                .thenComparingInt(c -> c.getSuit().ordinal()));
 
         if(passtime==3)
         {
@@ -126,6 +124,9 @@ public class GameRuleConfig {
         if (lastPlayedCards.size() != playerCards.size() && lastPlayedCards.size() != 0) {
             return false;
         }//上一手牌和玩家出的牌的数量不相等，则返回false
+
+
+
 
         if (lastPlayedCards.size() == 1) {
             if (playerCards.get(0).getRank().getValue() == 15 && lastPlayedCards.get(0).getRank().getValue() == 14 && RULE_TYPE == 0) {

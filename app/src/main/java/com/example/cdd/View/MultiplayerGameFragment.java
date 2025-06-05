@@ -3,6 +3,7 @@ package com.example.cdd.View;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import com.example.cdd.R;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.FrameLayout;
 
 import java.util.*;
 
@@ -49,6 +51,8 @@ public class MultiplayerGameFragment extends BaseFragment {
     private Button passButton;
 	private Button startButton;
 
+    private ImageView button_back;
+
     //游戏数据
     private GameController controller;
     private ArrayList<Integer> myCards;
@@ -60,20 +64,29 @@ public class MultiplayerGameFragment extends BaseFragment {
     public static final int ME = 0, PLAYER1 = 1, PLAYER2 = 2, PLAYER3 = 3;
 	private int cnt_click_card;
 
+    private FrameLayout fragmentContainer;
+
+    private void BackToMain() {
+        if (fragmentContainer == null) {
+            fragmentContainer = getActivity().findViewById(R.id.framelayout);
+        }
+        // 实现跳转到主页面的逻辑
+        if (fragmentContainer != null ) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+            fragmentContainer.setClickable(false); // 禁用点击拦截
+            fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
+        }
+    }
+
 
     public MultiplayerGameFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MultiplayerGameFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MultiplayerGameFragment newInstance(String param1, String param2) {
         MultiplayerGameFragment fragment = new MultiplayerGameFragment();
         Bundle args = new Bundle();
@@ -95,7 +108,6 @@ public class MultiplayerGameFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(layoutId(), container, false);
 		initView(view);
 		initData(context);
@@ -244,12 +256,14 @@ public class MultiplayerGameFragment extends BaseFragment {
         playButton = view.findViewById(R.id.play_button);
         passButton = view.findViewById(R.id.pass_button);
 		startButton = view.findViewById(R.id.start_button);
+        button_back = view.findViewById(R.id.btn_back);
 
         //设置按钮点击事件
         playButton.setOnClickListener(v -> handlePlayCards());
 		playButton.setEnabled(false);
         passButton.setOnClickListener(v -> handlePass());
 		passButton.setEnabled(false);
+        button_back.setOnClickListener(v -> BackToMain());
         for (int i = 0; i < 52; ++i) {
             final int tmp = i;
 			playerCardsImage.get(i).setEnabled(false);
@@ -595,4 +609,5 @@ public class MultiplayerGameFragment extends BaseFragment {
 
         currentPlayCards = new ArrayList<>();
     }
+
 }

@@ -85,13 +85,14 @@ public class GameController
     public void quitgame()
     {
         this.model.quitgame();
+        System.out.println(this.scoreService.updateUserScore(PlayerInformation.getThePlayerInformation().getUserID(), PlayerInformation.getThePlayerInformation().getScore()));
     }//中途退出游戏，计算扣分，返回玩家信息
 
 
     public void endgame()
     {
         this.model.endGame();
-        this.scoreService.updateUserScore(PlayerInformation.getThePlayerInformation().getUserID(), PlayerInformation.getThePlayerInformation().getScore());
+        System.out.println(this.scoreService.updateUserScore(PlayerInformation.getThePlayerInformation().getUserID(), PlayerInformation.getThePlayerInformation().getScore()));
     }//一局结束后，选择退出游戏，返回修改分数后的玩家信息，
 
 

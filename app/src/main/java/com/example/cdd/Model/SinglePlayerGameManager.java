@@ -54,6 +54,7 @@ public class SinglePlayerGameManager extends ViewModel {
         thePlayer.getPlayerInformation().setScore(a+gameState.getRoundscore());
         deck=null;
         gameState.clearGameState();
+        System.out.println("Now score  "+thePlayer.getPlayerInformation().getScore());
 
     }
 
@@ -80,10 +81,11 @@ public class SinglePlayerGameManager extends ViewModel {
     public void endRound()
     {
         //玩家赢了加回合得分,是另外一个变量
-        if(gameState.getCurrentPlayer()== thePlayer)
+        if(gameState.getWinner()== thePlayer)
         {
             int a=gameState.getRoundscore();
             gameState.setRoundscore(a+1);
+            System.out.println(gameState.getPlayers());
         }
         //可以返回本回合得分
 
@@ -112,7 +114,7 @@ public class SinglePlayerGameManager extends ViewModel {
         for(int i=0;i<players.size();i++) {
             for (Card c : players.get(i).getHandCards()) {
                 if (c.getRank() == Card.Rank.THREE && c.getSuit() == Card.Suit.Diamond) {
-                    //gameState.setCurrentPlayerIndex(i);
+                    gameState.setCurrentPlayerIndex(i);
                     find=true;
                     break;
                 }
@@ -140,6 +142,8 @@ public class SinglePlayerGameManager extends ViewModel {
             gameState.setLastPlayedCards(cards);
             gameState.nextPlayer();
             gameState.setPasstime(0);
+            if(thePlayer.getHandCards().isEmpty())
+                gameState.setWinner(thePlayer);
             return true;
         }
         else
@@ -164,6 +168,8 @@ public class SinglePlayerGameManager extends ViewModel {
             gameState.setLastPlayedCards(aIplay);
             gameState.nextPlayer();
             gameState.setPasstime(0);
+            if(AI.getHandCards().isEmpty())
+                gameState.setWinner(AI);
         }
         else
         {

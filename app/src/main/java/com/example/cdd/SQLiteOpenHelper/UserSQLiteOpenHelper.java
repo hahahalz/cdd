@@ -117,7 +117,7 @@ public class UserSQLiteOpenHelper extends SQLiteOpenHelper {
                 "users",
                 values,
                 "userID = ?",
-                new String[]{userID}
+                new String[]{ userID }
         );
         db.close();
         return rowsAffected > 0; // 返回是否成功（影响行数 > 0）

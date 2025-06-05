@@ -25,7 +25,6 @@ public class UserService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        // 直接使用this获取Service的上下文
 
         UserDbHelper = new UserSQLiteOpenHelper(getApplicationContext());
     }
@@ -60,7 +59,8 @@ public class UserService extends Service {
     }
 
     public boolean updateUserScore(String userID, int newScore) {
-        if (userID.isEmpty()) return false; // 简单参数校验
+        if (userID.isEmpty())
+            return false; // 简单参数校验
         return UserDbHelper.updateScore(userID, newScore);
     }
 

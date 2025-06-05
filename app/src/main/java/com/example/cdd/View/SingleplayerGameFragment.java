@@ -464,7 +464,7 @@ public class SingleplayerGameFragment extends BaseFragment {
             click_num[i] = 0;
 
         //先暂时随便传几个参数，等菜单界面完善了再说
-        List<List<Card>> allocateCards = controller.initialize(0, 3);
+        List<List<Card>> allocateCards = controller.initialize(0, 1);
 
         List<Card> _playerCards = allocateCards.get(0);
         List<Card> _computer1Cards = allocateCards.get(1);

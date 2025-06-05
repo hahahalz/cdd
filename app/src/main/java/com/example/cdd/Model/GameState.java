@@ -162,7 +162,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
 
     public void quitPunishment()
     {
-        roundscore--;
+        this.roundscore--;
     }
 
     public int getPasstime() {

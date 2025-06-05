@@ -37,6 +37,7 @@ public class RulesFragment extends Fragment implements View.OnClickListener {
         initView(view);  // 一定要调用！
         return view;
     }
+	
     protected int layoutId() {
         return R.layout.fragment_rules;
     }
@@ -54,7 +55,9 @@ public class RulesFragment extends Fragment implements View.OnClickListener {
         button_south.setOnClickListener(this);
         button_back.setOnClickListener(this);
     }
+	
     private FrameLayout fragmentContainer;
+	
     private void SwitchFragment(Fragment fragment) {
         if (fragmentContainer == null) {
             fragmentContainer = getActivity().findViewById(R.id.framelayout);
@@ -70,15 +73,20 @@ public class RulesFragment extends Fragment implements View.OnClickListener {
             transaction.commit();
         }
     }
+	
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button){
             //此处切换南方规则
-            SwitchFragment(new DifficultyFragment());
+            DifficultyFragment fragment = new DifficultyFragment();
+            ((MainActivity) getActivity()).sendMessageToDifficultyFragment("south",fragment);
+            SwitchFragment(fragment);
         }
         else if (view.getId() == R.id.button4){
             //此处切换北方规则
-            SwitchFragment(new DifficultyFragment());
+            DifficultyFragment fragment = new DifficultyFragment();
+            ((MainActivity) getActivity()).sendMessageToDifficultyFragment("north",fragment);
+            SwitchFragment(fragment);
         }
         else if (view.getId() == R.id.btn_back){
             if (fragmentContainer == null) {
@@ -94,6 +102,5 @@ public class RulesFragment extends Fragment implements View.OnClickListener {
                 }
             }
         }
-
     }
 }

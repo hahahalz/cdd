@@ -71,6 +71,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
             instance.gameOver = false;
             instance.winner = null;
             instance.roundscore=0;
+            instance.passtime = 3;
         }
 
         return instance;

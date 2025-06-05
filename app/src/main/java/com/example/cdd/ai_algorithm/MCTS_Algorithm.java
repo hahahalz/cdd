@@ -113,10 +113,10 @@ public class MCTS_Algorithm {
 
         public MCTS(int diffculty) {
             if(diffculty == 2){
-                TIME_LIMIT_MS = 3000;
+                TIME_LIMIT_MS = 500;
             }
             else{
-                TIME_LIMIT_MS = 6000;
+                TIME_LIMIT_MS = 8000;
             }
         }
 
@@ -131,7 +131,7 @@ public class MCTS_Algorithm {
             MCTSNode rootNode = new MCTSNode(initialState);
 
             int simulations = 0;
-            while (nowTime - startTime < TIME_LIMIT_MS && simulations < SIMULATION_LIMIT) {
+            while (nowTime - startTime < TIME_LIMIT_MS) {
                 // 1. 选择
                 MCTSNode promisingNode = selectPromisingNode(rootNode);
 
@@ -196,8 +196,10 @@ public class MCTS_Algorithm {
             GameState tempState = new GameState(node.getGameState());
             Actor originalPlayer = tempState.getCurrentPlayer();
 
+
+            int cnt = 0;
             // 随机模拟直到游戏结束
-            while (!tempState.isTerminal()) {
+            while (!tempState.isTerminal() ) {
                 List<List<Card>> legalMoves = getLegalMoves(tempState);
                 if (legalMoves.isEmpty()) break;
 
@@ -205,6 +207,7 @@ public class MCTS_Algorithm {
                 //List<Card> randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
                 List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
                 applyMove(randomMove,tempState);
+                cnt++;
             }
 
             // 计算得分：如果原始玩家赢了得1分，否则得0分
@@ -406,7 +409,7 @@ public class MCTS_Algorithm {
         List<List<Card>> moves = new ArrayList<>();
         List<Card> lastCards = gameState.getLastPlayedCards();
         // 如果是新回合或者上一轮获胜玩家出牌
-        if (gameState.getLastPlayedCards() == null || gameState.getPasstime() == 3) {
+        if (gameState.getLastPlayedCards().isEmpty() || gameState.getPasstime() == 3) {
             // 可以出任意合法牌型
             moves.addAll(generateAllValidCombinations(gameState.getCurrentPlayer().getHandCards()));
             // 也可以选择跳过（仅在不是起始玩家时）

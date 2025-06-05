@@ -26,29 +26,30 @@ public class Robot extends Actor{            // 机器人玩家实体
     {
         gameRuleConfig=g;
         level=l;
+        mcts_algorithm = new MCTS_Algorithm(g.RULE_TYPE);
     }
 
     @Override
     public List<Card> playCards(GameState gameState)
     {
-        if(level == 1){
-            strategy = new Greedy();
-        }
-        else{
-            strategy = new MCTS_Algorithm(gameRuleConfig.RULE_TYPE).new MCTS(level);
-        }
-        //MCTS_Algorithm.MCTS mcts = mcts_algorithm.new MCTS(level);
-        List<Card> Cards;
-        Cards = strategy.makeDecision(gameState,gameRuleConfig);
 //        if(level == 1){
-//            Cards = greedy.greedyPlay(HandCards,gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
-//        }
-//        else if(level == 2){
-//            Cards = mcts.findNextMove(gameState);
+//            strategy = new Greedy();
 //        }
 //        else{
-//            Cards = mcts.findNextMove(gameState);
+//            strategy = new MCTS_Algorithm(gameRuleConfig.RULE_TYPE).new MCTS(level);
 //        }
+        MCTS_Algorithm.MCTS mcts = mcts_algorithm.new MCTS(level);
+        List<Card> Cards;
+        //Cards = strategy.makeDecision(gameState,gameRuleConfig);
+        if(level == 1){
+            Cards = greedy.greedyPlay(HandCards,gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
+        }
+        else if(level == 2){
+            Cards = mcts.findNextMove(gameState);
+        }
+        else{
+            Cards = mcts.findNextMove(gameState);
+        }
         for (int i=0;i<Cards.size();i++){
             for (int j=0;j<HandCards.size();j++){
                 if (Cards.get(i).equals(HandCards.get(j))){
@@ -60,6 +61,18 @@ public class Robot extends Actor{            // 机器人玩家实体
         return Cards;
     }
 
+    public List<Card> playCards(List<Card> Cards)
+    {
+        for (int i=0;i<Cards.size();i++){
+            for (int j=0;j<HandCards.size();j++){
+                if (Cards.get(i).equals(HandCards.get(j))){
+                    HandCards.remove(j);
+                    break;
+                }
+            }
+        }
+        return Cards;
+    }
 
     public void pass(){
         GameState.getInstance().nextPlayer();

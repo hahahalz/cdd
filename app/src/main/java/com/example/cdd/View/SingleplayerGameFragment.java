@@ -517,7 +517,7 @@ public class SingleplayerGameFragment extends BaseFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    computerPlay();
+                    computerPlay(1);
                 }
             }, 0);
         }
@@ -530,7 +530,7 @@ public class SingleplayerGameFragment extends BaseFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    computer2Play();
+                    computerPlay(2);
                 }
             }, 0);
         }
@@ -543,7 +543,7 @@ public class SingleplayerGameFragment extends BaseFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    computer3Play();
+                    computerPlay(3);
                 }
             }, 0);
         }
@@ -603,21 +603,21 @@ public class SingleplayerGameFragment extends BaseFragment {
             passButton.setEnabled(false);
             for (int i = 0; i < 52; ++i)
                 playerCardsImage.get(i).setEnabled(false);
-            computerPlay();
+            computerPlay(1);
         }
         else if (currentPlayer == 2) {
             Toast.makeText(context, "机器人2手中有♦3，机器人2先出牌！", Toast.LENGTH_SHORT).show();
             passButton.setEnabled(false);
             for (int i = 0; i < 52; ++i)
                 playerCardsImage.get(i).setEnabled(false);
-            computer2Play();
+            computerPlay(2);
         }
         else {
             Toast.makeText(context, "机器人3手中有♦3，机器人3先出牌！", Toast.LENGTH_SHORT).show();
             passButton.setEnabled(false);
             for (int i = 0; i < 52; ++i)
                 playerCardsImage.get(i).setEnabled(false);
-            computer3Play();
+            computerPlay(3);
         }
     }
 
@@ -765,7 +765,7 @@ public class SingleplayerGameFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                computerPlay();
+                computerPlay(1);
             }
         }, 0);
 
@@ -815,7 +815,7 @@ public class SingleplayerGameFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                computerPlay();
+                computerPlay(1);
             }
         }, 0);
 
@@ -884,13 +884,13 @@ public class SingleplayerGameFragment extends BaseFragment {
         }
     }
 
-    private void computerPlay() {
+    private void computerPlay(int num) {
         // 禁用出牌和过牌按钮，直到电脑玩家回合结束
         playButton.setEnabled(false);
         passButton.setEnabled(false);
 
         // 机器人1在后台线程中出牌
-        new ComputerPlayTask(1).execute();
+        new ComputerPlayTask(num).execute();
     }
 
     private class ComputerPlayTask extends AsyncTask<Void, Void, List<Integer>> {
@@ -1002,23 +1002,19 @@ public class SingleplayerGameFragment extends BaseFragment {
                     // 重置 currentPlayCards 以供玩家回合使用（或根据规则保留最后出的牌）
                     // 如果 currentPlayCards 用于表示玩家需要压制的牌，那么它应该由最后一个出牌的机器人更新。
                     // 在此示例中，如果所有机器人都过牌，则清空它，否则它应包含最后出的牌。
-                    if (!playedCards.isEmpty()) { // 这是针对当前机器人（此处为机器人3）
-                        currentPlayCards.clear();
-                        currentPlayCards.addAll(playedCards);
-                    } else {
-                        // 如果机器人3过牌，则检查机器人2，然后机器人1。这需要更复杂的逻辑来追踪。
-                        // 暂时，如果所有机器人过牌，假设 currentPlayCards 应该为空，以便玩家开始新一轮。
-                        if (!firstPlay.getText().toString().contains("过牌") ||
-                                !secondPlay.getText().toString().contains("过牌") ||
-                                !thirdPlay.getText().toString().contains("过牌")) {
-                            // 有机器人出牌，因此 currentPlayCards 应该保留最后有效的出牌
-                            // 此逻辑需要从外部范围访问 currentPlayCards2 和 currentPlayCards3
-                            // 或者更复杂的状态管理。
-                            // 为了简化此示例，假设 currentPlayCards 将正确反映最后一次出牌。
-                        } else {
-                            currentPlayCards.clear(); // 所有机器人过牌，玩家重新开始
-                        }
-                    }
+//                    if (!playedCards.isEmpty()) { // 这是针对当前机器人（此处为机器人3）
+//                        currentPlayCards.clear();
+//                        //currentPlayCards.addAll(playedCards);
+//                    } else {
+//                        // 如果机器人3过牌，则检查机器人2，然后机器人1。这需要更复杂的逻辑来追踪。
+//                        // 暂时，如果所有机器人过牌，假设 currentPlayCards 应该为空，以便玩家开始新一轮。
+//                        if (!firstPlay.getText().toString().contains("过牌") ||
+//                                !secondPlay.getText().toString().contains("过牌") ||
+//                                !thirdPlay.getText().toString().contains("过牌")) {
+//                        } else {
+//                            currentPlayCards.clear(); // 所有机器人过牌，玩家重新开始
+//                        }
+//                    }
                 }
             }
         }

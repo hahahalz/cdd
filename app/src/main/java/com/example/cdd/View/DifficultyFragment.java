@@ -15,12 +15,15 @@ import android.widget.FrameLayout;
 
 import com.example.cdd.R;
 
+import java.util.Objects;
+
 public class DifficultyFragment extends Fragment implements View.OnClickListener {
 
     private Button button_easy;
     private Button button_middle;
     private Button button_difficult;
     private ImageView button_back;
+    private String message;
 
     public DifficultyFragment() {
         // Required empty public constructor
@@ -71,15 +74,24 @@ public class DifficultyFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         if (view.getId() == R.id.button){
             //此处切换简单
-            SwitchFragment(new SingleplayerGameFragment());
+            SingleplayerGameFragment fragment = new SingleplayerGameFragment();
+            ((MainActivity) getActivity()).sendMessageToSingleplayerGameFragment(message, fragment);
+            ((MainActivity) getActivity()).sendMessageToSingleplayerGameFragment("easy", fragment);
+            SwitchFragment(fragment);
         }
         else if (view.getId() == R.id.button4){
             //此处切换中等
-            SwitchFragment(new SingleplayerGameFragment());
+            SingleplayerGameFragment fragment = new SingleplayerGameFragment();
+            ((MainActivity) getActivity()).sendMessageToSingleplayerGameFragment(message, fragment);
+            ((MainActivity) getActivity()).sendMessageToSingleplayerGameFragment("medium", fragment);
+            SwitchFragment(fragment);
         }
         else if (view.getId() == R.id.button1){
             //此处切换困难
-            SwitchFragment(new SingleplayerGameFragment());
+            SingleplayerGameFragment fragment = new SingleplayerGameFragment();
+            ((MainActivity) getActivity()).sendMessageToSingleplayerGameFragment(message, fragment);
+            ((MainActivity) getActivity()).sendMessageToSingleplayerGameFragment("difficult", fragment);
+            SwitchFragment(fragment);
         }
         else if (view.getId() == R.id.btn_back){
             //此处返回规则选择
@@ -87,4 +99,7 @@ public class DifficultyFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    public void receiveMessage(String message) {
+        this.message = message;
+    }
 }

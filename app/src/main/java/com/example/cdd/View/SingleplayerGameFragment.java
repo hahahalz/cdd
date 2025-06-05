@@ -68,7 +68,11 @@ public class SingleplayerGameFragment extends BaseFragment {
     private ArrayList<Integer> computer3Cards;
     private ArrayList<Integer> currentPlayCards;
     private int currentPlayer;
-    public static final int PLAYER = 0, COMPUTER1 = 1;
+    public static final int PLAYER = 0;
+    public int rule;
+    public static final int SOUTH = 0, NORTH = 1;
+    public int difficulty;
+    public static final int EASY = 1, MEDIUM = 2, DIFFICULT = 3;
 
     private int cnt_click_card;
 
@@ -463,8 +467,8 @@ public class SingleplayerGameFragment extends BaseFragment {
         for (int i = 0; i < 52; ++i)
             click_num[i] = 0;
 
-        //先暂时随便传几个参数，等菜单界面完善了再说
-        List<List<Card>> allocateCards = controller.initialize(0, 1);
+        //传入游戏规则和难度
+        List<List<Card>> allocateCards = controller.initialize(rule, difficulty);
 
         List<Card> _playerCards = allocateCards.get(0);
         List<Card> _computer1Cards = allocateCards.get(1);
@@ -768,7 +772,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 //            public void run() {
 //                computerPlay();
 //            }
-//        }).start();
+//        });
     }
 
     private void handlePass() {
@@ -818,7 +822,7 @@ public class SingleplayerGameFragment extends BaseFragment {
 //            public void run() {
 //                computerPlay();
 //            }
-//        }).start();
+//        });
     }
 
     public static int cardToInteger(Card card) {
@@ -890,12 +894,7 @@ public class SingleplayerGameFragment extends BaseFragment {
         if (!currentPlayCards.isEmpty()) {
             firstPlay.setText("机器人1");
             for (Integer card : currentPlayCards) {
-                //测试用的，等会删了
-                Boolean b = computer1Cards.contains(card);
-                playButton.setText(b.toString());
-
                 computer1Cards.remove(card);
-
                 playImage.get(card).setVisibility(View.VISIBLE);
             }
             if (computer1Cards.isEmpty()) {
@@ -1249,5 +1248,23 @@ public class SingleplayerGameFragment extends BaseFragment {
         }
 
         currentPlayCards = new ArrayList<>();
+    }
+
+    public void receiveMessage(String message) {
+        if (message.equals("south")) {
+            rule = SOUTH;
+        }
+        else if (message.equals("north")) {
+            rule = NORTH;
+        }
+        else if (message.equals("easy")) {
+            difficulty = EASY;
+        }
+        else if (message.equals("medium")) {
+            difficulty = MEDIUM;
+        }
+        else if (message.equals("difficult")) {
+            difficulty = DIFFICULT;
+        }
     }
 }

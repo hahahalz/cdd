@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Greedy {
+public class Greedy extends Strategy{
+
+    @Override
+    public List<Card> makeDecision(GameState gameState, GameRuleConfig gameRuleConfig){
+        return greedyPlay(gameState.getCurrentPlayer().getHandCards(),gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
+    }
     public List<Card> greedyPlay(List<Card> HandCards,List<Card> lastPlayedCards, GameRuleConfig gameRuleConfig,int passTime) {
         int lastSize = lastPlayedCards.size();
         if (passTime == 3||lastSize==0) {

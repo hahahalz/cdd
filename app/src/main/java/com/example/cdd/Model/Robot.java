@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.example.cdd.Model.GameRuleConfig;
 import com.example.cdd.ai_algorithm.Greedy;
 import com.example.cdd.ai_algorithm.MCTS_Algorithm;
+import com.example.cdd.ai_algorithm.Strategy;
 
 public class Robot extends Actor{            // 机器人玩家实体
 
@@ -16,6 +17,7 @@ public class Robot extends Actor{            // 机器人玩家实体
 
     GameRuleConfig gameRuleConfig;
 
+    Strategy strategy;
     Greedy greedy;
 
     MCTS_Algorithm mcts_algorithm;
@@ -24,25 +26,29 @@ public class Robot extends Actor{            // 机器人玩家实体
     {
         gameRuleConfig=g;
         level=l;
-        greedy = new Greedy();
-        mcts_algorithm = new MCTS_Algorithm(g.RULE_TYPE);
     }
 
     @Override
     public List<Card> playCards(GameState gameState)
     {
-        //List<Card> AIPlay=greedy.greedyPlay(HandCards, lastcards, gameRuleConfig, passTime);
-        MCTS_Algorithm.MCTS mcts = mcts_algorithm.new MCTS(level);
-        List<Card> Cards;
         if(level == 1){
-            Cards = greedy.greedyPlay(HandCards,gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
-        }
-        else if(level == 2){
-            Cards = mcts.findNextMove(gameState);
+            strategy = new Greedy();
         }
         else{
-            Cards = mcts.findNextMove(gameState);
+            strategy = new MCTS_Algorithm(gameRuleConfig.RULE_TYPE).new MCTS(level);
         }
+        //MCTS_Algorithm.MCTS mcts = mcts_algorithm.new MCTS(level);
+        List<Card> Cards;
+        Cards = strategy.makeDecision(gameState,gameRuleConfig);
+//        if(level == 1){
+//            Cards = greedy.greedyPlay(HandCards,gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
+//        }
+//        else if(level == 2){
+//            Cards = mcts.findNextMove(gameState);
+//        }
+//        else{
+//            Cards = mcts.findNextMove(gameState);
+//        }
         for (int i=0;i<Cards.size();i++){
             for (int j=0;j<HandCards.size();j++){
                 if (Cards.get(i).equals(HandCards.get(j))){

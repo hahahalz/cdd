@@ -19,6 +19,7 @@ import java.util.Random;
 public class MCTS_Algorithm {
 
     private GameRuleConfig gameRuleConfig;
+    private int difficulty;
     //MCTS mcts;
 
     public MCTS_Algorithm(){
@@ -28,6 +29,7 @@ public class MCTS_Algorithm {
 
     public MCTS_Algorithm(int rule){
         gameRuleConfig = new GameRuleConfig(rule);
+        this.difficulty = difficulty;
         //mcts = new MCTS(difficulty);
     }
 
@@ -101,7 +103,7 @@ public class MCTS_Algorithm {
         }
     }
 
-    public class MCTS{
+    public class MCTS extends Strategy{
         private static final int SIMULATION_LIMIT = 3000;
         private int TIME_LIMIT_MS;
 
@@ -116,6 +118,11 @@ public class MCTS_Algorithm {
             else{
                 TIME_LIMIT_MS = 6000;
             }
+        }
+
+        @Override
+        public List<Card> makeDecision(GameState gameState, GameRuleConfig gameRuleConfig){
+            return findNextMove(gameState);
         }
 
         public List<Card> findNextMove(GameState initialState) {
@@ -195,8 +202,8 @@ public class MCTS_Algorithm {
                 if (legalMoves.isEmpty()) break;
 
                 // 随机选择一个移动
-                List<Card> randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
-                //List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
+                //List<Card> randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
+                List<Card> randomMove = legalMoves.get((int) (Math.random() * legalMoves.size()));
                 applyMove(randomMove,tempState);
             }
 
@@ -301,8 +308,9 @@ public class MCTS_Algorithm {
                     straight.add(hand.get(j));
                     currentRankValue++;
 
-                    if (straight.size() >= 5) {
+                    if (straight.size() == 5) {
                         combinations.add(new ArrayList<>(straight));
+                        break;
                     }
                 } else if (nextRankValue > currentRankValue + 1) {
                     break; // 不再连续
@@ -398,7 +406,7 @@ public class MCTS_Algorithm {
         List<List<Card>> moves = new ArrayList<>();
         List<Card> lastCards = gameState.getLastPlayedCards();
         // 如果是新回合或者上一轮获胜玩家出牌
-        if (gameState.getPasstime() == 3) {
+        if (gameState.getLastPlayedCards() == null || gameState.getPasstime() == 3) {
             // 可以出任意合法牌型
             moves.addAll(generateAllValidCombinations(gameState.getCurrentPlayer().getHandCards()));
             // 也可以选择跳过（仅在不是起始玩家时）

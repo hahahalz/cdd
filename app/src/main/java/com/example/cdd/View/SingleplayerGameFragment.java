@@ -414,6 +414,7 @@ public class SingleplayerGameFragment extends BaseFragment {
                 ++click_num[tmp];
 
                 if (cnt_click_card == 1) {
+                    currentPlayCards = new ArrayList<>();
                     playButton.setEnabled(true);
                     for (int j = 0; j < 52; ++j) {
                         playImage.get(j).setVisibility(View.GONE);

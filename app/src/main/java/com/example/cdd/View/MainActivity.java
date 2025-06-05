@@ -29,8 +29,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.FrameLayout;
 import androidx.appcompat.app.AlertDialog;
+import android.widget.TextView;
 
 import com.example.cdd.Controller.BluetoothController;
+import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
 
@@ -91,6 +93,35 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
         button_top.setOnClickListener(this);
 
         button_multi.setOnClickListener(v -> showSimpleDialog());
+
+        TextView loginStatus = findViewById(R.id.login_status);
+
+// 从静态类 PlayerInformation 读取 userid 判断是否登录
+        String userid = PlayerInformation.getThePlayerInformation().getUserID();
+
+        if (userid != null && !userid.isEmpty()) {
+            loginStatus.setText("您好：" + userid);
+        } else {
+            loginStatus.setText("未登录");
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateLoginStatus();
+    }
+
+    private void updateLoginStatus() {
+        TextView loginStatus = findViewById(R.id.login_status);
+        String userid = PlayerInformation.getThePlayerInformation().getUserID();
+
+        if (userid != null && !userid.isEmpty()) {
+            loginStatus.setText("您好：" + userid);
+        } else {
+            loginStatus.setText("未登录");
+        }
     }
 
     private void showSimpleDialog() {

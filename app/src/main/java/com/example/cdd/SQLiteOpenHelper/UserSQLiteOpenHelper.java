@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 import com.example.cdd.Pojo.LoginResult;
 import com.example.cdd.Pojo.PlayerInformation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserSQLiteOpenHelper extends SQLiteOpenHelper {
     // 数据库名称
     private static final String DB_NAME = "MySqlite.db";
@@ -122,5 +125,31 @@ public class UserSQLiteOpenHelper extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0; // 返回是否成功（影响行数 > 0）
     }
+    // 返回所有用户的用户名和分数（二维ArrayList格式）
+    public List<List<String>> getAllUserScores() {
+        List<List<String>> resultList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
 
+        try {
+            // 查询所有用户的userID和score字段
+            cursor = db.query("users", new String[]{"userID", "score"}, null, null, null, null, null);
+
+            // 遍历结果集
+            while (cursor.moveToNext()) {
+                ArrayList<String> row = new ArrayList<>();
+                row.add(cursor.getString(0)); // 用户名
+                row.add(cursor.getString(2));     // 分数
+                resultList.add(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 确保关闭资源
+            if (cursor != null) cursor.close();
+            db.close();
+        }
+
+        return resultList;
+    }
 }

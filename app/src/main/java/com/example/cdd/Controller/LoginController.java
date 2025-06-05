@@ -7,6 +7,8 @@ import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.Service.UserService;
 import com.example.cdd.View.LoginFragment;
 
+import java.util.List;
+
 public class LoginController  {
 
     private UserService userService;
@@ -38,4 +40,14 @@ public class LoginController  {
         return this.userService.register(userid, password);
     }
     // 负责登录/注册界面的逻辑
+
+
+
+
+    //返回一个二维String数组。
+    public List<List<String>> getAllUserScore()
+    {
+        return  this.userService.getAllUserScore();
+    }
+
 }

@@ -11,6 +11,7 @@ import com.example.cdd.Pojo.LoginResult;
 import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.SQLiteOpenHelper.UserSQLiteOpenHelper;
 
+import java.util.List;
 
 
 public class UserService extends Service {
@@ -19,14 +20,14 @@ public class UserService extends Service {
     public UserService(Context context)
     {
       super();
-      UserDbHelper=new UserSQLiteOpenHelper(context);
+      this.UserDbHelper=new UserSQLiteOpenHelper(context);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        UserDbHelper = new UserSQLiteOpenHelper(getApplicationContext());
+        this.UserDbHelper = new UserSQLiteOpenHelper(getApplicationContext());
     }
 
 
@@ -61,7 +62,7 @@ public class UserService extends Service {
     public boolean updateUserScore(String userID, int newScore) {
         if (userID.isEmpty())
             return false; // 简单参数校验
-        return UserDbHelper.updateScore(userID, newScore);
+        return this.UserDbHelper.updateScore(userID, newScore);
     }
 
 
@@ -69,9 +70,13 @@ public class UserService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (UserDbHelper != null) {
-            UserDbHelper.close(); // 释放资源
+        if (this.UserDbHelper != null) {
+            this.UserDbHelper.close(); // 释放资源
         }
     }
 
+    public List<List<String>> getAllUserScore()
+        {
+            return this.UserDbHelper.getAllUserScores();
+        }
 }

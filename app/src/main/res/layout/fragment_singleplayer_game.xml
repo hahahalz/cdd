@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp"
+	android:orientation="vertical"
+	android:padding="10dp"
     tools:context=".View.SingleplayerGameFragment"
-    android:background="@drawable/bg"
-    android:id="@+id/singleplayer_fragment">
+	android:background="@drawable/bg"
+	android:id="@+id/singleplayer_fragment">
 
     <!-- TODO: Update blank fragment layout -->
 	
@@ -156,76 +156,10 @@
 						android:src="@drawable/cluba" />
 						
 					<ImageView
-						android:id="@+id/i_club2"
+						android:id="@+id/i_diamonda"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/club2" />
-						
-					<ImageView
-						android:id="@+id/i_club3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club3" />
-						
-					<ImageView
-						android:id="@+id/i_club4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club4" />
-						
-					<ImageView
-						android:id="@+id/i_club5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club5" />
-						
-					<ImageView
-						android:id="@+id/i_club6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club6" />
-						
-					<ImageView
-						android:id="@+id/i_club7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club7" />
-					
-					<ImageView
-						android:id="@+id/i_club8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club8" />
-					
-					<ImageView
-						android:id="@+id/i_club9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club9" />
-						
-					<ImageView
-						android:id="@+id/i_club10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club10" />
-						
-					<ImageView
-						android:id="@+id/i_clubj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubj" />
-						
-					<ImageView
-						android:id="@+id/i_clubq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubq" />
-						
-					<ImageView
-						android:id="@+id/i_clubk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubk" />
+						android:src="@drawable/diamonda" />
 						
 					<ImageView
 						android:id="@+id/i_hearta"
@@ -234,82 +168,16 @@
 						android:src="@drawable/hearta" />
 						
 					<ImageView
-						android:id="@+id/i_heart2"
+						android:id="@+id/i_spadea"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/heart2" />
+						android:src="@drawable/spadea" />
 						
 					<ImageView
-						android:id="@+id/i_heart3"
+						android:id="@+id/i_club2"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/heart3" />
-						
-					<ImageView
-						android:id="@+id/i_heart4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart4" />
-						
-					<ImageView
-						android:id="@+id/i_heart5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart5" />
-						
-					<ImageView
-						android:id="@+id/i_heart6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart6" />
-						
-					<ImageView
-						android:id="@+id/i_heart7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart7" />
-						
-					<ImageView
-						android:id="@+id/i_heart8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart8" />
-						
-					<ImageView
-						android:id="@+id/i_heart9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart9" />
-						
-					<ImageView
-						android:id="@+id/i_heart10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart10" />
-						
-					<ImageView
-						android:id="@+id/i_heartj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartj" />
-						
-					<ImageView
-						android:id="@+id/i_heartq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartq" />
-						
-					<ImageView
-						android:id="@+id/i_heartk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartk" />
-						
-					<ImageView
-						android:id="@+id/i_diamonda"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamonda" />
+						android:src="@drawable/club2" />
 						
 					<ImageView
 						android:id="@+id/i_diamond2"
@@ -318,76 +186,10 @@
 						android:src="@drawable/diamond2" />
 						
 					<ImageView
-						android:id="@+id/i_diamond3"
+						android:id="@+id/i_heart2"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/diamond3" />
-						
-					<ImageView
-						android:id="@+id/i_diamond4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond4" />
-						
-					<ImageView
-						android:id="@+id/i_diamond5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond5" />
-						
-					<ImageView
-						android:id="@+id/i_diamond6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond6" />
-						
-					<ImageView
-						android:id="@+id/i_diamond7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond7" />
-						
-					<ImageView
-						android:id="@+id/i_diamond8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond8" />
-						
-					<ImageView
-						android:id="@+id/i_diamond9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond9" />
-						
-					<ImageView
-						android:id="@+id/i_diamond10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond10" />
-						
-					<ImageView
-						android:id="@+id/i_diamondj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondj" />
-						
-					<ImageView
-						android:id="@+id/i_diamondq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondq" />
-						
-					<ImageView
-						android:id="@+id/i_diamondk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondk" />
-						
-					<ImageView
-						android:id="@+id/i_spadea"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadea" />
+						android:src="@drawable/heart2" />
 						
 					<ImageView
 						android:id="@+id/i_spade2"
@@ -396,10 +198,46 @@
 						android:src="@drawable/spade2" />
 						
 					<ImageView
+						android:id="@+id/i_club3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club3" />
+						
+					<ImageView
+						android:id="@+id/i_diamond3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond3" />
+						
+					<ImageView
+						android:id="@+id/i_heart3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart3" />
+						
+					<ImageView
 						android:id="@+id/i_spade3"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade3" />
+						
+					<ImageView
+						android:id="@+id/i_club4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club4" />
+						
+					<ImageView
+						android:id="@+id/i_diamond4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond4" />
+						
+					<ImageView
+						android:id="@+id/i_heart4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart4" />
 						
 					<ImageView
 						android:id="@+id/i_spade4"
@@ -408,10 +246,46 @@
 						android:src="@drawable/spade4" />
 						
 					<ImageView
+						android:id="@+id/i_club5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club5" />
+						
+					<ImageView
+						android:id="@+id/i_diamond5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond5" />
+						
+					<ImageView
+						android:id="@+id/i_heart5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart5" />
+						
+					<ImageView
 						android:id="@+id/i_spade5"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade5" />
+						
+					<ImageView
+						android:id="@+id/i_club6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club6" />
+						
+					<ImageView
+						android:id="@+id/i_diamond6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond6" />
+						
+					<ImageView
+						android:id="@+id/i_heart6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart6" />
 						
 					<ImageView
 						android:id="@+id/i_spade6"
@@ -420,10 +294,46 @@
 						android:src="@drawable/spade6" />
 						
 					<ImageView
+						android:id="@+id/i_club7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club7" />
+						
+					<ImageView
+						android:id="@+id/i_diamond7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond7" />
+						
+					<ImageView
+						android:id="@+id/i_heart7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart7" />
+						
+					<ImageView
 						android:id="@+id/i_spade7"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade7" />
+						
+					<ImageView
+						android:id="@+id/i_club8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club8" />
+						
+					<ImageView
+						android:id="@+id/i_diamond8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond8" />
+						
+					<ImageView
+						android:id="@+id/i_heart8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart8" />
 						
 					<ImageView
 						android:id="@+id/i_spade8"
@@ -432,10 +342,46 @@
 						android:src="@drawable/spade8" />
 						
 					<ImageView
+						android:id="@+id/i_club9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club9" />
+						
+					<ImageView
+						android:id="@+id/i_diamond9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond9" />
+						
+					<ImageView
+						android:id="@+id/i_heart9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart9" />
+						
+					<ImageView
 						android:id="@+id/i_spade9"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade9" />
+						
+					<ImageView
+						android:id="@+id/i_club10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club10" />
+						
+					<ImageView
+						android:id="@+id/i_diamond10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond10" />
+						
+					<ImageView
+						android:id="@+id/i_heart10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart10" />
 						
 					<ImageView
 						android:id="@+id/i_spade10"
@@ -444,16 +390,70 @@
 						android:src="@drawable/spade10" />
 						
 					<ImageView
+						android:id="@+id/i_clubj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubj" />
+						
+					<ImageView
+						android:id="@+id/i_diamondj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondj" />
+						
+					<ImageView
+						android:id="@+id/i_heartj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartj" />
+						
+					<ImageView
 						android:id="@+id/i_spadej"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spadej" />
 						
 					<ImageView
+						android:id="@+id/i_clubq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubq" />
+						
+					<ImageView
+						android:id="@+id/i_diamondq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondq" />
+						
+					<ImageView
+						android:id="@+id/i_heartq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartq" />
+						
+					<ImageView
 						android:id="@+id/i_spadeq"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spadeq" />
+						
+					<ImageView
+						android:id="@+id/i_clubk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubk" />
+						
+					<ImageView
+						android:id="@+id/i_diamondk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondk" />
+						
+					<ImageView
+						android:id="@+id/i_heartk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartk" />
 						
 					<ImageView
 						android:id="@+id/i_spadek"
@@ -497,76 +497,10 @@
 						android:src="@drawable/cluba" />
 						
 					<ImageView
-						android:id="@+id/i2_club2"
+						android:id="@+id/i2_diamonda"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/club2" />
-						
-					<ImageView
-						android:id="@+id/i2_club3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club3" />
-						
-					<ImageView
-						android:id="@+id/i2_club4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club4" />
-						
-					<ImageView
-						android:id="@+id/i2_club5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club5" />
-						
-					<ImageView
-						android:id="@+id/i2_club6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club6" />
-						
-					<ImageView
-						android:id="@+id/i2_club7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club7" />
-					
-					<ImageView
-						android:id="@+id/i2_club8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club8" />
-					
-					<ImageView
-						android:id="@+id/i2_club9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club9" />
-						
-					<ImageView
-						android:id="@+id/i2_club10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club10" />
-						
-					<ImageView
-						android:id="@+id/i2_clubj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubj" />
-						
-					<ImageView
-						android:id="@+id/i2_clubq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubq" />
-						
-					<ImageView
-						android:id="@+id/i2_clubk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubk" />
+						android:src="@drawable/diamonda" />
 						
 					<ImageView
 						android:id="@+id/i2_hearta"
@@ -575,82 +509,16 @@
 						android:src="@drawable/hearta" />
 						
 					<ImageView
-						android:id="@+id/i2_heart2"
+						android:id="@+id/i2_spadea"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/heart2" />
+						android:src="@drawable/spadea" />
 						
 					<ImageView
-						android:id="@+id/i2_heart3"
+						android:id="@+id/i2_club2"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/heart3" />
-						
-					<ImageView
-						android:id="@+id/i2_heart4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart4" />
-						
-					<ImageView
-						android:id="@+id/i2_heart5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart5" />
-						
-					<ImageView
-						android:id="@+id/i2_heart6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart6" />
-						
-					<ImageView
-						android:id="@+id/i2_heart7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart7" />
-						
-					<ImageView
-						android:id="@+id/i2_heart8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart8" />
-						
-					<ImageView
-						android:id="@+id/i2_heart9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart9" />
-						
-					<ImageView
-						android:id="@+id/i2_heart10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart10" />
-						
-					<ImageView
-						android:id="@+id/i2_heartj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartj" />
-						
-					<ImageView
-						android:id="@+id/i2_heartq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartq" />
-						
-					<ImageView
-						android:id="@+id/i2_heartk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartk" />
-						
-					<ImageView
-						android:id="@+id/i2_diamonda"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamonda" />
+						android:src="@drawable/club2" />
 						
 					<ImageView
 						android:id="@+id/i2_diamond2"
@@ -659,76 +527,10 @@
 						android:src="@drawable/diamond2" />
 						
 					<ImageView
-						android:id="@+id/i2_diamond3"
+						android:id="@+id/i2_heart2"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/diamond3" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond4" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond5" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond6" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond7" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond8" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond9" />
-						
-					<ImageView
-						android:id="@+id/i2_diamond10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond10" />
-						
-					<ImageView
-						android:id="@+id/i2_diamondj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondj" />
-						
-					<ImageView
-						android:id="@+id/i2_diamondq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondq" />
-						
-					<ImageView
-						android:id="@+id/i2_diamondk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondk" />
-						
-					<ImageView
-						android:id="@+id/i2_spadea"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadea" />
+						android:src="@drawable/heart2" />
 						
 					<ImageView
 						android:id="@+id/i2_spade2"
@@ -737,10 +539,46 @@
 						android:src="@drawable/spade2" />
 						
 					<ImageView
+						android:id="@+id/i2_club3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club3" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond3" />
+						
+					<ImageView
+						android:id="@+id/i2_heart3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart3" />
+						
+					<ImageView
 						android:id="@+id/i2_spade3"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade3" />
+						
+					<ImageView
+						android:id="@+id/i2_club4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club4" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond4" />
+						
+					<ImageView
+						android:id="@+id/i2_heart4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart4" />
 						
 					<ImageView
 						android:id="@+id/i2_spade4"
@@ -749,10 +587,46 @@
 						android:src="@drawable/spade4" />
 						
 					<ImageView
+						android:id="@+id/i2_club5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club5" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond5" />
+						
+					<ImageView
+						android:id="@+id/i2_heart5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart5" />
+						
+					<ImageView
 						android:id="@+id/i2_spade5"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade5" />
+						
+					<ImageView
+						android:id="@+id/i2_club6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club6" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond6" />
+						
+					<ImageView
+						android:id="@+id/i2_heart6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart6" />
 						
 					<ImageView
 						android:id="@+id/i2_spade6"
@@ -761,10 +635,46 @@
 						android:src="@drawable/spade6" />
 						
 					<ImageView
+						android:id="@+id/i2_club7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club7" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond7" />
+						
+					<ImageView
+						android:id="@+id/i2_heart7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart7" />
+						
+					<ImageView
 						android:id="@+id/i2_spade7"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade7" />
+						
+					<ImageView
+						android:id="@+id/i2_club8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club8" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond8" />
+						
+					<ImageView
+						android:id="@+id/i2_heart8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart8" />
 						
 					<ImageView
 						android:id="@+id/i2_spade8"
@@ -773,10 +683,46 @@
 						android:src="@drawable/spade8" />
 						
 					<ImageView
+						android:id="@+id/i2_club9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club9" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond9" />
+						
+					<ImageView
+						android:id="@+id/i2_heart9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart9" />
+						
+					<ImageView
 						android:id="@+id/i2_spade9"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade9" />
+						
+					<ImageView
+						android:id="@+id/i2_club10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club10" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond10" />
+						
+					<ImageView
+						android:id="@+id/i2_heart10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart10" />
 						
 					<ImageView
 						android:id="@+id/i2_spade10"
@@ -785,16 +731,70 @@
 						android:src="@drawable/spade10" />
 						
 					<ImageView
+						android:id="@+id/i2_clubj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubj" />
+						
+					<ImageView
+						android:id="@+id/i2_diamondj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondj" />
+						
+					<ImageView
+						android:id="@+id/i2_heartj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartj" />
+						
+					<ImageView
 						android:id="@+id/i2_spadej"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spadej" />
 						
 					<ImageView
+						android:id="@+id/i2_clubq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubq" />
+						
+					<ImageView
+						android:id="@+id/i2_diamondq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondq" />
+						
+					<ImageView
+						android:id="@+id/i2_heartq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartq" />
+						
+					<ImageView
 						android:id="@+id/i2_spadeq"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spadeq" />
+						
+					<ImageView
+						android:id="@+id/i2_clubk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubk" />
+						
+					<ImageView
+						android:id="@+id/i2_diamondk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondk" />
+						
+					<ImageView
+						android:id="@+id/i2_heartk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartk" />
 						
 					<ImageView
 						android:id="@+id/i2_spadek"
@@ -838,76 +838,10 @@
 						android:src="@drawable/cluba" />
 						
 					<ImageView
-						android:id="@+id/i3_club2"
+						android:id="@+id/i3_diamonda"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/club2" />
-						
-					<ImageView
-						android:id="@+id/i3_club3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club3" />
-						
-					<ImageView
-						android:id="@+id/i3_club4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club4" />
-						
-					<ImageView
-						android:id="@+id/i3_club5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club5" />
-						
-					<ImageView
-						android:id="@+id/i3_club6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club6" />
-						
-					<ImageView
-						android:id="@+id/i3_club7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club7" />
-					
-					<ImageView
-						android:id="@+id/i3_club8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club8" />
-					
-					<ImageView
-						android:id="@+id/i3_club9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club9" />
-						
-					<ImageView
-						android:id="@+id/i3_club10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club10" />
-						
-					<ImageView
-						android:id="@+id/i3_clubj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubj" />
-						
-					<ImageView
-						android:id="@+id/i3_clubq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubq" />
-						
-					<ImageView
-						android:id="@+id/i3_clubk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubk" />
+						android:src="@drawable/diamonda" />
 						
 					<ImageView
 						android:id="@+id/i3_hearta"
@@ -916,82 +850,16 @@
 						android:src="@drawable/hearta" />
 						
 					<ImageView
-						android:id="@+id/i3_heart2"
+						android:id="@+id/i3_spadea"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/heart2" />
+						android:src="@drawable/spadea" />
 						
 					<ImageView
-						android:id="@+id/i3_heart3"
+						android:id="@+id/i3_club2"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/heart3" />
-						
-					<ImageView
-						android:id="@+id/i3_heart4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart4" />
-						
-					<ImageView
-						android:id="@+id/i3_heart5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart5" />
-						
-					<ImageView
-						android:id="@+id/i3_heart6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart6" />
-						
-					<ImageView
-						android:id="@+id/i3_heart7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart7" />
-						
-					<ImageView
-						android:id="@+id/i3_heart8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart8" />
-						
-					<ImageView
-						android:id="@+id/i3_heart9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart9" />
-						
-					<ImageView
-						android:id="@+id/i3_heart10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart10" />
-						
-					<ImageView
-						android:id="@+id/i3_heartj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartj" />
-						
-					<ImageView
-						android:id="@+id/i3_heartq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartq" />
-						
-					<ImageView
-						android:id="@+id/i3_heartk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartk" />
-						
-					<ImageView
-						android:id="@+id/i3_diamonda"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamonda" />
+						android:src="@drawable/club2" />
 						
 					<ImageView
 						android:id="@+id/i3_diamond2"
@@ -1000,76 +868,10 @@
 						android:src="@drawable/diamond2" />
 						
 					<ImageView
-						android:id="@+id/i3_diamond3"
+						android:id="@+id/i3_heart2"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
-						android:src="@drawable/diamond3" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond4" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond5" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond6" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond7" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond8" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond9" />
-						
-					<ImageView
-						android:id="@+id/i3_diamond10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond10" />
-						
-					<ImageView
-						android:id="@+id/i3_diamondj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondj" />
-						
-					<ImageView
-						android:id="@+id/i3_diamondq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondq" />
-						
-					<ImageView
-						android:id="@+id/i3_diamondk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondk" />
-						
-					<ImageView
-						android:id="@+id/i3_spadea"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadea" />
+						android:src="@drawable/heart2" />
 						
 					<ImageView
 						android:id="@+id/i3_spade2"
@@ -1078,10 +880,46 @@
 						android:src="@drawable/spade2" />
 						
 					<ImageView
+						android:id="@+id/i3_club3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club3" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond3" />
+						
+					<ImageView
+						android:id="@+id/i3_heart3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart3" />
+						
+					<ImageView
 						android:id="@+id/i3_spade3"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade3" />
+						
+					<ImageView
+						android:id="@+id/i3_club4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club4" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond4" />
+						
+					<ImageView
+						android:id="@+id/i3_heart4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart4" />
 						
 					<ImageView
 						android:id="@+id/i3_spade4"
@@ -1090,10 +928,46 @@
 						android:src="@drawable/spade4" />
 						
 					<ImageView
+						android:id="@+id/i3_club5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club5" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond5" />
+						
+					<ImageView
+						android:id="@+id/i3_heart5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart5" />
+						
+					<ImageView
 						android:id="@+id/i3_spade5"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade5" />
+						
+					<ImageView
+						android:id="@+id/i3_club6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club6" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond6" />
+						
+					<ImageView
+						android:id="@+id/i3_heart6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart6" />
 						
 					<ImageView
 						android:id="@+id/i3_spade6"
@@ -1102,10 +976,46 @@
 						android:src="@drawable/spade6" />
 						
 					<ImageView
+						android:id="@+id/i3_club7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club7" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond7" />
+						
+					<ImageView
+						android:id="@+id/i3_heart7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart7" />
+						
+					<ImageView
 						android:id="@+id/i3_spade7"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade7" />
+						
+					<ImageView
+						android:id="@+id/i3_club8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club8" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond8" />
+						
+					<ImageView
+						android:id="@+id/i3_heart8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart8" />
 						
 					<ImageView
 						android:id="@+id/i3_spade8"
@@ -1114,10 +1024,46 @@
 						android:src="@drawable/spade8" />
 						
 					<ImageView
+						android:id="@+id/i3_club9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club9" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond9" />
+						
+					<ImageView
+						android:id="@+id/i3_heart9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart9" />
+						
+					<ImageView
 						android:id="@+id/i3_spade9"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spade9" />
+						
+					<ImageView
+						android:id="@+id/i3_club10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club10" />
+						
+					<ImageView
+						android:id="@+id/i3_diamond10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond10" />
+						
+					<ImageView
+						android:id="@+id/i3_heart10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart10" />
 						
 					<ImageView
 						android:id="@+id/i3_spade10"
@@ -1126,16 +1072,70 @@
 						android:src="@drawable/spade10" />
 						
 					<ImageView
+						android:id="@+id/i3_clubj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubj" />
+						
+					<ImageView
+						android:id="@+id/i3_diamondj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondj" />
+						
+					<ImageView
+						android:id="@+id/i3_heartj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartj" />
+						
+					<ImageView
 						android:id="@+id/i3_spadej"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spadej" />
 						
 					<ImageView
+						android:id="@+id/i3_clubq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubq" />
+						
+					<ImageView
+						android:id="@+id/i3_diamondq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondq" />
+						
+					<ImageView
+						android:id="@+id/i3_heartq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartq" />
+						
+					<ImageView
 						android:id="@+id/i3_spadeq"
 						android:layout_width="50dp"
 						android:layout_height="75dp"
 						android:src="@drawable/spadeq" />
+						
+					<ImageView
+						android:id="@+id/i3_clubk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubk" />
+						
+					<ImageView
+						android:id="@+id/i3_diamondk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondk" />
+						
+					<ImageView
+						android:id="@+id/i3_heartk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartk" />
 						
 					<ImageView
 						android:id="@+id/i3_spadek"
@@ -1191,156 +1191,6 @@
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/cluba" />
-
-			<Button
-				android:id="@+id/club2"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club2" />
-
-			<Button
-				android:id="@+id/club3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club3" />
-				
-			<Button
-				android:id="@+id/club4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club4" />
-				
-			<Button
-				android:id="@+id/club5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club5" />
-				
-			<Button
-				android:id="@+id/club6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club6" />
-				
-			<Button
-				android:id="@+id/club7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club7" />
-				
-			<Button
-				android:id="@+id/club8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club8" />
-				
-			<Button
-				android:id="@+id/club9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club9" />
-				
-			<Button
-				android:id="@+id/club10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club10" />
-				
-			<Button
-				android:id="@+id/clubj"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/clubj" />
-				
-			<Button
-				android:id="@+id/clubq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/clubq" />
-
-			<Button
-				android:id="@+id/clubk"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/clubk" />
-				
-			<Button
-				android:id="@+id/hearta"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/hearta" />
-				
-			<Button
-				android:id="@+id/heart2"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart2" />
-				
-			<Button
-				android:id="@+id/heart3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart3" />
-				
-			<Button
-				android:id="@+id/heart4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart4" />
-				
-			<Button
-				android:id="@+id/heart5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart5" />
-				
-			<Button
-				android:id="@+id/heart6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart6" />
-				
-			<Button
-				android:id="@+id/heart7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart7" />
-				
-			<Button
-				android:id="@+id/heart8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart8" />
-				
-			<Button
-				android:id="@+id/heart9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart9" />
-				
-			<Button
-				android:id="@+id/heart10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart10" />
-				
-			<Button
-				android:id="@+id/heartj"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heartj" />
-				
-			<Button
-				android:id="@+id/heartq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heartq" />
-				
-			<Button
-				android:id="@+id/heartk"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heartk" />
 				
 			<Button
 				android:id="@+id/diamonda"
@@ -1349,82 +1199,34 @@
 				android:background="@drawable/diamonda" />
 				
 			<Button
-				android:id="@+id/diamond2"
+				android:id="@+id/hearta"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
-				android:background="@drawable/diamond2" />
-				
-			<Button
-				android:id="@+id/diamond3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond3" />
-				
-			<Button
-				android:id="@+id/diamond4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond4" />
-				
-			<Button
-				android:id="@+id/diamond5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond5" />
-				
-			<Button
-				android:id="@+id/diamond6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond6" />
-				
-			<Button
-				android:id="@+id/diamond7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond7" />
-				
-			<Button
-				android:id="@+id/diamond8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond8" />
-				
-			<Button
-				android:id="@+id/diamond9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond9" />
-				
-			<Button
-				android:id="@+id/diamond10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond10" />
-				
-			<Button
-				android:id="@+id/diamondj"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamondj" />
-				
-			<Button
-				android:id="@+id/diamondq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamondq" />
-				
-			<Button
-				android:id="@+id/diamondk"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamondk" />
+				android:background="@drawable/hearta" />
 				
 			<Button
 				android:id="@+id/spadea"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spadea" />
+
+			<Button
+				android:id="@+id/club2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club2" />
+				
+			<Button
+				android:id="@+id/diamond2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond2" />
+				
+			<Button
+				android:id="@+id/heart2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart2" />
 				
 			<Button
 				android:id="@+id/spade2"
@@ -1433,10 +1235,46 @@
 				android:background="@drawable/spade2" />
 				
 			<Button
+				android:id="@+id/club3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club3" />
+				
+			<Button
+				android:id="@+id/diamond3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond3" />
+				
+			<Button
+				android:id="@+id/heart3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart3" />
+				
+			<Button
 				android:id="@+id/spade3"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spade3" />
+				
+			<Button
+				android:id="@+id/club4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club4" />
+				
+			<Button
+				android:id="@+id/diamond4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond4" />
+				
+			<Button
+				android:id="@+id/heart4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart4" />
 				
 			<Button
 				android:id="@+id/spade4"
@@ -1445,10 +1283,46 @@
 				android:background="@drawable/spade4" />
 				
 			<Button
+				android:id="@+id/club5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club5" />
+				
+			<Button
+				android:id="@+id/diamond5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond5" />
+				
+			<Button
+				android:id="@+id/heart5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart5" />
+				
+			<Button
 				android:id="@+id/spade5"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spade5" />
+				
+			<Button
+				android:id="@+id/club6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club6" />
+				
+			<Button
+				android:id="@+id/diamond6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond6" />
+				
+			<Button
+				android:id="@+id/heart6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart6" />
 				
 			<Button
 				android:id="@+id/spade6"
@@ -1457,10 +1331,46 @@
 				android:background="@drawable/spade6" />
 				
 			<Button
+				android:id="@+id/club7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club7" />
+				
+			<Button
+				android:id="@+id/diamond7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond7" />
+				
+			<Button
+				android:id="@+id/heart7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart7" />
+				
+			<Button
 				android:id="@+id/spade7"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spade7" />
+				
+			<Button
+				android:id="@+id/club8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club8" />
+				
+			<Button
+				android:id="@+id/diamond8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond8" />
+				
+			<Button
+				android:id="@+id/heart8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart8" />
 				
 			<Button
 				android:id="@+id/spade8"
@@ -1469,10 +1379,46 @@
 				android:background="@drawable/spade8" />
 				
 			<Button
+				android:id="@+id/club9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club9" />
+				
+			<Button
+				android:id="@+id/diamond9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond9" />
+				
+			<Button
+				android:id="@+id/heart9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart9" />
+				
+			<Button
 				android:id="@+id/spade9"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spade9" />
+				
+			<Button
+				android:id="@+id/club10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club10" />
+				
+			<Button
+				android:id="@+id/diamond10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond10" />
+				
+			<Button
+				android:id="@+id/heart10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart10" />
 				
 			<Button
 				android:id="@+id/spade10"
@@ -1481,16 +1427,70 @@
 				android:background="@drawable/spade10" />
 				
 			<Button
+				android:id="@+id/clubj"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/clubj" />
+				
+			<Button
+				android:id="@+id/diamondj"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamondj" />
+				
+			<Button
+				android:id="@+id/heartj"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heartj" />
+				
+			<Button
 				android:id="@+id/spadej"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spadej" />
 				
 			<Button
+				android:id="@+id/clubq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/clubq" />
+				
+			<Button
+				android:id="@+id/diamondq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamondq" />
+				
+			<Button
+				android:id="@+id/heartq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heartq" />
+				
+			<Button
 				android:id="@+id/spadeq"
 				android:layout_width="50dp"
 				android:layout_height="75dp"
 				android:background="@drawable/spadeq" />
+				
+			<Button
+				android:id="@+id/clubk"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/clubk" />
+				
+			<Button
+				android:id="@+id/diamondk"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamondk" />
+				
+			<Button
+				android:id="@+id/heartk"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heartk" />
 				
 			<Button
 				android:id="@+id/spadek"

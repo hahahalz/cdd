@@ -28,9 +28,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.FrameLayout;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.cdd.Controller.BluetoothController;
 import com.example.cdd.R;
+
 
 public class  MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -52,6 +54,7 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
 
         // 初始化 Launcher
         ActivityResultLauncher<Intent> Launcher = registerForActivityResult(
@@ -86,6 +89,26 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
         button_single.setOnClickListener(this);
         Button button_top = findViewById(R.id.button_top);
         button_top.setOnClickListener(this);
+
+        button_multi.setOnClickListener(v -> showSimpleDialog());
+    }
+
+    private void showSimpleDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("多人游戏")
+                .setMessage("请选择您要进行的操作")
+                .setPositiveButton("加入房间", (dialog, which) -> {
+                    Toast.makeText(this, "请选择房间...", Toast.LENGTH_SHORT).show();
+                })
+                .setNeutralButton("使当前设备蓝牙可见", (dialog, which) -> {
+                    Toast.makeText(this, "已开启!", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("创建房间", (dialog, which) -> {
+                    handleBluetoothAndStartMultiplayer();
+                    Toast.makeText(this, "正在创建房间...", Toast.LENGTH_SHORT).show();
+                })
+                .setCancelable(false) // 禁止点击外部关闭
+                .show();
     }
 
     @Override

@@ -79,6 +79,7 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
             replaceFragement(new TopFragment());
         }
     }
+	
     public void replaceFragement(Fragment fragment) {
         if (fragmentContainer == null) {
             fragmentContainer = findViewById(R.id.framelayout);
@@ -90,6 +91,18 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.framelayout, fragment);
             transaction.commit();
+        }
+    }
+
+    public void sendMessageToSingleplayerGameFragment(String message, SingleplayerGameFragment fragment) {
+        if (fragment != null) {
+            fragment.receiveMessage(message);
+        }
+    }
+
+    public void sendMessageToDifficultyFragment(String message, DifficultyFragment fragment) {
+        if (fragment != null) {
+            fragment.receiveMessage(message);
         }
     }
 }

@@ -31,14 +31,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintVertical_bias="0.5" />
 
 
     <Button
         android:id="@+id/button_login"
-        android:layout_width="197dp"
-        android:layout_height="87dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="177dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="112dp"
         android:text="登录"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,8 +46,8 @@
 
     <Button
         android:id="@+id/button_single"
-        android:layout_width="197dp"
-        android:layout_height="87dp"
+        android:layout_width="177dp"
+        android:layout_height="67dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="112dp"
         android:text="单人游戏"
@@ -56,8 +56,8 @@
 
     <Button
         android:id="@+id/button_multi"
-        android:layout_width="197dp"
-        android:layout_height="87dp"
+        android:layout_width="177dp"
+        android:layout_height="67dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="112dp"
         android:text="多人游戏"
@@ -68,8 +68,8 @@
 
     <Button
         android:id="@+id/button_top"
-        android:layout_width="197dp"
-        android:layout_height="87dp"
+        android:layout_width="177dp"
+        android:layout_height="67dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="112dp"
         android:text="排行榜"
@@ -79,12 +79,12 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <FrameLayout
+        android:id="@+id/framelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="8dp"
         android:clickable="false"
-        android:visibility="invisible"
-        android:id="@+id/framelayout"></FrameLayout>
+        android:elevation="8dp"
+        android:visibility="invisible"></FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

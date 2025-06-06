@@ -52,7 +52,7 @@ public class BluetoothController {
 
     private AcceptThread acceptThread; // 服务端监听线程
     private ConnectedThread clientConnectedThread; // 客户端连接后的通信线程 (如果只连接一个服务器)
-    private Map<String, ConnectedThread> connectedClients; // 服务端管理多个客户端的通信线程
+    public Map<String, ConnectedThread> connectedClients; // 服务端管理多个客户端的通信线程
 
     private Map<Integer, String> Clients;
 

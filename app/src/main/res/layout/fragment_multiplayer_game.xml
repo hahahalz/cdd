@@ -9,54 +9,102 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:padding="16dp"
-		android:background="@drawable/bg"> <LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_weight="1"
-		android:orientation="vertical"
-		android:gravity="center_horizontal|bottom"
-		android:paddingBottom="8dp">
-
-		<TextView
-			android:id="@+id/tv_player2_name"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="玩家2"
-			android:textColor="@android:color/white"
-			android:textStyle="bold"
-			android:textSize="18sp"/>
-
-		<TextView
-			android:id="@+id/tv_player2_cards_count"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="手牌: N/A"
-			android:textColor="@android:color/white"
-			android:textSize="14sp"/>
+		android:orientation="horizontal"  android:padding="16dp"
+		android:background="@drawable/bg">
 
 		<LinearLayout
-			android:id="@+id/ll_player2_hand"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:gravity="center_vertical"
-			android:layout_marginTop="4dp"/>
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			android:gravity="center_horizontal">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:orientation="vertical"
+				android:gravity="center_horizontal|bottom"
+				android:paddingBottom="8dp">
+
+				<TextView
+					android:id="@+id/tv_player2_name"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="玩家2"
+					android:textColor="@android:color/white"
+					android:textStyle="bold"
+					android:textSize="18sp"/>
+
+				<TextView
+					android:id="@+id/tv_player2_cards_count"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="手牌: N/A"
+					android:textColor="@android:color/white"
+					android:textSize="14sp"/>
+
+				<LinearLayout
+					android:id="@+id/ll_player2_hand"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+
+				<LinearLayout
+					android:id="@+id/ll_player2_played"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:orientation="vertical"
+				android:gravity="center_horizontal|top"
+				android:paddingTop="8dp">
+				<TextView
+					android:id="@+id/tv_player3_name"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="玩家3"
+					android:textColor="@android:color/white"
+					android:textStyle="bold"
+					android:textSize="18sp"/>
+				<TextView
+					android:id="@+id/tv_player3_cards_count"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="手牌: N/A"
+					android:textColor="@android:color/white"
+					android:textSize="14sp"/>
+				<LinearLayout
+					android:id="@+id/ll_player3_hand"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+				<LinearLayout
+					android:id="@+id/ll_player3_played"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+			</LinearLayout>
+
+		</LinearLayout>
 
 		<LinearLayout
-			android:id="@+id/ll_player2_played"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:gravity="center_vertical"
-			android:layout_marginTop="4dp"/>
-
-	</LinearLayout>
-
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
 			android:layout_weight="2"
 			android:orientation="vertical"
 			android:gravity="center">
@@ -83,93 +131,47 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:gravity="center"
+				android:orientation="vertical"
+				android:gravity="center_horizontal"
 				android:layout_marginBottom="8dp">
-				<LinearLayout
-					android:layout_width="0dp"
+				<TextView
+					android:id="@+id/tv_player4_name"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:orientation="vertical"
-					android:gravity="center_horizontal">
-					<TextView
-						android:id="@+id/tv_player3_name"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="玩家3"
-						android:textColor="@android:color/white"
-						android:textStyle="bold"
-						android:textSize="16sp"/>
-					<TextView
-						android:id="@+id/tv_player3_cards_count"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="手牌: N/A"
-						android:textColor="@android:color/white"
-						android:textSize="12sp"/>
-					<LinearLayout
-						android:id="@+id/ll_player3_hand"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:gravity="center_vertical"
-						android:layout_marginTop="4dp"/>
-					<LinearLayout
-						android:id="@+id/ll_player3_played"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:gravity="center_vertical"
-						android:layout_marginTop="4dp"/>
-				</LinearLayout>
-
-				<LinearLayout
-					android:layout_width="0dp"
+					android:text="玩家4"
+					android:textColor="@android:color/white"
+					android:textStyle="bold"
+					android:textSize="18sp"/>
+				<TextView
+					android:id="@+id/tv_player4_cards_count"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:orientation="vertical"
-					android:gravity="center_horizontal">
-					<TextView
-						android:id="@+id/tv_player4_name"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="玩家4"
-						android:textColor="@android:color/white"
-						android:textStyle="bold"
-						android:textSize="16sp"/>
-					<TextView
-						android:id="@+id/tv_player4_cards_count"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="手牌: N/A"
-						android:textColor="@android:color/white"
-						android:textSize="12sp"/>
-					<LinearLayout
-						android:id="@+id/ll_player4_hand"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:gravity="center_vertical"
-						android:layout_marginTop="4dp"/>
-					<LinearLayout
-						android:id="@+id/ll_player4_played"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:orientation="horizontal"
-						android:gravity="center_vertical"
-						android:layout_marginTop="4dp"/>
-				</LinearLayout>
+					android:text="手牌: N/A"
+					android:textColor="@android:color/white"
+					android:textSize="14sp"/>
+				<LinearLayout
+					android:id="@+id/ll_player4_hand"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+				<LinearLayout
+					android:id="@+id/ll_player4_played"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
 			</LinearLayout>
 
 		</LinearLayout>
 
 		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
-			android:orientation="vertical"
-			android:gravity="center_horizontal|top"
-			android:paddingTop="8dp">
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="2"  android:orientation="vertical"
+			android:gravity="center_horizontal|bottom" android:paddingTop="8dp">
 
 			<TextView
 				android:id="@+id/tv_player1_name"
@@ -185,16 +187,22 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="手牌: 13"
-
+				android:textColor="@android:color/white"
 				android:textSize="14sp"/>
 
-			<LinearLayout
-				android:id="@+id/ll_player1_hand"
-				android:layout_width="wrap_content"
+			<HorizontalScrollView
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:gravity="center_vertical"
-				android:layout_marginTop="4dp"/>
+				android:layout_marginTop="4dp"
+				android:layout_marginBottom="8dp">
+				<LinearLayout
+					android:id="@+id/ll_player1_hand"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"/>
+			</HorizontalScrollView>
+
 
 			<LinearLayout
 				android:id="@+id/ll_player1_played"

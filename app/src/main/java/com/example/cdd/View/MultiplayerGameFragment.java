@@ -3,6 +3,7 @@ package com.example.cdd.View;
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,9 +47,9 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     private LinearLayout llPlayer1Hand; // 本地玩家手牌
     private LinearLayout llPlayer1Played; // 牌桌中央，显示最近打出的牌
     private LinearLayout llPlayer2Played, llPlayer3Played, llPlayer4Played; // 其他布局保留，不再用于显示牌
-
+    private FrameLayout fragmentContainer;
     private Button btnPlayCards, btnPass, btnReady;
-
+    private ImageView btnBack;
     private List<Card> selectedCards = new ArrayList<>();
     private List<ImageView> player1HandCardImageViews = new ArrayList<>();
 
@@ -100,7 +102,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             currentPlayer = new Player(PlayerInformation.getThePlayerInformation()); // 客户端玩家，临时ID
         }
 
-        updateUI();
+
 
         return view;
     }
@@ -125,12 +127,14 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         btnPlayCards = view.findViewById(R.id.btn_play_cards);
         btnPass = view.findViewById(R.id.btn_pass);
         btnReady = view.findViewById(R.id.btn_ready);
+        btnBack = view.findViewById(R.id.btn_back);
     }
 
     private void setupListeners() {
         btnPlayCards.setOnClickListener(v -> playSelectedCards());
         btnPass.setOnClickListener(v -> passTurn());
         btnReady.setOnClickListener(v -> sendReadySignal());
+        btnBack.setOnClickListener(v -> showExitConfirmationDialog());
     }
 
     private void sendReadySignal() {
@@ -538,7 +542,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
 
     private void checkAllPlayersReady() {
-        if (isHost && bluetoothController != null && GameState.getInstance().getPlayers().size() == 4) {
+        if (isHost && bluetoothController != null && bluetoothController.connectedClients.size() == 3) {
             // 【待完成】这里需要一个更健壮的机制来追踪所有连接玩家的准备状态
             // 房主应该在 MutipleController 内部维护一个 ready 状态的 Map<Integer, Boolean>
             // 当所有玩家都 ready 后，调用 startGame()
@@ -726,5 +730,62 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         }
     }
 
+
+
+    private void showExitConfirmationDialog() {
+        if (!isAdded()) return; // 确保 Fragment 附加到 Activity
+        new AlertDialog.Builder(requireContext())
+                .setTitle("退出游戏")
+                .setMessage("确定要退出当前游戏吗？这会结束本局游戏。")
+                .setPositiveButton("确定", (dialog, which) -> {
+                    handleExitGame();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void handleExitGame() {
+        if (isHost) {
+            if (bluetoothController != null) {
+                TurnInfoMessage exitMessage = new TurnInfoMessage(
+                        -3, // 约定 -3 为房主退出信号
+                        new ArrayList<>(),
+                        true, // 游戏结束
+                        -1 // 无赢家
+                );
+                bluetoothController.broadcastDataToClients(exitMessage);
+                bluetoothController.stopServer();
+            }
+            if (gameController != null) {
+                gameController.quitGame(); // 调用 MutipleController 的退出方法
+            }
+        } else {
+            if (bluetoothController != null) {
+                bluetoothController.sendDataToServer("PLAYER_QUIT:" + myPlayerIndex);
+                bluetoothController.disconnectClient();
+            }
+        }
+
+        if (getActivity() instanceof MainActivity) { // 假设你的主 Activity 是 MainActivity
+            navigateToMainPage(); // 导航回主Fragment
+            Toast.makeText(getContext(), "已退出游戏。", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void navigateToMainPage() {
+        if (fragmentContainer == null) {
+            fragmentContainer = getActivity().findViewById(R.id.framelayout);
+        }
+        // 实现跳转到主页面的逻辑
+        if (fragmentContainer != null ) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+            fragmentContainer.setClickable(false); // 禁用点击拦截
+            fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
+        }
+    }
 
 }

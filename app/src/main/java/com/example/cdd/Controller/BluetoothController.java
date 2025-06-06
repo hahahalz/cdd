@@ -54,6 +54,8 @@ public class BluetoothController {
     private ConnectedThread clientConnectedThread; // 客户端连接后的通信线程 (如果只连接一个服务器)
     private Map<String, ConnectedThread> connectedClients; // 服务端管理多个客户端的通信线程
 
+    private Map<Integer, String> Clients;
+
     private BluetoothServerSocket serverSocket; // 服务端socket
     private BluetoothSocket clientSocket;       // 客户端socket (对于客户端模式)
     // InputStream 和 OutputStream 不再是直接成员变量，而是由 ConnectedThread 管理
@@ -86,6 +88,18 @@ public class BluetoothController {
 
     // 用于管理所有后台通信线程的线程池
     private ExecutorService executorService = Executors.newCachedThreadPool(); // 新增
+
+    public void setDeviceByIndex() {
+        int cnt=0;
+        for(Map.Entry<String, ConnectedThread> entry : connectedClients.entrySet()){
+            Clients.put(++cnt,entry.getKey());
+        }
+    }
+
+    public String getDeviceByIndex(int i) {
+        return Clients.get(i);
+    }
+
 
     public interface BluetoothListener {
         void onDeviceDiscovered(BluetoothDevice device); // 发现新设备
@@ -422,16 +436,12 @@ public class BluetoothController {
 
     /**
      * 作为服务端，向特定客户端发送数据
+     *
      * @param deviceAddress 客户端设备的MAC地址
-     * @param data 要发送的字符串
+     * @param data          要发送的字符串
      */
     public void sendDataToClient(String deviceAddress, Serializable data) {
-        ConnectedThread clientThread = connectedClients.get(deviceAddress);
-        if (clientThread != null) {
-            clientThread.write(data);
-        } else {
-            if (listener != null) listener.onError("客户端 " + deviceAddress + " 未连接或已断开");
-        }
+
     }
 
     /**

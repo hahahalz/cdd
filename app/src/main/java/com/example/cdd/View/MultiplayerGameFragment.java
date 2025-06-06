@@ -53,11 +53,15 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private Player currentPlayer; // 当前本地玩家对象 (从 GameState 中获取其手牌，仅房主维持 GameState)
     private int myPlayerIndex = -1; // 本地玩家的序号，房主为0，客户端为1-3
-    private boolean isHost = false; // 标记当前设备是否是房主
+    private boolean isHost; // 标记当前设备是否是房主
 
     // 客户端需要知道最新的牌组来判断是否能出牌，即使不存储完整GameState
     private List<Card> clientLastPlayedCards = new ArrayList<>();
     private int clientCurrentPlayerIndex = -1; // 客户端需要知道当前轮到谁，才能判断是否是自己
+
+    public MultiplayerGameFragment(boolean isHost){
+        this.isHost = isHost;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -66,9 +70,10 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             bluetoothController = ((MainActivity) context).getBluetoothController();
             if (bluetoothController != null) {
                 bluetoothController.setListener(this);
-                isHost = bluetoothController.isserve;
+                //isHost = bluetoothController.isserve();
                 if (isHost) {
                     myPlayerIndex = 0; // 房主默认序号为0
+
                 }
             }
         }
@@ -182,7 +187,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show();
             // 如果是客户端的请求，告诉它失败
             if (fromDevice != null && bluetoothController != null) {
-                bluetoothController.sendDataToClient(fromDevice, new ActionInvalidMessage("游戏状态未初始化。"));
+                bluetoothController.sendDataToClient(fromDevice.getAddress(), new ActionInvalidMessage("游戏状态未初始化。"));
             }
             return;
         }
@@ -226,7 +231,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             // 如果是客户端的请求，告诉它失败
             if (fromDevice != null && bluetoothController != null) {
-                bluetoothController.sendDataToClient(fromDevice, new ActionInvalidMessage(errorMessage));
+                bluetoothController.sendDataToClient(fromDevice.getAddress(), new ActionInvalidMessage(errorMessage));
             }
         }
     }
@@ -384,12 +389,9 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
         String cardResourceName = getCardResourceName(card);
         int resId = getResources().getIdentifier(cardResourceName, "drawable", requireContext().getPackageName());
-        if (resId != 0) {
+
             imageView.setImageResource(resId);
-        } else {
-            imageView.setImageResource(R.drawable.card_back); // 默认显示牌背
-            Log.e("MultiplayerGameFragment", "Card resource not found: " + cardResourceName);
-        }
+
         return imageView;
     }
 
@@ -540,7 +542,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             // 【待完成】这里需要一个更健壮的机制来追踪所有连接玩家的准备状态
             // 房主应该在 MutipleController 内部维护一个 ready 状态的 Map<Integer, Boolean>
             // 当所有玩家都 ready 后，调用 startGame()
-
+            bluetoothController.setDeviceByIndex();
             Log.d("MultiplayerGameFragment", "所有玩家已准备好，开始游戏...");
             startGame();
         }
@@ -577,7 +579,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             for (int i = 0; i < GameState.getInstance().getPlayers().size(); i++) {
                 if (i != myPlayerIndex) { // 不给自己发
                     Player clientPlayer = (Player) GameState.getInstance().getPlayers().get(i);
-                    BluetoothDevice clientDevice = bluetoothController.getDeviceByIndex(i); // 假设 BluetoothController 有根据序号获取设备的方法
+                    String clientDevice = bluetoothController.getDeviceByIndex(i); // 假设 BluetoothController 有根据序号获取设备的方法
                     if (clientDevice != null && clientPlayer.getHandCards() != null) {
                         bluetoothController.sendDataToClient(clientDevice, new ArrayList<>(clientPlayer.getHandCards()));
                         Log.d("MultiplayerGameFragment", "Sent initial hand cards to player " + i);
@@ -615,31 +617,31 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     @Override
     public void onClientConnected(BluetoothDevice device, boolean isServer) {
-        if (!isAdded()) return;
-        if (isServer) {
-            // 当前设备是服务端（房主），有新的客户端连接
-            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "客户端 " + (device.getName() != null ? device.getName() : device.getAddress()) + " 已连接", Toast.LENGTH_SHORT).show());
-            // 房主需要为新连接的客户端分配一个序号，并告知它
-            // 【重要】房主在 MutipleController 内部管理玩家列表和序号分配
-            // 假设 MutipleController.addPlayerAndAssignIndex() 返回分配的序号
-            int assignedIndex = gameController.addPlayerAndAssignIndex(device); // 你需要在 MutipleController 中实现这个方法
-
-            if (assignedIndex != -1) {
-                bluetoothController.sendDataToClient(device, "ASSIGN_INDEX:" + assignedIndex);
-                Log.d("MultiplayerGameFragment", "Assigned index " + assignedIndex + " to " + device.getName());
-            } else {
-                Log.e("MultiplayerGameFragment", "Failed to assign index to new client: " + device.getName());
-            }
+//        if (!isAdded()) return;
+//        if (isServer) {
+//            // 当前设备是服务端（房主），有新的客户端连接
+//            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "客户端 " + (device.getName() != null ? device.getName() : device.getAddress()) + " 已连接", Toast.LENGTH_SHORT).show());
+//            // 房主需要为新连接的客户端分配一个序号，并告知它
+//            // 【重要】房主在 MutipleController 内部管理玩家列表和序号分配
+//            // 假设 MutipleController.addPlayerAndAssignIndex() 返回分配的序号
+//            int assignedIndex = gameController.addPlayerAndAssignIndex(device); // 你需要在 MutipleController 中实现这个方法
+//
+//            if (assignedIndex != -1) {
+//                bluetoothController.sendDataToClient(device, "ASSIGN_INDEX:" + assignedIndex);
+//                Log.d("MultiplayerGameFragment", "Assigned index " + assignedIndex + " to " + device.getName());
+//            } else {
+//                Log.e("MultiplayerGameFragment", "Failed to assign index to new client: " + device.getName());
+//            }
 
             // 房主更新UI显示连接状态和玩家数 (GameState.getInstance().getPlayers().size() 应该已经更新)
             updateUI();
 
-        } else {
-            // 当前设备是客户端，已成功连接到服务端
-            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "已连接到服务端 " + (device.getName() != null ? device.getName() : device.getAddress()), Toast.LENGTH_SHORT).show());
-            isHost = false;
-            // 客户端连接成功后，等待房主发送 ASSIGN_INDEX 消息来确定自己的 myPlayerIndex
-        }
+//        } else {
+//            // 当前设备是客户端，已成功连接到服务端
+//            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "已连接到服务端 " + (device.getName() != null ? device.getName() : device.getAddress()), Toast.LENGTH_SHORT).show());
+//            isHost = false;
+//            // 客户端连接成功后，等待房主发送 ASSIGN_INDEX 消息来确定自己的 myPlayerIndex
+//        }
     }
 
     @Override
@@ -660,7 +662,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
                     .setMessage("房主已断开连接，游戏结束。")
                     .setPositiveButton("确定", (dialog, which) -> {
                         if (getActivity() instanceof MainActivity) {
-                           // ((MainActivity) getActivity()).na(); // 返回主界面
+                            // ((MainActivity) getActivity()).na(); // 返回主界面
                         }
                     })
                     .setCancelable(false)

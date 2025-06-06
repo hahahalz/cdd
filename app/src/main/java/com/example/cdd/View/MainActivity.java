@@ -44,6 +44,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, BluetoothController.BluetoothListener { // 实现 BluetoothListener
 
+    int cnt = 0;
     private FrameLayout fragmentContainer;
 
     // Initialize BluetoothController with context and listener
@@ -270,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (mBluetoothController.getBluetoothStatus()) {
             // 蓝牙已经开启，直接进入游戏
-            replaceFragement(new MultiplayerGameFragment());
+            replaceFragement(new MultiplayerGameFragment(true));
         } else {
             // 蓝牙未开启，检查并请求权限
             if (ContextCompat.checkSelfPermission(this,
@@ -394,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onServerStarted() {
         Toast.makeText(this, "服务端已启动，等待客户端连接...", Toast.LENGTH_LONG).show();
         // 可以在这里更新UI，例如显示“等待连接中...”
-        replaceFragement(new MultiplayerGameFragment()); // 服务端启动成功后，可以跳转到游戏界面
+        replaceFragement(new MultiplayerGameFragment(true)); // 服务端启动成功后，可以跳转到游戏界面
     }
 
     @Override
@@ -412,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             runOnUiThread(()->Toast.makeText(this, "已成功连接到服务端: " + deviceName, Toast.LENGTH_LONG).show());
             // 作为客户端，连接到服务端，可以跳转到游戏界面或发送数据
-            runOnUiThread(()->replaceFragement(new MultiplayerGameFragment()));
+            runOnUiThread(()->replaceFragement(new MultiplayerGameFragment(false)));
             // 此时可以发送数据
             // mBluetoothController.sendDataToServer("Hello from client!"); // 示例数据发送
         }

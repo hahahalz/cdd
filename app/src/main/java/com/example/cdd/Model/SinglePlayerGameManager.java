@@ -54,7 +54,7 @@ public class SinglePlayerGameManager extends ViewModel {
         thePlayer.getPlayerInformation().setScore(a+gameState.getRoundscore());
         deck=null;
         gameState.clearGameState();
-        System.out.println("Now score  "+thePlayer.getPlayerInformation().getScore());
+
 
     }
 

@@ -49,6 +49,7 @@ public class SettingManager {
                 isPaused = false;
                 currentMusicResId = musicResId;
             });
+            mediaPlayer.setLooping(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

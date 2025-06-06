@@ -27,6 +27,7 @@ public class Robot extends Actor{            // 机器人玩家实体
         gameRuleConfig=g;
         level=l;
         mcts_algorithm = new MCTS_Algorithm(g.RULE_TYPE);
+        greedy=new Greedy();
     }
 
     @Override
@@ -39,6 +40,7 @@ public class Robot extends Actor{            // 机器人玩家实体
 //            strategy = new MCTS_Algorithm(gameRuleConfig.RULE_TYPE).new MCTS(level);
 //        }
         MCTS_Algorithm.MCTS mcts = mcts_algorithm.new MCTS(level);
+
         List<Card> Cards;
         //Cards = strategy.makeDecision(gameState,gameRuleConfig);
         if(level == 1){

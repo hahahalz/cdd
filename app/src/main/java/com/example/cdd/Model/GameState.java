@@ -111,7 +111,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
 
     public void setLastPlayedCards(List<Card> cards) {
         this.lastPlayedCards = new ArrayList<>(Objects.requireNonNull(cards));
-        this.cardsOnTable.addAll(cards); // 将牌添加到桌面上
+        //this.cardsOnTable.addAll(cards);
     }
 
     public int getRoundNumber() {

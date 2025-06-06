@@ -44,7 +44,6 @@ public class TopFragment extends Fragment implements View.OnClickListener {
     private void initData() {
         loginController = new LoginController(requireContext());
         rankList = loginController.getAllUserScore();
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new RankAdapter(rankList));
     }

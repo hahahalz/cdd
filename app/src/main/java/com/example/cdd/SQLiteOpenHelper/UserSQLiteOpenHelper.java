@@ -137,9 +137,9 @@ public class UserSQLiteOpenHelper extends SQLiteOpenHelper {
 
             // 遍历结果集
             while (cursor.moveToNext()) {
-                ArrayList<String> row = new ArrayList<>();
+                List<String> row = new ArrayList<>();
                 row.add(cursor.getString(0)); // 用户名
-                row.add(cursor.getString(2));     // 分数
+                row.add(cursor.getString(1));     // 分数
                 resultList.add(row);
             }
         } catch (Exception e) {

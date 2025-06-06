@@ -12,37 +12,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiplayerGameManager extends ViewModel {
-    // 管理整个游戏流程、状态、调用规则、AI、网络等（单人模式）
+    // 管理整个游戏流程、状态、调用规则、网络等（多人模式）
     GameRuleConfig gameRuleConfig;//配置游戏规则
     GameState gameState;//获取游戏状态实例，endgame时要修改
     List<Actor> players;//参与者列表，要改
 
-    MCTS_Algorithm.MCTS mcts;
-    Player thePlayer;//获取真人玩家的索引，要改
-    Robot r1;
-    Robot r2;
-    Robot r3;
+    private Player thePlayer;//房主
+
+    List<List<Card>> allCards;
+
+    Player P2;
+    Player P3;
+    Player P4;
 
     Deck deck;
 
-    public MultiplayerGameManager(int rule, int levelOfRobot)
+    public MultiplayerGameManager()
     {
-        gameRuleConfig=new GameRuleConfig(rule);
+        gameRuleConfig=new GameRuleConfig(1);
         deck=new Deck();
         thePlayer=new Player(PlayerInformation.getThePlayerInformation());
 
         players=new ArrayList<>();
 
-        players.add(thePlayer);//玩家第一个
-        r1=new Robot(gameRuleConfig,levelOfRobot);
-        r2=new Robot(gameRuleConfig,levelOfRobot);
-        r3=new Robot(gameRuleConfig,levelOfRobot);//定死3个机器人
-        players.add(r1);
-        players.add(r2);
-        players.add(r3);
+
+
+        P2=new Player();
+        P3=new Player();
+        P4=new Player();
+        players.add(thePlayer);
+        players.add(P2);
+        players.add(P3);
+        players.add(P4);
         //数量定为四
         gameState=GameState.getInstance(players);
-        mcts = new MCTS_Algorithm().new MCTS();
+
     }
 
 
@@ -55,8 +59,8 @@ public class MultiplayerGameManager extends ViewModel {
         int a=thePlayer.getPlayerInformation().getScore();
         thePlayer.getPlayerInformation().setScore(a+gameState.getRoundscore());
         deck=null;
-        gameState.clearGameState();
-        System.out.println("Now score  "+thePlayer.getPlayerInformation().getScore());
+        //gameState.clearGameState();
+
 
     }
 
@@ -67,16 +71,21 @@ public class MultiplayerGameManager extends ViewModel {
         endGame();
     }
 
-    public Actor checkWinner()
+
+    //一定要调用
+    public int checkWinner()
     {
-        Actor nowPlay=gameState.getCurrentPlayer();
-        if(nowPlay.getHandCards().isEmpty())
+
+        if(gameState.isGameOver())
         {
-            gameState.setWinner(nowPlay);
-            return gameState.getCurrentPlayer();
+
+            return gameState.getCurrentPlayerIndex();
         }
-        gameState.nextPlayer();
-        return null;
+        else
+        {
+            gameState.nextPlayer();
+        }
+         return -1;
     }
 
 
@@ -87,7 +96,7 @@ public class MultiplayerGameManager extends ViewModel {
         {
             int a=gameState.getRoundscore();
             gameState.setRoundscore(a+1);
-            System.out.println(gameState.getPlayers());
+
         }
         //可以返回本回合得分
 
@@ -132,6 +141,7 @@ public class MultiplayerGameManager extends ViewModel {
         return allCards;
     }
 
+    //处理每一个玩家出牌
     public Boolean handlePlayerPlay(List<Card> cards)
     {
         if(gameState.isGameOver())
@@ -140,12 +150,16 @@ public class MultiplayerGameManager extends ViewModel {
         //调用GameRuleConfig中的isValidPlay判断出牌是否合理，玩家如果有输入就调用
         if(gameRuleConfig.isValidPlay(cards,gameState.getLastPlayedCards(),gameState.getPasstime()))
         {
-            thePlayer.playCards(cards);
+            Actor nowplay= gameState.getCurrentPlayer();
+            nowplay.playCards(cards);
             gameState.setLastPlayedCards(cards);
             gameState.nextPlayer();
             gameState.setPasstime(0);
-            if(thePlayer.getHandCards().isEmpty())
-                gameState.setWinner(thePlayer);
+            if(nowplay.getHandCards().isEmpty())
+            {
+                gameState.setWinner(nowplay);
+                gameState.setGameOver(true);
+            }
             return true;
         }
         else
@@ -154,31 +168,6 @@ public class MultiplayerGameManager extends ViewModel {
         }
     }
 
-
-
-    public List<Card> handleAIPlay()
-    {
-        if(gameState.isGameOver())
-            return new ArrayList<>();
-
-        //处理AI出牌
-        Actor AI=gameState.getCurrentPlayer();
-        List<Card> aIplay=AI.playCards(new GameState(gameState));
-
-        if(!aIplay.isEmpty())
-        {
-            gameState.setLastPlayedCards(aIplay);
-            gameState.nextPlayer();
-            gameState.setPasstime(0);
-            if(AI.getHandCards().isEmpty())
-                gameState.setWinner(AI);
-        }
-        else
-        {
-            AI.pass();
-        }
-        return aIplay;
-    }
 
 
 

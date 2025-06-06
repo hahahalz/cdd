@@ -113,7 +113,7 @@ public class MCTS_Algorithm {
 
         public MCTS(int diffculty) {
             if(diffculty == 2){
-                TIME_LIMIT_MS = 500;
+                TIME_LIMIT_MS = 1500;
             }
             else{
                 TIME_LIMIT_MS = 8000;

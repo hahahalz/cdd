@@ -44,6 +44,8 @@ public class Robot extends Actor{            // 机器人玩家实体
         List<Card> Cards;
         //Cards = strategy.makeDecision(gameState,gameRuleConfig);
         if(level == 1){
+            if(greedy==null)
+                return new ArrayList<>();
             Cards = greedy.greedyPlay(HandCards,gameState.getLastPlayedCards(),gameRuleConfig,gameState.getPasstime());
         }
         else if(level == 2){

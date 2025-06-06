@@ -35,6 +35,7 @@ import android.widget.ListView;     // 新增导入
 import android.widget.TextView;
 
 import com.example.cdd.Controller.BluetoothController;
+import com.example.cdd.Model.SettingManager;
 import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Initialize BluetoothController with context and listener
     private BluetoothController mBluetoothController; // 声明为成员变量
 
+    private SettingManager settingManager;
+    private Button musicControlButton;
+    private int currentMusicResId = R.raw.background_music;
     private ActivityResultLauncher<String[]> requestPermissionLauncher; // For Bluetooth permissions
     private ActivityResultLauncher<Intent> requestEnableBtLauncher;     // For enabling Bluetooth
 
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        //音乐和设置的管理器
+        settingManager = SettingManager.getInstance(this);
 
         mBluetoothController = new BluetoothController(this, this); // 初始化 BluetoothController，传入 Context 和 BluetoothListener
 
@@ -129,11 +135,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button_single.setOnClickListener(this);
         Button button_top = findViewById(R.id.button_top);
         button_top.setOnClickListener(this);
+        musicControlButton = findViewById(R.id.btn_music_control);
+        musicControlButton.setOnClickListener(this);
+        updateButtonText();
+
 
         button_multi.setOnClickListener(v -> showMultiplayerDialog()); // 修改为新的方法
 
         TextView loginStatus = findViewById(R.id.login_status);
 
+// 从静态类 PlayerInformation 读取 userid 判断是否登录
         String userid = PlayerInformation.getThePlayerInformation().getUserID();
 
         if (userid != null && !userid.isEmpty()) {
@@ -141,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             loginStatus.setText("未登录");
         }
+
     }
 
     @Override
@@ -250,6 +262,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(view.getId() == R.id.button_top){
             replaceFragement(new TopFragment());
         }
+        else if (view.getId() == R.id.btn_music_control) {
+            handleMusicControl();
+        }
+    }
+
+    private void handleBluetoothAndStartMultiplayer() {
+        if (!mBluetoothController.isSupportBluetooth()) {
+            Toast.makeText(this, "设备不支持蓝牙", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (mBluetoothController.getBluetoothStatus()) {
+            // 蓝牙已经开启，直接进入游戏
+            replaceFragement(new MultiplayerGameFragment());
+        } else {
+            // 蓝牙未开启，检查并请求权限
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, bluetoothPermissions, REQUEST_BLUETOOTH_PERMISSIONS);
+            } else {
+                // 已有权限，请求开启蓝牙（但不立即跳转界面）
+                mBluetoothController.turnOnBluetooth();
+            }
+        }
     }
 
     // 移除 handleBluetoothAndStartMultiplayer，其逻辑已整合到 showMultiplayerDialog
@@ -257,17 +293,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // public void onRequestPermissionsResult(...) { ... } // 权限结果处理现在由 requestPermissionLauncher 处理
 
     public void showFragment(Fragment fragment) {
-        fragmentContainer.setClickable(true);
-        fragmentContainer.setVisibility(View.VISIBLE);
+        fragmentContainer.setClickable(true); // 启用点击拦截
+        fragmentContainer.setVisibility(View.VISIBLE); // 显示容器
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.framelayout, fragment)
                 .commit();
     }
 
+    // 隐藏 Fragment 时禁用拦截
     public void hideFragment() {
-        fragmentContainer.setClickable(false);
-        fragmentContainer.setVisibility(View.INVISIBLE);
+        fragmentContainer.setClickable(false); // 禁用点击拦截
+        fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
 
         getSupportFragmentManager().beginTransaction()
                 .remove(getSupportFragmentManager().findFragmentById(R.id.framelayout))
@@ -279,8 +316,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fragmentContainer = findViewById(R.id.framelayout);
         }
         if (fragmentContainer != null && fragment != null) {
-            fragmentContainer.setClickable(true);
-            fragmentContainer.setVisibility(View.VISIBLE);
+            fragmentContainer.setClickable(true); // 启用点击拦截
+            fragmentContainer.setVisibility(View.VISIBLE); // 显示容器
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.framelayout, fragment);
@@ -300,16 +337,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mBluetoothController.onDestroy(); // 清理 BluetoothController 资源
+    private void handleMusicControl() {
+        SettingManager.MusicState state = settingManager.getState();
+
+        switch (state) {
+            case STOPPED:
+            case PAUSED:
+                settingManager.playOrResumeMusic(currentMusicResId);
+                break;
+            case PLAYING:
+                settingManager.pauseMusic();
+                break;
+        }
+
+        updateButtonText();
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // BluetoothController.BluetoothListener 实现
-    // ---------------------------------------------------------------------------------------------
+    private void updateButtonText() {
+        SettingManager.MusicState state = settingManager.getState();
 
+        if (state == SettingManager.MusicState.PLAYING) {
+            musicControlButton.setText("暂停音乐");
+        } else if (state == SettingManager.MusicState.PAUSED) {
+            musicControlButton.setText("继续音乐");
+        } else {
+            musicControlButton.setText("开始音乐");
+        }
+    }
     @Override
     public void onDeviceDiscovered(BluetoothDevice device) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
@@ -389,5 +443,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onError(String error) {
         Toast.makeText(this, "蓝牙错误: " + error, Toast.LENGTH_LONG).show();
         // 处理错误，例如显示错误信息给用户
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBluetoothController.onDestroy(); // 清理 BluetoothController 资源
     }
 }

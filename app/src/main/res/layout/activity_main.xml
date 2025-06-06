@@ -87,6 +87,18 @@
         android:visibility="invisible"></FrameLayout>
 
 
+    <!-- activity_main.xml -->
+    <Button
+        android:id="@+id/btn_music_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始音乐"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_login" />
+
+
     <TextView
         android:id="@+id/login_status"
         android:layout_width="wrap_content"

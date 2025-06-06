@@ -82,6 +82,8 @@ public class GameState {                 // 游戏当前状态（手牌、已出
         return instance;
     }
 
+
+
     public List<Actor> getPlayers() {
         return players;
     }

@@ -714,6 +714,10 @@ public class BluetoothController {
                 if (listener != null) listener.onError("关闭Socket失败: " + e.getMessage());
             }
         }
+
+        public boolean isServerSide() {
+            return isServerSide;
+        }
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -794,6 +798,14 @@ public class BluetoothController {
         } catch (IllegalArgumentException e) {
             // 如果接收器未注册，会抛出此异常，可以忽略
         }
+    }
+
+    public void setListener(BluetoothListener listener) {
+        this.listener = listener;
+    }
+
+    public Map<String, ConnectedThread> getConnectedClients(){
+        return Collections.unmodifiableMap(this.connectedClients);
     }
 
 }

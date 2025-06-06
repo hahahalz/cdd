@@ -23,44 +23,53 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cdd.Controller.BluetoothController;
-import com.example.cdd.Controller.GameController;
+import com.example.cdd.Controller.MutipleController;
 import com.example.cdd.Model.Card;
 import com.example.cdd.Model.GameState;
 import com.example.cdd.Model.Player;
 import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable; // 导入 Serializable
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MultiplayerGameFragment extends Fragment implements BluetoothController.BluetoothListener { // 修改接口名称
+public class MultiplayerGameFragment extends Fragment implements BluetoothController.BluetoothListener {
 
     private BluetoothController bluetoothController;
-    private GameController gameController;
+    private MutipleController gameController;
 
     private TextView tvPlayer1Name, tvPlayer2Name, tvPlayer3Name, tvPlayer4Name;
     private TextView tvPlayer1CardsCount, tvPlayer2CardsCount, tvPlayer3CardsCount, tvPlayer4CardsCount;
-    private LinearLayout llPlayer1Hand, llPlayer1Played, llPlayer2Played, llPlayer3Played, llPlayer4Played;
+    private LinearLayout llPlayer1Hand; // 本地玩家手牌
+    private LinearLayout llPlayer1Played; // 牌桌中央，显示最近打出的牌
+    private LinearLayout llPlayer2Played, llPlayer3Played, llPlayer4Played; // 其他布局保留，不再用于显示牌
+
     private Button btnPlayCards, btnPass, btnReady;
 
     private List<Card> selectedCards = new ArrayList<>();
     private List<ImageView> player1HandCardImageViews = new ArrayList<>();
 
-    private Player currentPlayer; // 当前玩家，即本地玩家
+    private Player currentPlayer; // 当前本地玩家对象 (从 GameState 中获取其手牌，仅房主维持 GameState)
+    private int myPlayerIndex = -1; // 本地玩家的序号，房主为0，客户端为1-3
+    private boolean isHost = false; // 标记当前设备是否是房主
+
+    // 客户端需要知道最新的牌组来判断是否能出牌，即使不存储完整GameState
+    private List<Card> clientLastPlayedCards = new ArrayList<>();
+    private int clientCurrentPlayerIndex = -1; // 客户端需要知道当前轮到谁，才能判断是否是自己
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // 获取 BluetoothController 实例
         if (context instanceof MainActivity) {
             bluetoothController = ((MainActivity) context).getBluetoothController();
             if (bluetoothController != null) {
                 bluetoothController.setListener(this);
+                isHost = bluetoothController.isserve;
+                if (isHost) {
+                    myPlayerIndex = 0; // 房主默认序号为0
+                }
             }
         }
     }
@@ -72,14 +81,21 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
         initViews(view);
         setupListeners();
-        gameController = GameController.getInstance(); // 获取单例
 
-        // 初始化当前玩家信息（假设本地玩家是PlayerInformation.getThePlayerInformation()）
-        // 在实际多人游戏中，需要根据连接的蓝牙设备确定玩家顺序和分配Player对象
-        currentPlayer = new Player(PlayerInformation.getThePlayerInformation());
-        gameController.addPlayer(currentPlayer); // 将本地玩家加入游戏控制器
+        if (isHost) {
+            gameController = new MutipleController();
+            // 房主玩家对象应从MutipleController初始化后的GameState中获取
+            if (GameState.getInstance() != null && myPlayerIndex != -1 && myPlayerIndex < GameState.getInstance().getPlayers().size()) {
+                currentPlayer = (Player) GameState.getInstance().getPlayers().get(myPlayerIndex);
+                clientCurrentPlayerIndex = GameState.getInstance().getCurrentPlayerIndex(); // 房主初始化自己的当前玩家索引
+            } else {
+                currentPlayer = new Player(PlayerInformation.getThePlayerInformation()); // 临时ID，等待GameState同步
+            }
+        } else {
+            currentPlayer = new Player(PlayerInformation.getThePlayerInformation()); // 客户端玩家，临时ID
+        }
 
-        updateUI(); // 初始UI更新
+        updateUI();
 
         return view;
     }
@@ -113,13 +129,19 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     }
 
     private void sendReadySignal() {
-        // 通知其他玩家本地玩家已准备
-        String readyMessage = "READY:" + currentPlayer.getPlayerInformation().getUserID();
-        if (bluetoothController != null) {
-            // write 方法现在接受 Serializable 类型
-            bluetoothController.sendDataToServer((Serializable) readyMessage); //
-            Toast.makeText(getContext(), "已发送准备信号", Toast.LENGTH_SHORT).show();
-            btnReady.setEnabled(false); // 准备后禁用按钮
+        if (myPlayerIndex != -1) {
+            String readyMessage = "READY_SIGNAL:" + myPlayerIndex;
+            if (bluetoothController != null) {
+                if (isHost) {
+                    bluetoothController.broadcastDataToClients((Serializable) readyMessage);
+                } else {
+                    bluetoothController.sendDataToServer((Serializable) readyMessage);
+                }
+                Toast.makeText(getContext(), "已发送准备信号", Toast.LENGTH_SHORT).show();
+                btnReady.setEnabled(false); // 准备后禁用按钮
+            }
+        } else {
+            Toast.makeText(getContext(), "玩家序号未确定，无法发送准备信号", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -129,146 +151,220 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             return;
         }
 
-        GameState gameState = GameState.getInstance();
-        if (gameState == null) {
-            Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 检查是否是当前玩家的回合
-        if (gameState.getPlayers().get(gameState.getCurrentPlayerIndex()) != currentPlayer) {
-            Toast.makeText(getContext(), "还没轮到你出牌", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        List<Card> cardsToPlay = new ArrayList<>(selectedCards); // 复制一份，避免ConcurrentModificationException
-
-        boolean isValidMove = gameController.playCards(currentPlayer, cardsToPlay); // 使用GameController判断并出牌
-
-        if (isValidMove) {
-            Toast.makeText(getContext(), "出牌成功！", Toast.LENGTH_SHORT).show();
-            selectedCards.clear(); // 清空已选择的牌
-            updateUI();
-            // 发送游戏状态更新给其他玩家
-            sendGameStateToAllPlayers();
-        } else {
-            Toast.makeText(getContext(), "出牌不符合规则，请重新选择", Toast.LENGTH_SHORT).show();
+        if (isHost) { // 房主端直接调用控制器逻辑
+            handlePlayerAction(selectedCards, null); // fromDevice 为 null
+        } else { // 客户端发送选中的牌给房主
+            if (bluetoothController != null) {
+                bluetoothController.sendDataToServer(new ArrayList<>(selectedCards));
+                Toast.makeText(getContext(), "已发送出牌请求，等待房主判断", Toast.LENGTH_SHORT).show();
+                selectedCards.clear();
+                updateUI(); // 立即更新UI，清除选中状态
+            }
         }
     }
 
     private void passTurn() {
+        if (isHost) { // 房主端直接调用控制器逻辑
+            handlePlayerAction(new ArrayList<>(), null); // 发送空列表表示过牌, fromDevice 为 null
+        } else { // 客户端发送空列表表示过牌给房主
+            if (bluetoothController != null) {
+                bluetoothController.sendDataToServer(new ArrayList<Card>()); // 发送空列表
+                Toast.makeText(getContext(), "已发送过牌请求，等待房主判断", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // 房主端统一处理玩家行为的函数
+    // fromDevice 用于错误信息私聊回复，如果是房主自己操作，则为 null
+    private void handlePlayerAction(List<Card> cards, @Nullable BluetoothDevice fromDevice) {
         GameState gameState = GameState.getInstance();
         if (gameState == null) {
             Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show();
+            // 如果是客户端的请求，告诉它失败
+            if (fromDevice != null && bluetoothController != null) {
+                bluetoothController.sendDataToClient(fromDevice, new ActionInvalidMessage("游戏状态未初始化。"));
+            }
             return;
         }
 
-        // 检查是否是当前玩家的回合
-        if (gameState.getPlayers().get(gameState.getCurrentPlayerIndex()) != currentPlayer) {
-            Toast.makeText(getContext(), "还没轮到你，无法过牌", Toast.LENGTH_SHORT).show();
-            return;
+        // 确保是轮到当前玩家出牌，这个逻辑应该在 MutipleController 内部判断，这里只是双重检查
+        // 如果 fromDevice 不为 null，说明是客户端请求，需要先确定是哪个玩家的请求
+        // 假设 MutipleController 内部会根据当前轮次和请求发起者来判断
+        boolean actionSuccessful = false;
+        if (cards.isEmpty()) { // 过牌
+            actionSuccessful = gameController.pass();
+        } else { // 出牌
+            actionSuccessful = gameController.playCard(cards);
         }
 
-        currentPlayer.pass(); // 玩家过牌
-        Toast.makeText(getContext(), "已过牌", Toast.LENGTH_SHORT).show();
-        updateUI();
-        sendGameStateToAllPlayers(); // 发送游戏状态更新
+        if (actionSuccessful) {
+            selectedCards.clear(); // 房主本地也清除选中牌
+            Toast.makeText(getContext(), (cards.isEmpty() ? "过牌" : "出牌") + "成功！", Toast.LENGTH_SHORT).show();
+
+            int winnerIndex = gameController.getWinnerIndex();
+            if (winnerIndex != -1) {
+                showGameEndDialog("玩家 " + winnerIndex);
+            }
+
+            // 操作成功后，广播下一个轮到出牌的玩家序号和最新的牌桌牌
+            // 房主更新自己的 UI 状态
+            clientCurrentPlayerIndex = gameState.getCurrentPlayerIndex(); // 房主维护自己的当前玩家索引
+            clientLastPlayedCards = new ArrayList<>(gameState.getLastPlayedCards()); // 房主也更新牌桌上的牌
+            updateUI();
+
+            // 广播下一个轮到出牌的玩家序号和最新的牌桌牌
+            TurnInfoMessage turnMessage = new TurnInfoMessage(
+                    gameState.getCurrentPlayerIndex(),
+                    new ArrayList<>(gameState.getLastPlayedCards()),
+                    gameState.isGameOver(),
+                    winnerIndex
+            );
+            sendTurnInfoToAllPlayers(turnMessage);
+
+        } else {
+            String errorMessage = (cards.isEmpty() ? "无法过牌" : "出牌不符合规则") + "，请重新选择。";
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            // 如果是客户端的请求，告诉它失败
+            if (fromDevice != null && bluetoothController != null) {
+                bluetoothController.sendDataToClient(fromDevice, new ActionInvalidMessage(errorMessage));
+            }
+        }
     }
+
+    // 房主向所有玩家广播当前轮次信息
+    private void sendTurnInfoToAllPlayers(TurnInfoMessage message) {
+        if (bluetoothController != null && getContext() != null && isHost) {
+            bluetoothController.broadcastDataToClients(message);
+            Log.d("MultiplayerGameFragment", "TurnInfoMessage sent. Current player: " + message.currentPlayerIndex);
+        }
+    }
+
 
     private void updateUI() {
         if (!isAdded() || getContext() == null) {
-            return; // Fragment not attached or context not available
+            return;
         }
         requireActivity().runOnUiThread(() -> {
-            GameState gameState = GameState.getInstance();
-            if (gameState == null) {
-                Log.e("MultiplayerGameFragment", "GameState is null, cannot update UI.");
-                return;
-            }
+            // 注意：客户端不再拥有完整的 GameState 对象副本，只通过收到的 TurnInfoMessage 更新必要信息
+            // 房主依然使用 GameState.getInstance()
 
-            // 更新玩家1（本地玩家）手牌
-            llPlayer1Hand.removeAllViews();
-            player1HandCardImageViews.clear();
-            if (currentPlayer != null && currentPlayer.getHandCards() != null) {
-                for (Card card : currentPlayer.getHandCards()) {
-                    ImageView cardImage = createCardImageView(card);
-                    cardImage.setOnClickListener(v -> toggleCardSelection(card, cardImage));
-                    llPlayer1Hand.addView(cardImage);
-                    player1HandCardImageViews.add(cardImage);
+            // 更新本地玩家（玩家1）的手牌和信息
+            // 无论是房主还是客户端，本地玩家的手牌数量和名称始终需要更新
+            if (myPlayerIndex != -1) {
+                // 客户端需要从某个地方获取自己的手牌信息。
+                // 最简单的方式是房主在发送 TurnInfoMessage 的同时，也为每个客户端定制发送它自己的手牌信息。
+                // 但为了遵循“不广播GameState，其他玩家不存储GameState”的要求，
+                // 客户端无法直接从一个共享的 GameState 获取自己的手牌。
+                //
+                // **解决方案：** 房主在每次成功操作后，除了广播 TurnInfoMessage，还需要**单独向每个客户端发送其更新后的手牌列表。**
+                // 暂时，我们假设 `currentPlayer.getHandCards()` 在房主端是有效的，
+                // 在客户端，`currentPlayer` 的手牌数据会滞后，除非房主主动发送。
+                // 为了演示，我将保留 `currentPlayer.getHandCards()`，但请注意客户端需要独立的机制来更新它。
+                //
+                // **替代方案（更符合你的精简要求）：** 客户端永远只显示“手牌: X张”，不显示具体牌面，除非房主专门发来手牌更新。
+                // 在这里，我假设 `currentPlayer` 会在房主端通过 `GameState` 自动更新手牌，
+                // 而客户端的 `currentPlayer` 的手牌数据可能需要单独的通信机制。
+                // 为了不改动 Model，我们暂时让客户端的 `currentPlayer` 手牌可能不是最新的，直到房主明确发送。
+                // 最简单的实现是客户端收到 TurnInfoMessage 后，假设自己的手牌已更新，只更新数量。
+                // 但是，如果客户端需要选择牌来出，它的手牌 UI 必须是准确的。
+
+                // 如果是房主，直接从 GameState 获取
+                if (isHost && GameState.getInstance() != null && myPlayerIndex < GameState.getInstance().getPlayers().size()) {
+                    currentPlayer = (Player) GameState.getInstance().getPlayers().get(myPlayerIndex);
                 }
-                tvPlayer1CardsCount.setText("手牌: " + currentPlayer.getHandCards().size());
-                tvPlayer1Name.setText(currentPlayer.getPlayerInformation().getUserID());
+                // 客户端的 currentPlayer 手牌数据是滞后的，除非房主单独发送
+                // 这里暂时只更新 UI 显示，实际手牌数据更新需要在 onDataReceived 中处理房主发送的个人手牌数据。
+                llPlayer1Hand.removeAllViews();
+                player1HandCardImageViews.clear();
+
+                // 只有房主可以从 GameState 获取并显示具体手牌
+                if (isHost && currentPlayer.getHandCards() != null) {
+                    for (Card card : currentPlayer.getHandCards()) {
+                        ImageView cardImage = createCardImageView(card);
+                        cardImage.setOnClickListener(v -> toggleCardSelection(card, cardImage));
+                        if (selectedCards.contains(card)) {
+                            cardImage.setTranslationY(-20);
+                        } else {
+                            cardImage.setTranslationY(0);
+                        }
+                        llPlayer1Hand.addView(cardImage);
+                        player1HandCardImageViews.add(cardImage);
+                    }
+                    tvPlayer1CardsCount.setText("手牌: " + currentPlayer.getHandCards().size());
+                } else if (!isHost) { // 客户端只显示手牌数量，不显示具体牌面
+                    // 客户端需要从房主那里接收自己的手牌数量
+                    // 这里假设 currentPlayer.getHandCards() 数量是最新收到的
+                    tvPlayer1CardsCount.setText("手牌: " + currentPlayer.getHandCards().size()); // 客户端的 currentPlayer 手牌数量需要由房主私发
+                } else { // 房主但手牌为空
+                    tvPlayer1CardsCount.setText("手牌: 0");
+                }
+                tvPlayer1Name.setText("玩家 " + myPlayerIndex + (isHost ? " (房主)" : ""));
+            } else {
+                tvPlayer1Name.setText("玩家 (未初始化)");
+                tvPlayer1CardsCount.setText("手牌: 0");
             }
 
-            // 更新场上已出的牌
-            llPlayer1Played.removeAllViews(); // 清空之前出过的牌
-            llPlayer2Played.removeAllViews();
-            llPlayer3Played.removeAllViews();
-            llPlayer4Played.removeAllViews();
-
-            List<Card> lastPlayed = gameState.getLastPlayedCards();
-            if (lastPlayed != null && !lastPlayed.isEmpty()) {
-                // 假设最后一个出牌的玩家是 currentPlayerIndex 的前一个玩家（如果不是第一个玩家）
-                // 实际需要根据游戏逻辑判断是哪个玩家出的牌
-                // 这里简化处理，直接显示所有在桌上的牌
-                for (Card card : lastPlayed) {
+            // 更新牌桌中央区（llPlayer1Played）显示最新打出的牌
+            llPlayer1Played.removeAllViews();
+            List<Card> displayedLastPlayed = isHost ?
+                    (GameState.getInstance() != null ? GameState.getInstance().getLastPlayedCards() : null) :
+                    clientLastPlayedCards; // 客户端使用自己维护的 clientLastPlayedCards
+            if (displayedLastPlayed != null && !displayedLastPlayed.isEmpty()) {
+                for (Card card : displayedLastPlayed) {
                     ImageView cardImage = createCardImageView(card);
-                    // 根据实际逻辑判断是哪个玩家出的牌，然后添加到对应的ll_playerX_played
-                    // 暂时都放到玩家1的已出牌区域，实际需要更复杂的逻辑来区分
                     llPlayer1Played.addView(cardImage);
                 }
             }
 
+            // 清空其他玩家的已出牌区域
+            llPlayer2Played.removeAllViews();
+            llPlayer3Played.removeAllViews();
+            llPlayer4Played.removeAllViews();
 
-            // 更新其他玩家信息 (简单显示牌数和名称，实际需要根据蓝牙连接的设备来更新)
-            List<Player> remotePlayers = new ArrayList<>();
-            for (int i = 0; i < gameState.getPlayers().size(); i++) {
-                if (gameState.getPlayers().get(i) != currentPlayer) {
-                    remotePlayers.add((Player) gameState.getPlayers().get(i));
+            // 更新其他玩家信息 (根据序号来显示)
+            TextView[] playerNamesViews = {tvPlayer1Name, tvPlayer2Name, tvPlayer3Name, tvPlayer4Name};
+            TextView[] playerCardsCountViews = {tvPlayer1CardsCount, tvPlayer2CardsCount, tvPlayer3CardsCount, tvPlayer4CardsCount};
+
+            // 房主从 GameState 获取所有玩家信息，客户端需要房主定期发送所有玩家的牌数信息
+            // 简化处理：假设房主会发送一个包含所有玩家牌数的特殊消息，或者客户端的 playerCounts 数组会单独更新
+            // 为了保持“客户端不储存GameState”的原则，其他玩家的牌数信息需要房主单独发送。
+            // 暂时，这里只显示玩家名称和索引，牌数可能不准确。
+            int totalPlayers = isHost ? GameState.getInstance().getPlayers().size() : 4; // 假设有4个玩家
+
+            for (int i = 0; i < totalPlayers; i++) {
+                int uiDisplayPosition = -1;
+
+                if (i == myPlayerIndex) {
+                    uiDisplayPosition = 0;
+                } else {
+                    uiDisplayPosition = (i - myPlayerIndex + 4) % 4;
+                }
+
+                if (uiDisplayPosition >= 0 && uiDisplayPosition < 4 && uiDisplayPosition != 0) {
+                    playerNamesViews[uiDisplayPosition].setText("玩家 " + i + (i == 0 && isHost ? " (房主)" : ""));
+                    // 客户端无法获取其他玩家的实时手牌数量，除非房主广播
+                    // 这里只是占位符，实际值需要从房主那里的单独消息更新
+                    playerCardsCountViews[uiDisplayPosition].setText("手牌: ?");
                 }
             }
 
-            // 假设只有2个玩家，简化处理
-            if (remotePlayers.size() >= 1) {
-                Player p2 = remotePlayers.get(0);
-                tvPlayer2Name.setText(p2.getPlayerInformation().getUserID());
-                tvPlayer2CardsCount.setText("手牌: " + p2.getHandCards().size());
-            } else {
-                tvPlayer2Name.setText("玩家2 (未连接)");
-                tvPlayer2CardsCount.setText("手牌: 0");
-            }
-            if (remotePlayers.size() >= 2) {
-                Player p3 = remotePlayers.get(1);
-                tvPlayer3Name.setText(p3.getPlayerInformation().getUserID());
-                tvPlayer3CardsCount.setText("手牌: 0");
-            } else {
-                tvPlayer3Name.setText("玩家3 (未连接)");
-                tvPlayer3CardsCount.setText("手牌: 0");
-            }
-            if (remotePlayers.size() >= 3) {
-                Player p4 = remotePlayers.get(2);
-                tvPlayer4Name.setText(p4.getPlayerInformation().getUserID());
-                tvPlayer4CardsCount.setText("手牌: " + p4.getHandCards().size());
-            } else {
-                tvPlayer4Name.setText("玩家4 (未连接)");
-                tvPlayer4CardsCount.setText("手牌: 0");
-            }
 
+            // 检查游戏是否结束 (房主从 GameState 获取，客户端从 TurnInfoMessage 获取)
+            boolean isGameOver = isHost ? GameState.getInstance().isGameOver() : (clientCurrentPlayerIndex == -2); // 约定 -2 为游戏结束信号
+            int winnerIndex = isHost ? gameController.getWinnerIndex() : -1; // 客户端不知道赢家，除非 TurnInfoMessage 包含
 
-            // 检查游戏是否结束
-            if (gameState.isGameOver()) {
-                String winnerName = (gameState.getWinner() != null) ?
-                        ((Player) gameState.getWinner()).getPlayerInformation().getUserID() : "未知";
+            if (isGameOver) {
+                String winnerName = (isHost && winnerIndex != -1) ? "玩家 " + winnerIndex : "未知";
                 showGameEndDialog(winnerName);
-                // 游戏结束，禁用出牌和过牌按钮
                 btnPlayCards.setEnabled(false);
                 btnPass.setEnabled(false);
-                btnReady.setEnabled(true); // 游戏结束后允许重新准备
+                btnReady.setEnabled(true);
             } else {
-                // 根据当前轮到谁出牌来启用/禁用按钮
-                if (gameState.getPlayers().get(gameState.getCurrentPlayerIndex()) == currentPlayer) {
+                // 根据当前轮到谁出牌来启用/禁用按钮 (房主和客户端都使用 clientCurrentPlayerIndex)
+                if (clientCurrentPlayerIndex == myPlayerIndex) {
                     btnPlayCards.setEnabled(true);
                     btnPass.setEnabled(true);
+                    Toast.makeText(getContext(), "轮到你出牌了！", Toast.LENGTH_SHORT).show();
                 } else {
                     btnPlayCards.setEnabled(false);
                     btnPass.setEnabled(false);
@@ -328,13 +424,17 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     }
 
     private void showGameEndDialog(String winnerName) {
-        if (!isAdded()) return; // Fragment not attached
+        if (!isAdded()) return; // Fragment未附加到Activity
         new AlertDialog.Builder(requireContext())
                 .setTitle("游戏结束")
                 .setMessage(winnerName + " 赢得了本轮游戏！")
                 .setPositiveButton("确定", (dialog, which) -> {
-                    // 可以选择在这里开始新一轮游戏或返回主菜单
-                    gameController.resetGame(); // 重置游戏状态
+                    if (isHost && gameController != null) {
+                        gameController.endGame(); // 房主处理游戏结束逻辑
+                        gameController.nextRound(); // 选择下一轮，会重新发牌
+                        // 游戏结束后，房主广播 TurnInfoMessage 表示游戏结束或下一轮开始
+                        sendTurnInfoToAllPlayers(new TurnInfoMessage(-2, new ArrayList<>(), true, -1)); // -2 约定为游戏结束
+                    }
                     updateUI(); // 更新UI
                 })
                 .setCancelable(false)
@@ -342,17 +442,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     }
 
 
-    private void sendGameStateToAllPlayers() {
-        if (bluetoothController != null && getContext() != null) {
-            // write 方法现在接受 Serializable 类型
-            bluetoothController.sendDataToServer(GameState.getInstance()); //
-            Log.d("MultiplayerGameFragment", "Game State sent.");
-        }
-    }
-
     @Override
-    public void onDataReceived(BluetoothDevice fromDevice, Object data) { // 更改参数类型为 Object
-        // 在此处检查权限，以防在设备名称获取时权限状态发生变化
+    public void onDataReceived(BluetoothDevice fromDevice, Object data) {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_CONNECT)
                 != PackageManager.PERMISSION_GRANTED) {
             requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "蓝牙连接权限不足，无法显示发送方设备名称", Toast.LENGTH_SHORT).show());
@@ -361,137 +452,238 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
         String deviceName = (fromDevice != null && fromDevice.getName() != null) ? fromDevice.getName() : fromDevice.getAddress();
 
-        if (data instanceof GameState) { // 直接判断接收到的对象类型
-            GameState receivedGameState = (GameState) data;
-            Log.d("MultiplayerGameFragment", "Received GameState from " + deviceName);
-            // 更新本地的 GameState
-            GameState.setInstance(receivedGameState); // 更新单例
+        if (isHost) { // 房主端接收数据
+            if (data instanceof ArrayList) { // 收到客户端的出牌/过牌请求
+                ArrayList<Card> clientCards = (ArrayList<Card>) data;
+                Log.d("MultiplayerGameFragment", "房主收到来自 " + deviceName + " 的牌组请求，数量: " + clientCards.size());
+                // 房主需要知道这是哪个客户端发来的请求，以便在控制器中模拟该玩家操作
+                // 这需要你有一个机制将 BluetoothDevice 映射到 myPlayerIndex
+                // 暂时假设 MutipleController 内部会根据 GameState.getCurrentPlayerIndex() 来判断并处理
+                // 如果 GameState.getCurrentPlayerIndex() 不是发起请求的玩家，房主应该拒绝
+                // **重要：** MutipleController 需要知道当前轮到谁出牌。你需要确保在处理客户端请求之前，
+                // MutipleController/GameState 中的 `currentPlayerIndex` 是正确的。
+                // 客户端的 myPlayerIndex 需要在发送请求时包含，或者房主通过 BluetoothDevice 查找
+                // 这里我们假设游戏状态已同步，`GameState.getCurrentPlayerIndex()` 就是发起请求的玩家。
 
-            // 检查是否是READY信号 (这部分逻辑可能需要重新考虑，因为READY信号现在可能直接是字符串)
-            if (receivedGameState.getPlayers() != null) {
-                for (int i = 0; i < receivedGameState.getPlayers().size(); i++) {
-                    if (receivedGameState.getPlayers().get(i) instanceof Player) {
-                        Player p = (Player) receivedGameState.getPlayers().get(i);
-                        // 假设我们通过PlayerInformation的UserID来识别玩家
-                        if (p.getPlayerInformation().getUserID().equals(deviceName)) { // 简单的匹配，实际需要更可靠的ID
-                            // 处理准备信号，例如更新UI显示玩家已准备
-                            Log.d("MultiplayerGameFragment", deviceName + " is READY.");
-                            // 可以在这里更新UI，例如在玩家名称旁边显示“已准备”
-                        }
-                    }
-                }
-            }
-            updateUI(); // 收到新状态后更新UI
-            Toast.makeText(getContext(), "收到来自 " + deviceName + " 的游戏状态更新", Toast.LENGTH_SHORT).show();
+                // 房主直接调用 handlePlayerAction 来处理客户端的请求
+                handlePlayerAction(clientCards, fromDevice);
 
-        } else if (data instanceof String) { // 直接判断接收到的对象类型
-            String message = (String) data;
-            if (message.startsWith("READY:")) {
-                String senderId = message.substring(6);
-                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), senderId + " 已准备", Toast.LENGTH_SHORT).show());
-                Log.d("MultiplayerGameFragment", senderId + " sent READY signal.");
-                // 如果所有玩家都准备好了，可以开始游戏
+            } else if (data instanceof String && ((String) data).startsWith("READY_SIGNAL:")) {
+                int senderIndex = Integer.parseInt(((String) data).substring(13));
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "玩家 " + senderIndex + " 已准备", Toast.LENGTH_SHORT).show());
+                Log.d("MultiplayerGameFragment", "Player " + senderIndex + " sent READY signal.");
+                // 房主需要追踪每个玩家的准备状态
                 checkAllPlayersReady();
-            } else {
-                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "收到来自 " + deviceName + " 的数据: " + message, Toast.LENGTH_SHORT).show());
             }
-        } else {
-            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "收到来自 " + deviceName + " 的未知数据", Toast.LENGTH_SHORT).show());
-            Log.w("MultiplayerGameFragment", "Received unknown object type from " + deviceName);
+            // 房主不应该收到 TurnInfoMessage 或 ActionInvalidMessage，除非是自己给自己发测试
+        } else { // 客户端接收数据
+            if (data instanceof TurnInfoMessage) {
+                TurnInfoMessage turnMessage = (TurnInfoMessage) data;
+                Log.d("MultiplayerGameFragment", "客户端收到 TurnInfoMessage. Current player: " + turnMessage.currentPlayerIndex);
+
+                clientCurrentPlayerIndex = turnMessage.currentPlayerIndex;
+                clientLastPlayedCards = turnMessage.lastPlayedCards;
+
+                // 客户端需要知道自己的手牌数量是否更新。
+                // **重要：** 如果客户端不存储GameState，房主需要单独发送每个客户端自己的最新手牌数据。
+                // 这里我们假设房主会发送一个包含所有玩家手牌数量的公共消息，或者客户端的 `currentPlayer` 手牌数据会同步更新。
+                // 暂时，我们假设 `currentPlayer` 的手牌数量可以从 `TurnInfoMessage` 中获取，或者客户端只显示“手牌：？”
+                // 更好的方法是房主私发每个客户端自己的手牌，或者发送一个包含所有玩家手牌数量的公共信息。
+                if (turnMessage.isGameOver) {
+                    clientCurrentPlayerIndex = -2; // 约定 -2 为游戏结束信号
+                    updateUI(); // 触发游戏结束对话框
+                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "游戏结束！", Toast.LENGTH_LONG).show());
+                } else {
+                    updateUI(); // 更新UI以反映当前轮次和牌桌牌
+                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "轮到玩家 " + clientCurrentPlayerIndex + " 出牌", Toast.LENGTH_SHORT).show());
+                }
+
+            } else if (data instanceof ActionInvalidMessage) {
+                ActionInvalidMessage errorMessage = (ActionInvalidMessage) data;
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "出牌/过牌失败: " + errorMessage.message, Toast.LENGTH_LONG).show();
+                    // 重新启用按钮，让玩家可以再次尝试
+                    btnPlayCards.setEnabled(true);
+                    btnPass.setEnabled(true);
+                });
+            } else if (data instanceof String && ((String) data).startsWith("ASSIGN_INDEX:")) {
+                if (myPlayerIndex == -1) { // 确保是客户端且尚未设置序号
+                    myPlayerIndex = Integer.parseInt(((String) data).substring(13));
+                    requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "你被分配为玩家 " + myPlayerIndex, Toast.LENGTH_LONG).show());
+                    // 客户端此时也需要初始化自己的 currentPlayer 实例
+                    currentPlayer = new Player(PlayerInformation.getThePlayerInformation()); // 使用分配的序号
+                    Log.d("MultiplayerGameFragment", "My player index is set to: " + myPlayerIndex);
+                    updateUI(); // 序号设置后更新UI
+                }
+            } else if (data instanceof String && ((String) data).startsWith("READY_SIGNAL:")) {
+                int senderIndex = Integer.parseInt(((String) data).substring(13));
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "玩家 " + senderIndex + " 已准备", Toast.LENGTH_SHORT).show());
+            } else if (data instanceof ArrayList && ((ArrayList) data).get(0) instanceof Card) {
+                // 这是房主发来的客户端自己的手牌更新
+                // 假设房主会私发每个客户端自己的最新手牌。
+                ArrayList<Card> newHandCards = (ArrayList<Card>) data;
+                Log.d("MultiplayerGameFragment", "客户端收到自己的手牌更新，数量: " + newHandCards.size());
+                currentPlayer.setHandCards(newHandCards); // 更新客户端本地的 currentPlayer 手牌
+                updateUI(); // 更新UI
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "手牌已更新！", Toast.LENGTH_SHORT).show());
+            }
+            else {
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "收到来自 " + deviceName + " 的未知数据", Toast.LENGTH_SHORT).show());
+                Log.w("MultiplayerGameFragment", "Received unknown object type from " + deviceName);
+            }
         }
     }
 
 
     private void checkAllPlayersReady() {
-        // 简单示例：假设有两名玩家，一个本地玩家和一个远程玩家
-        // 在实际应用中，需要维护一个所有连接玩家的“准备”状态列表
-        // 这里只是一个占位符，需要更复杂的逻辑
-        // 注意：getConnectedClients() 返回的是 Map<String, ConnectedThread>，不能直接判断玩家数量
-        // 你需要通过其他方式来追踪连接的玩家数量和他们的准备状态
-        // 这里暂时简化为：只要有一个连接，就认为可以尝试开始游戏
-        if (bluetoothController != null && !bluetoothController.getConnectedClients().isEmpty()) { // 使用 isEmpty() 检查是否有连接
-            Log.d("MultiplayerGameFragment", "All players seem ready, starting game...");
+        if (isHost && bluetoothController != null && GameState.getInstance().getPlayers().size() == 4) {
+            // 【待完成】这里需要一个更健壮的机制来追踪所有连接玩家的准备状态
+            // 房主应该在 MutipleController 内部维护一个 ready 状态的 Map<Integer, Boolean>
+            // 当所有玩家都 ready 后，调用 startGame()
+
+            Log.d("MultiplayerGameFragment", "所有玩家已准备好，开始游戏...");
             startGame();
         }
     }
 
 
     private void startGame() {
-        // 游戏开始逻辑，发牌，设置初始玩家等
-        if (gameController != null) {
-            gameController.startGame();
-            updateUI();
-            sendGameStateToAllPlayers(); // 游戏开始时发送初始状态
+        if (isHost && gameController != null) {
+            gameController.dealCards(); // MutipleController.dealCards 应该已经更新了 GameState 内部的玩家手牌
+
+            // 房主更新自己的手牌
+            if (myPlayerIndex != -1 && myPlayerIndex < GameState.getInstance().getPlayers().size()) {
+                currentPlayer = (Player) GameState.getInstance().getPlayers().get(myPlayerIndex);
+            } else {
+                Log.e("MultiplayerGameFragment", "房主玩家序号未设置或超出范围，无法获取手牌。");
+            }
+
+            // 房主更新客户端的当前玩家索引和牌桌牌
+            clientCurrentPlayerIndex = GameState.getInstance().getCurrentPlayerIndex();
+            clientLastPlayedCards = new ArrayList<>(GameState.getInstance().getLastPlayedCards());
+
+            updateUI(); // 更新UI以显示发牌后的手牌
+
+            // 游戏开始时，房主广播初始 TurnInfoMessage
+            TurnInfoMessage initialTurn = new TurnInfoMessage(
+                    GameState.getInstance().getCurrentPlayerIndex(),
+                    new ArrayList<>(GameState.getInstance().getLastPlayedCards()),
+                    false, // 游戏未结束
+                    -1 // 无赢家
+            );
+            sendTurnInfoToAllPlayers(initialTurn);
+
+            // 同时，房主需要单独向每个客户端发送其自己的手牌列表
+            for (int i = 0; i < GameState.getInstance().getPlayers().size(); i++) {
+                if (i != myPlayerIndex) { // 不给自己发
+                    Player clientPlayer = (Player) GameState.getInstance().getPlayers().get(i);
+                    BluetoothDevice clientDevice = bluetoothController.getDeviceByIndex(i); // 假设 BluetoothController 有根据序号获取设备的方法
+                    if (clientDevice != null && clientPlayer.getHandCards() != null) {
+                        bluetoothController.sendDataToClient(clientDevice, new ArrayList<>(clientPlayer.getHandCards()));
+                        Log.d("MultiplayerGameFragment", "Sent initial hand cards to player " + i);
+                    }
+                }
+            }
+
+
             requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "游戏开始！", Toast.LENGTH_LONG).show());
         }
     }
 
     @Override
-    public void onDeviceDiscovered(BluetoothDevice device) { // 方法名称更改
-        // 不在这里处理，由 MainActivity 处理
-    }
+    public void onDeviceDiscovered(BluetoothDevice device) { }
 
     @Override
-    public void onDiscoveryFinished(List<BluetoothDevice> devices) { // 方法签名更改
-        // 不在这里处理，由 MainActivity 处理
-    }
+    public void onDiscoveryFinished(List<BluetoothDevice> devices) { }
 
     @Override
-    public void onServerStarted() { // 新增服务端启动回调
+    public void onServerStarted() {
         if (!isAdded()) return;
         requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "服务端已启动，等待连接...", Toast.LENGTH_SHORT).show());
+        isHost = true;
+        myPlayerIndex = 0; // 房主玩家序号固定为0
+        if (gameController == null) {
+            gameController = new MutipleController();
+            // 房主自己的 Player 对象应该在 MutipleController 内部 Players 列表的 index 0
+            if (GameState.getInstance() != null && myPlayerIndex < GameState.getInstance().getPlayers().size()) {
+                currentPlayer = (Player) GameState.getInstance().getPlayers().get(myPlayerIndex);
+                clientCurrentPlayerIndex = GameState.getInstance().getCurrentPlayerIndex(); // 房主初始化自己的当前玩家索引
+            }
+        }
+        updateUI(); // 更新UI显示自己是房主
     }
 
     @Override
-    public void onClientConnected(BluetoothDevice device, boolean isServer) { // 客户端连接回调
+    public void onClientConnected(BluetoothDevice device, boolean isServer) {
         if (!isAdded()) return;
         if (isServer) {
-            // 当前设备是服务端，有新的客户端连接
+            // 当前设备是服务端（房主），有新的客户端连接
             requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "客户端 " + (device.getName() != null ? device.getName() : device.getAddress()) + " 已连接", Toast.LENGTH_SHORT).show());
-            // 服务端接收到新连接时，可以发送当前游戏状态或者请求客户端的玩家信息
-            sendGameStateToAllPlayers(); // 服务端连接新客户端时，广播最新游戏状态
+            // 房主需要为新连接的客户端分配一个序号，并告知它
+            // 【重要】房主在 MutipleController 内部管理玩家列表和序号分配
+            // 假设 MutipleController.addPlayerAndAssignIndex() 返回分配的序号
+            int assignedIndex = gameController.addPlayerAndAssignIndex(device); // 你需要在 MutipleController 中实现这个方法
+
+            if (assignedIndex != -1) {
+                bluetoothController.sendDataToClient(device, "ASSIGN_INDEX:" + assignedIndex);
+                Log.d("MultiplayerGameFragment", "Assigned index " + assignedIndex + " to " + device.getName());
+            } else {
+                Log.e("MultiplayerGameFragment", "Failed to assign index to new client: " + device.getName());
+            }
+
+            // 房主更新UI显示连接状态和玩家数 (GameState.getInstance().getPlayers().size() 应该已经更新)
+            updateUI();
+
         } else {
             // 当前设备是客户端，已成功连接到服务端
             requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "已连接到服务端 " + (device.getName() != null ? device.getName() : device.getAddress()), Toast.LENGTH_SHORT).show());
-            // 如果连接成功，可以考虑发送本地玩家信息或者请求完整的游戏状态
-            sendPlayerInformation();
+            isHost = false;
+            // 客户端连接成功后，等待房主发送 ASSIGN_INDEX 消息来确定自己的 myPlayerIndex
         }
     }
 
     @Override
-    public void onClientDisconnected(BluetoothDevice device) { // 方法名称更改
+    public void onClientDisconnected(BluetoothDevice device) {
         if (!isAdded()) return;
-        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), (device.getName() != null ? device.getName() : device.getAddress()) + " 已断开连接", Toast.LENGTH_SHORT).show());
-        // 处理断开连接的情况，例如更新玩家列表
+        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), (  device.getAddress()) + " 已断开连接", Toast.LENGTH_SHORT).show());
+        if (isHost) {
+            // 房主更新 GameState 中的玩家列表，移除断开连接的玩家
+            //gameController.removePlayer(device); // 你需要在 MutipleController 中实现这个方法
+            // 广播更新后的游戏状态，包括新的玩家序号
+            // 这里可以广播一个包含最新玩家列表和牌数的 TurnInfoMessage
+            // 或者发送一个 GameStateUpdatedMessage (如果需要)
+            updateUI(); // 更新UI显示玩家数变化
+        } else {
+            // 如果断开连接的是房主，客户端需要提示游戏中断或尝试重连
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("连接断开")
+                    .setMessage("房主已断开连接，游戏结束。")
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        if (getActivity() instanceof MainActivity) {
+                           // ((MainActivity) getActivity()).na(); // 返回主界面
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
+        }
     }
 
     @Override
-    public void onError(String message) { // 错误回调
+    public void onError(String message) {
         if (!isAdded()) return;
         requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "蓝牙错误: " + message, Toast.LENGTH_SHORT).show());
     }
 
     @Override
-    public void onLog(String message) { // 新增日志回调
+    public void onLog(String message) {
         Log.d("BluetoothController_Log", message);
-        // 如果需要，可以在UI上显示这些日志信息
     }
-
-
-    private void sendPlayerInformation() {
-        if (bluetoothController != null && currentPlayer != null) {
-            // sendDataToServer 方法现在接受 Serializable 类型
-            bluetoothController.sendDataToServer(currentPlayer.getPlayerInformation()); // 发送玩家信息
-            Log.d("MultiplayerGameFragment", "Player information sent. UserID: " + currentPlayer.getPlayerInformation().getUserID());
-        }
-    }
-
 
     @Override
     public void onResume() {
         super.onResume();
         if (bluetoothController != null) {
-            bluetoothController.setListener(this); // 确保 Fragment 处于活跃状态时监听器已设置
+            bluetoothController.setListener(this);
         }
         updateUI(); // 确保从其他 Fragment 返回时UI正确更新
     }
@@ -499,10 +691,6 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     @Override
     public void onPause() {
         super.onPause();
-        // 可以在这里移除监听器，如果蓝牙通信需要在后台持续进行则不移除
-        // if (bluetoothController != null) {
-        //     bluetoothController.setListener(null);
-        // }
     }
 
     @Override
@@ -510,6 +698,31 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         super.onDestroyView();
         selectedCards.clear();
         player1HandCardImageViews.clear();
-        // 清理UI元素引用，避免内存泄漏
     }
+
+    // 新增：表示轮次信息的类
+    public static class TurnInfoMessage implements Serializable {
+        public int currentPlayerIndex; // 当前轮到谁出牌的玩家序号
+        public ArrayList<Card> lastPlayedCards; // 牌桌上最近打出的牌（客户端需要显示）
+        public boolean isGameOver; // 游戏是否结束
+        public int winnerIndex; // 赢家索引
+
+        public TurnInfoMessage(int currentPlayerIndex, ArrayList<Card> lastPlayedCards, boolean isGameOver, int winnerIndex) {
+            this.currentPlayerIndex = currentPlayerIndex;
+            this.lastPlayedCards = lastPlayedCards;
+            this.isGameOver = isGameOver;
+            this.winnerIndex = winnerIndex;
+        }
+    }
+
+    // 新增：表示操作无效的私有消息类
+    public static class ActionInvalidMessage implements Serializable {
+        public String message; // 错误信息
+
+        public ActionInvalidMessage(String message) {
+            this.message = message;
+        }
+    }
+
+
 }

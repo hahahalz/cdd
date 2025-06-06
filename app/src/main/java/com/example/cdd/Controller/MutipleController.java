@@ -11,7 +11,7 @@ public class MutipleController {
 
     private MultiplayerGameManager multiplayerGameManager;
 
-    MutipleController()
+    public MutipleController()
     {
         multiplayerGameManager=new MultiplayerGameManager();
     }

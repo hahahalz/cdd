@@ -460,4 +460,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onLog(String message) {
 
     }
+
+    public BluetoothController getBluetoothController() {
+        return mBluetoothController;
+    }
 }

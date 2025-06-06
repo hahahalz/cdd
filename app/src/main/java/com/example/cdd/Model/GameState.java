@@ -8,7 +8,7 @@ import java.util.Objects;
 public class GameState {                 // 游戏当前状态（手牌、已出牌、当前轮次等）
     private  List<Actor> players=new ArrayList<>();
     private int currentPlayerIndex;
-    private List<Card> cardsOnTable;
+    private List<Card> cardsOnTable=new ArrayList<>();
     private List<Card> lastPlayedCards;
     private int roundNumber;                  //一共打了几把（有人胜出才算1把）
     private Actor winner;

@@ -1,613 +1,515 @@
 package com.example.cdd.View;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
+import android.Manifest;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.cdd.Controller.BluetoothController;
 import com.example.cdd.Controller.GameController;
+import com.example.cdd.Model.Card;
+import com.example.cdd.Model.GameState;
+import com.example.cdd.Model.Player;
+import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.ImageView;
-import android.widget.FrameLayout;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable; // 导入 Serializable
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import java.util.*;
+public class MultiplayerGameFragment extends Fragment implements BluetoothController.BluetoothListener { // 修改接口名称
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MultiplayerGameFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-// 多人联机游戏主界面
-public class MultiplayerGameFragment extends BaseFragment {
+    private BluetoothController bluetoothController;
+    private GameController gameController;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TextView tvPlayer1Name, tvPlayer2Name, tvPlayer3Name, tvPlayer4Name;
+    private TextView tvPlayer1CardsCount, tvPlayer2CardsCount, tvPlayer3CardsCount, tvPlayer4CardsCount;
+    private LinearLayout llPlayer1Hand, llPlayer1Played, llPlayer2Played, llPlayer3Played, llPlayer4Played;
+    private Button btnPlayCards, btnPass, btnReady;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private List<Card> selectedCards = new ArrayList<>();
+    private List<ImageView> player1HandCardImageViews = new ArrayList<>();
 
-    //游戏相关控件
-	private ArrayList<ImageView> playImage;
-    private ArrayList<Button> playerCardsImage;
-    private TextView whoPlay;
-    private TextView whoseTurn;
-    private TextView player1CardsText;
-    private TextView player2CardsText;
-    private TextView player3CardsText;
-    private Button playButton;
-    private Button passButton;
-	private Button startButton;
+    private Player currentPlayer; // 当前玩家，即本地玩家
 
-    private ImageView button_back;
-
-    //游戏数据
-    private GameController controller;
-    private ArrayList<Integer> myCards;
-    private ArrayList<Integer> player1Cards;
-    private ArrayList<Integer> player2Cards;
-    private ArrayList<Integer> player3Cards;
-    private ArrayList<Integer> currentPlayCards;
-    int currentPlayer;
-    public static final int ME = 0, PLAYER1 = 1, PLAYER2 = 2, PLAYER3 = 3;
-	private int cnt_click_card;
-
-    private FrameLayout fragmentContainer;
-
-    private void BackToMain() {
-        if (fragmentContainer == null) {
-            fragmentContainer = getActivity().findViewById(R.id.framelayout);
-        }
-        // 实现跳转到主页面的逻辑
-        if (fragmentContainer != null ) {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().finish();
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        // 获取 BluetoothController 实例
+        if (context instanceof MainActivity) {
+            bluetoothController = ((MainActivity) context).getBluetoothController();
+            if (bluetoothController != null) {
+                bluetoothController.setListener(this);
             }
-            fragmentContainer.setClickable(false); // 禁用点击拦截
-            fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
         }
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_multiplayer_game, container, false);
 
-    public MultiplayerGameFragment() {
-        // Required empty public constructor
+        initViews(view);
+        setupListeners();
+        gameController = GameController.getInstance(); // 获取单例
+
+        // 初始化当前玩家信息（假设本地玩家是PlayerInformation.getThePlayerInformation()）
+        // 在实际多人游戏中，需要根据连接的蓝牙设备确定玩家顺序和分配Player对象
+        currentPlayer = new Player(PlayerInformation.getThePlayerInformation());
+        gameController.addPlayer(currentPlayer); // 将本地玩家加入游戏控制器
+
+        updateUI(); // 初始UI更新
+
+        return view;
     }
 
-    public static MultiplayerGameFragment newInstance(String param1, String param2) {
-        MultiplayerGameFragment fragment = new MultiplayerGameFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void initViews(View view) {
+        tvPlayer1Name = view.findViewById(R.id.tv_player1_name);
+        tvPlayer2Name = view.findViewById(R.id.tv_player2_name);
+        tvPlayer3Name = view.findViewById(R.id.tv_player3_name);
+        tvPlayer4Name = view.findViewById(R.id.tv_player4_name);
+
+        tvPlayer1CardsCount = view.findViewById(R.id.tv_player1_cards_count);
+        tvPlayer2CardsCount = view.findViewById(R.id.tv_player2_cards_count);
+        tvPlayer3CardsCount = view.findViewById(R.id.tv_player3_cards_count);
+        tvPlayer4CardsCount = view.findViewById(R.id.tv_player4_cards_count);
+
+        llPlayer1Hand = view.findViewById(R.id.ll_player1_hand);
+        llPlayer1Played = view.findViewById(R.id.ll_player1_played);
+        llPlayer2Played = view.findViewById(R.id.ll_player2_played);
+        llPlayer3Played = view.findViewById(R.id.ll_player3_played);
+        llPlayer4Played = view.findViewById(R.id.ll_player4_played);
+
+        btnPlayCards = view.findViewById(R.id.btn_play_cards);
+        btnPass = view.findViewById(R.id.btn_pass);
+        btnReady = view.findViewById(R.id.btn_ready);
+    }
+
+    private void setupListeners() {
+        btnPlayCards.setOnClickListener(v -> playSelectedCards());
+        btnPass.setOnClickListener(v -> passTurn());
+        btnReady.setOnClickListener(v -> sendReadySignal());
+    }
+
+    private void sendReadySignal() {
+        // 通知其他玩家本地玩家已准备
+        String readyMessage = "READY:" + currentPlayer.getPlayerInformation().getUserID();
+        if (bluetoothController != null) {
+            // write 方法现在接受 Serializable 类型
+            bluetoothController.sendDataToServer((Serializable) readyMessage); //
+            Toast.makeText(getContext(), "已发送准备信号", Toast.LENGTH_SHORT).show();
+            btnReady.setEnabled(false); // 准备后禁用按钮
+        }
+    }
+
+    private void playSelectedCards() {
+        if (selectedCards.isEmpty()) {
+            Toast.makeText(getContext(), "请选择要出的牌", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        GameState gameState = GameState.getInstance();
+        if (gameState == null) {
+            Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 检查是否是当前玩家的回合
+        if (gameState.getPlayers().get(gameState.getCurrentPlayerIndex()) != currentPlayer) {
+            Toast.makeText(getContext(), "还没轮到你出牌", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<Card> cardsToPlay = new ArrayList<>(selectedCards); // 复制一份，避免ConcurrentModificationException
+
+        boolean isValidMove = gameController.playCards(currentPlayer, cardsToPlay); // 使用GameController判断并出牌
+
+        if (isValidMove) {
+            Toast.makeText(getContext(), "出牌成功！", Toast.LENGTH_SHORT).show();
+            selectedCards.clear(); // 清空已选择的牌
+            updateUI();
+            // 发送游戏状态更新给其他玩家
+            sendGameStateToAllPlayers();
+        } else {
+            Toast.makeText(getContext(), "出牌不符合规则，请重新选择", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void passTurn() {
+        GameState gameState = GameState.getInstance();
+        if (gameState == null) {
+            Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 检查是否是当前玩家的回合
+        if (gameState.getPlayers().get(gameState.getCurrentPlayerIndex()) != currentPlayer) {
+            Toast.makeText(getContext(), "还没轮到你，无法过牌", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        currentPlayer.pass(); // 玩家过牌
+        Toast.makeText(getContext(), "已过牌", Toast.LENGTH_SHORT).show();
+        updateUI();
+        sendGameStateToAllPlayers(); // 发送游戏状态更新
+    }
+
+    private void updateUI() {
+        if (!isAdded() || getContext() == null) {
+            return; // Fragment not attached or context not available
+        }
+        requireActivity().runOnUiThread(() -> {
+            GameState gameState = GameState.getInstance();
+            if (gameState == null) {
+                Log.e("MultiplayerGameFragment", "GameState is null, cannot update UI.");
+                return;
+            }
+
+            // 更新玩家1（本地玩家）手牌
+            llPlayer1Hand.removeAllViews();
+            player1HandCardImageViews.clear();
+            if (currentPlayer != null && currentPlayer.getHandCards() != null) {
+                for (Card card : currentPlayer.getHandCards()) {
+                    ImageView cardImage = createCardImageView(card);
+                    cardImage.setOnClickListener(v -> toggleCardSelection(card, cardImage));
+                    llPlayer1Hand.addView(cardImage);
+                    player1HandCardImageViews.add(cardImage);
+                }
+                tvPlayer1CardsCount.setText("手牌: " + currentPlayer.getHandCards().size());
+                tvPlayer1Name.setText(currentPlayer.getPlayerInformation().getUserID());
+            }
+
+            // 更新场上已出的牌
+            llPlayer1Played.removeAllViews(); // 清空之前出过的牌
+            llPlayer2Played.removeAllViews();
+            llPlayer3Played.removeAllViews();
+            llPlayer4Played.removeAllViews();
+
+            List<Card> lastPlayed = gameState.getLastPlayedCards();
+            if (lastPlayed != null && !lastPlayed.isEmpty()) {
+                // 假设最后一个出牌的玩家是 currentPlayerIndex 的前一个玩家（如果不是第一个玩家）
+                // 实际需要根据游戏逻辑判断是哪个玩家出的牌
+                // 这里简化处理，直接显示所有在桌上的牌
+                for (Card card : lastPlayed) {
+                    ImageView cardImage = createCardImageView(card);
+                    // 根据实际逻辑判断是哪个玩家出的牌，然后添加到对应的ll_playerX_played
+                    // 暂时都放到玩家1的已出牌区域，实际需要更复杂的逻辑来区分
+                    llPlayer1Played.addView(cardImage);
+                }
+            }
+
+
+            // 更新其他玩家信息 (简单显示牌数和名称，实际需要根据蓝牙连接的设备来更新)
+            List<Player> remotePlayers = new ArrayList<>();
+            for (int i = 0; i < gameState.getPlayers().size(); i++) {
+                if (gameState.getPlayers().get(i) != currentPlayer) {
+                    remotePlayers.add((Player) gameState.getPlayers().get(i));
+                }
+            }
+
+            // 假设只有2个玩家，简化处理
+            if (remotePlayers.size() >= 1) {
+                Player p2 = remotePlayers.get(0);
+                tvPlayer2Name.setText(p2.getPlayerInformation().getUserID());
+                tvPlayer2CardsCount.setText("手牌: " + p2.getHandCards().size());
+            } else {
+                tvPlayer2Name.setText("玩家2 (未连接)");
+                tvPlayer2CardsCount.setText("手牌: 0");
+            }
+            if (remotePlayers.size() >= 2) {
+                Player p3 = remotePlayers.get(1);
+                tvPlayer3Name.setText(p3.getPlayerInformation().getUserID());
+                tvPlayer3CardsCount.setText("手牌: 0");
+            } else {
+                tvPlayer3Name.setText("玩家3 (未连接)");
+                tvPlayer3CardsCount.setText("手牌: 0");
+            }
+            if (remotePlayers.size() >= 3) {
+                Player p4 = remotePlayers.get(2);
+                tvPlayer4Name.setText(p4.getPlayerInformation().getUserID());
+                tvPlayer4CardsCount.setText("手牌: " + p4.getHandCards().size());
+            } else {
+                tvPlayer4Name.setText("玩家4 (未连接)");
+                tvPlayer4CardsCount.setText("手牌: 0");
+            }
+
+
+            // 检查游戏是否结束
+            if (gameState.isGameOver()) {
+                String winnerName = (gameState.getWinner() != null) ?
+                        ((Player) gameState.getWinner()).getPlayerInformation().getUserID() : "未知";
+                showGameEndDialog(winnerName);
+                // 游戏结束，禁用出牌和过牌按钮
+                btnPlayCards.setEnabled(false);
+                btnPass.setEnabled(false);
+                btnReady.setEnabled(true); // 游戏结束后允许重新准备
+            } else {
+                // 根据当前轮到谁出牌来启用/禁用按钮
+                if (gameState.getPlayers().get(gameState.getCurrentPlayerIndex()) == currentPlayer) {
+                    btnPlayCards.setEnabled(true);
+                    btnPass.setEnabled(true);
+                } else {
+                    btnPlayCards.setEnabled(false);
+                    btnPass.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    private ImageView createCardImageView(Card card) {
+        ImageView imageView = new ImageView(getContext());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                dpToPx(50), // 牌的宽度
+                dpToPx(70)  // 牌的高度
+        );
+        params.setMargins(0, 0, dpToPx(4), 0); // 右边距
+        imageView.setLayoutParams(params);
+
+        String cardResourceName = getCardResourceName(card);
+        int resId = getResources().getIdentifier(cardResourceName, "drawable", requireContext().getPackageName());
+        if (resId != 0) {
+            imageView.setImageResource(resId);
+        } else {
+            imageView.setImageResource(R.drawable.card_back); // 默认显示牌背
+            Log.e("MultiplayerGameFragment", "Card resource not found: " + cardResourceName);
+        }
+        return imageView;
+    }
+
+    private String getCardResourceName(Card card) {
+        String rank = card.getRank().name().toLowerCase();
+        String suit = card.getSuit().name().toLowerCase();
+        // 特殊处理 10, J, Q, K, A, 2
+        if (card.getRank() == Card.Rank.TEN) rank = "t";
+        else if (card.getRank() == Card.Rank.JACK) rank = "j";
+        else if (card.getRank() == Card.Rank.QUEEN) rank = "q";
+        else if (card.getRank() == Card.Rank.KING) rank = "k";
+        else if (card.getRank() == Card.Rank.ACE) rank = "a";
+        else if (card.getRank() == Card.Rank.TWO) rank = "2";
+        else rank = String.valueOf(card.getRank().getValue()); // 3-9
+
+        return suit + "_" + rank;
+    }
+
+
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
+    }
+
+    private void toggleCardSelection(Card card, ImageView cardImage) {
+        if (selectedCards.contains(card)) {
+            selectedCards.remove(card);
+            cardImage.setTranslationY(0); // 牌回到原位
+        } else {
+            selectedCards.add(card);
+            cardImage.setTranslationY(-20); // 牌上移
+        }
+    }
+
+    private void showGameEndDialog(String winnerName) {
+        if (!isAdded()) return; // Fragment not attached
+        new AlertDialog.Builder(requireContext())
+                .setTitle("游戏结束")
+                .setMessage(winnerName + " 赢得了本轮游戏！")
+                .setPositiveButton("确定", (dialog, which) -> {
+                    // 可以选择在这里开始新一轮游戏或返回主菜单
+                    gameController.resetGame(); // 重置游戏状态
+                    updateUI(); // 更新UI
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+
+    private void sendGameStateToAllPlayers() {
+        if (bluetoothController != null && getContext() != null) {
+            // write 方法现在接受 Serializable 类型
+            bluetoothController.sendDataToServer(GameState.getInstance()); //
+            Log.d("MultiplayerGameFragment", "Game State sent.");
+        }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onDataReceived(BluetoothDevice fromDevice, Object data) { // 更改参数类型为 Object
+        // 在此处检查权限，以防在设备名称获取时权限状态发生变化
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) {
+            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "蓝牙连接权限不足，无法显示发送方设备名称", Toast.LENGTH_SHORT).show());
+            return;
+        }
+
+        String deviceName = (fromDevice != null && fromDevice.getName() != null) ? fromDevice.getName() : fromDevice.getAddress();
+
+        if (data instanceof GameState) { // 直接判断接收到的对象类型
+            GameState receivedGameState = (GameState) data;
+            Log.d("MultiplayerGameFragment", "Received GameState from " + deviceName);
+            // 更新本地的 GameState
+            GameState.setInstance(receivedGameState); // 更新单例
+
+            // 检查是否是READY信号 (这部分逻辑可能需要重新考虑，因为READY信号现在可能直接是字符串)
+            if (receivedGameState.getPlayers() != null) {
+                for (int i = 0; i < receivedGameState.getPlayers().size(); i++) {
+                    if (receivedGameState.getPlayers().get(i) instanceof Player) {
+                        Player p = (Player) receivedGameState.getPlayers().get(i);
+                        // 假设我们通过PlayerInformation的UserID来识别玩家
+                        if (p.getPlayerInformation().getUserID().equals(deviceName)) { // 简单的匹配，实际需要更可靠的ID
+                            // 处理准备信号，例如更新UI显示玩家已准备
+                            Log.d("MultiplayerGameFragment", deviceName + " is READY.");
+                            // 可以在这里更新UI，例如在玩家名称旁边显示“已准备”
+                        }
+                    }
+                }
+            }
+            updateUI(); // 收到新状态后更新UI
+            Toast.makeText(getContext(), "收到来自 " + deviceName + " 的游戏状态更新", Toast.LENGTH_SHORT).show();
+
+        } else if (data instanceof String) { // 直接判断接收到的对象类型
+            String message = (String) data;
+            if (message.startsWith("READY:")) {
+                String senderId = message.substring(6);
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), senderId + " 已准备", Toast.LENGTH_SHORT).show());
+                Log.d("MultiplayerGameFragment", senderId + " sent READY signal.");
+                // 如果所有玩家都准备好了，可以开始游戏
+                checkAllPlayersReady();
+            } else {
+                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "收到来自 " + deviceName + " 的数据: " + message, Toast.LENGTH_SHORT).show());
+            }
+        } else {
+            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "收到来自 " + deviceName + " 的未知数据", Toast.LENGTH_SHORT).show());
+            Log.w("MultiplayerGameFragment", "Received unknown object type from " + deviceName);
+        }
+    }
+
+
+    private void checkAllPlayersReady() {
+        // 简单示例：假设有两名玩家，一个本地玩家和一个远程玩家
+        // 在实际应用中，需要维护一个所有连接玩家的“准备”状态列表
+        // 这里只是一个占位符，需要更复杂的逻辑
+        // 注意：getConnectedClients() 返回的是 Map<String, ConnectedThread>，不能直接判断玩家数量
+        // 你需要通过其他方式来追踪连接的玩家数量和他们的准备状态
+        // 这里暂时简化为：只要有一个连接，就认为可以尝试开始游戏
+        if (bluetoothController != null && !bluetoothController.getConnectedClients().isEmpty()) { // 使用 isEmpty() 检查是否有连接
+            Log.d("MultiplayerGameFragment", "All players seem ready, starting game...");
+            startGame();
+        }
+    }
+
+
+    private void startGame() {
+        // 游戏开始逻辑，发牌，设置初始玩家等
+        if (gameController != null) {
+            gameController.startGame();
+            updateUI();
+            sendGameStateToAllPlayers(); // 游戏开始时发送初始状态
+            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "游戏开始！", Toast.LENGTH_LONG).show());
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(layoutId(), container, false);
-		initView(view);
-		initData(context);
-		return view;
-    }
-
-   // @Override
-    protected int layoutId() {
-        return R.layout.fragment_multiplayer_game;
-    }
-
-    //@Override
-    protected void initView(View view) {
-		//初始化出牌图片控件
-		playImage = new ArrayList<>();
-        playImage.add(view.findViewById(R.id.i_cluba));
-        playImage.add(view.findViewById(R.id.i_club2));
-        playImage.add(view.findViewById(R.id.i_club3));
-        playImage.add(view.findViewById(R.id.i_club4));
-        playImage.add(view.findViewById(R.id.i_club5));
-        playImage.add(view.findViewById(R.id.i_club6));
-        playImage.add(view.findViewById(R.id.i_club7));
-        playImage.add(view.findViewById(R.id.i_club8));
-        playImage.add(view.findViewById(R.id.i_club9));
-        playImage.add(view.findViewById(R.id.i_club10));
-        playImage.add(view.findViewById(R.id.i_clubj));
-        playImage.add(view.findViewById(R.id.i_clubq));
-        playImage.add(view.findViewById(R.id.i_clubk));
-
-        playImage.add(view.findViewById(R.id.i_hearta));
-        playImage.add(view.findViewById(R.id.i_heart2));
-        playImage.add(view.findViewById(R.id.i_heart3));
-        playImage.add(view.findViewById(R.id.i_heart4));
-        playImage.add(view.findViewById(R.id.i_heart5));
-        playImage.add(view.findViewById(R.id.i_heart6));
-        playImage.add(view.findViewById(R.id.i_heart7));
-        playImage.add(view.findViewById(R.id.i_heart8));
-        playImage.add(view.findViewById(R.id.i_heart9));
-        playImage.add(view.findViewById(R.id.i_heart10));
-        playImage.add(view.findViewById(R.id.i_heartj));
-        playImage.add(view.findViewById(R.id.i_heartq));
-        playImage.add(view.findViewById(R.id.i_heartk));
-
-        playImage.add(view.findViewById(R.id.i_diamonda));
-        playImage.add(view.findViewById(R.id.i_diamond2));
-        playImage.add(view.findViewById(R.id.i_diamond3));
-        playImage.add(view.findViewById(R.id.i_diamond4));
-        playImage.add(view.findViewById(R.id.i_diamond5));
-        playImage.add(view.findViewById(R.id.i_diamond6));
-        playImage.add(view.findViewById(R.id.i_diamond7));
-        playImage.add(view.findViewById(R.id.i_diamond8));
-        playImage.add(view.findViewById(R.id.i_diamond9));
-        playImage.add(view.findViewById(R.id.i_diamond10));
-        playImage.add(view.findViewById(R.id.i_diamondj));
-        playImage.add(view.findViewById(R.id.i_diamondq));
-        playImage.add(view.findViewById(R.id.i_diamondk));
-
-        playImage.add(view.findViewById(R.id.i_spadea));
-        playImage.add(view.findViewById(R.id.i_spade2));
-        playImage.add(view.findViewById(R.id.i_spade3));
-        playImage.add(view.findViewById(R.id.i_spade4));
-        playImage.add(view.findViewById(R.id.i_spade5));
-        playImage.add(view.findViewById(R.id.i_spade6));
-        playImage.add(view.findViewById(R.id.i_spade7));
-        playImage.add(view.findViewById(R.id.i_spade8));
-        playImage.add(view.findViewById(R.id.i_spade9));
-        playImage.add(view.findViewById(R.id.i_spade10));
-        playImage.add(view.findViewById(R.id.i_spadej));
-        playImage.add(view.findViewById(R.id.i_spadeq));
-        playImage.add(view.findViewById(R.id.i_spadek));
-
-        for (int i = 0; i < 52; ++i)
-            playImage.get(i).setVisibility(View.GONE);
-		
-        // 初始化玩家和电脑的牌面显示控件
-        playerCardsImage = new ArrayList<>();
-        playerCardsImage.add(view.findViewById(R.id.cluba));
-        playerCardsImage.add(view.findViewById(R.id.club2));
-        playerCardsImage.add(view.findViewById(R.id.club3));
-        playerCardsImage.add(view.findViewById(R.id.club4));
-        playerCardsImage.add(view.findViewById(R.id.club5));
-        playerCardsImage.add(view.findViewById(R.id.club6));
-        playerCardsImage.add(view.findViewById(R.id.club7));
-        playerCardsImage.add(view.findViewById(R.id.club8));
-        playerCardsImage.add(view.findViewById(R.id.club9));
-        playerCardsImage.add(view.findViewById(R.id.club10));
-        playerCardsImage.add(view.findViewById(R.id.clubj));
-        playerCardsImage.add(view.findViewById(R.id.clubq));
-        playerCardsImage.add(view.findViewById(R.id.clubk));
-
-        playerCardsImage.add(view.findViewById(R.id.hearta));
-        playerCardsImage.add(view.findViewById(R.id.heart2));
-        playerCardsImage.add(view.findViewById(R.id.heart3));
-        playerCardsImage.add(view.findViewById(R.id.heart4));
-        playerCardsImage.add(view.findViewById(R.id.heart5));
-        playerCardsImage.add(view.findViewById(R.id.heart6));
-        playerCardsImage.add(view.findViewById(R.id.heart7));
-        playerCardsImage.add(view.findViewById(R.id.heart8));
-        playerCardsImage.add(view.findViewById(R.id.heart9));
-        playerCardsImage.add(view.findViewById(R.id.heart10));
-        playerCardsImage.add(view.findViewById(R.id.heartj));
-        playerCardsImage.add(view.findViewById(R.id.heartq));
-        playerCardsImage.add(view.findViewById(R.id.heartk));
-
-        playerCardsImage.add(view.findViewById(R.id.diamonda));
-        playerCardsImage.add(view.findViewById(R.id.diamond2));
-        playerCardsImage.add(view.findViewById(R.id.diamond3));
-        playerCardsImage.add(view.findViewById(R.id.diamond4));
-        playerCardsImage.add(view.findViewById(R.id.diamond5));
-        playerCardsImage.add(view.findViewById(R.id.diamond6));
-        playerCardsImage.add(view.findViewById(R.id.diamond7));
-        playerCardsImage.add(view.findViewById(R.id.diamond8));
-        playerCardsImage.add(view.findViewById(R.id.diamond9));
-        playerCardsImage.add(view.findViewById(R.id.diamond10));
-        playerCardsImage.add(view.findViewById(R.id.diamondj));
-        playerCardsImage.add(view.findViewById(R.id.diamondq));
-        playerCardsImage.add(view.findViewById(R.id.diamondk));
-
-        playerCardsImage.add(view.findViewById(R.id.spadea));
-        playerCardsImage.add(view.findViewById(R.id.spade2));
-        playerCardsImage.add(view.findViewById(R.id.spade3));
-        playerCardsImage.add(view.findViewById(R.id.spade4));
-        playerCardsImage.add(view.findViewById(R.id.spade5));
-        playerCardsImage.add(view.findViewById(R.id.spade6));
-        playerCardsImage.add(view.findViewById(R.id.spade7));
-        playerCardsImage.add(view.findViewById(R.id.spade8));
-        playerCardsImage.add(view.findViewById(R.id.spade9));
-        playerCardsImage.add(view.findViewById(R.id.spade10));
-        playerCardsImage.add(view.findViewById(R.id.spadej));
-        playerCardsImage.add(view.findViewById(R.id.spadeq));
-        playerCardsImage.add(view.findViewById(R.id.spadek));
-
-        //初始化其他三个人剩余牌数显示文本
-        player1CardsText = view.findViewById(R.id.player1_cards_text);
-        player2CardsText = view.findViewById(R.id.player2_cards_text);
-        player3CardsText = view.findViewById(R.id.player3_cards_text);
-
-        //初始化出牌者
-        whoPlay = view.findViewById(R.id.who_play);
-
-        //初始化该轮到谁
-        whoseTurn = view.findViewById(R.id.whose_turn);
-        whoseTurn.setVisibility(View.GONE);
-
-        // 初始化操作按钮
-        playButton = view.findViewById(R.id.play_button);
-        passButton = view.findViewById(R.id.pass_button);
-		startButton = view.findViewById(R.id.start_button);
-        button_back = view.findViewById(R.id.btn_back);
-
-        //设置按钮点击事件
-        playButton.setOnClickListener(v -> handlePlayCards());
-		playButton.setEnabled(false);
-        passButton.setOnClickListener(v -> handlePass());
-		passButton.setEnabled(false);
-        button_back.setOnClickListener(v -> BackToMain());
-        for (int i = 0; i < 52; ++i) {
-            final int tmp = i;
-			playerCardsImage.get(i).setEnabled(false);
-            playerCardsImage.get(i).setOnClickListener(v -> {
-				++cnt_click_card;
-
-                if (cnt_click_card == 1) {
-                    for (int j = 0; j < 52; ++j)
-                        playImage.get(j).setVisibility(View.GONE);
-                    whoPlay.setVisibility(View.GONE);
-                }
-				
-				currentPlayCards.add(tmp);
-				
-				playImage.get(tmp).setVisibility(View.VISIBLE);
-
-                // 上移动画 - 向上移动50像素
-                ObjectAnimator moveUp = ObjectAnimator.ofFloat(v, "translationY", -50f);
-                moveUp.setDuration(200); // 动画持续时间200毫秒
-
-                // 下移动画 - 回到原位
-                ObjectAnimator moveDown = ObjectAnimator.ofFloat(v, "translationY", 0f);
-                moveDown.setDuration(200);
-
-                // 按顺序执行动画
-                AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playSequentially(moveUp, moveDown);
-                animatorSet.start();
-			});
-        }
-		startButton.setEnabled(true);
-		startButton.setOnClickListener(v -> startGame());
+    public void onDeviceDiscovered(BluetoothDevice device) { // 方法名称更改
+        // 不在这里处理，由 MainActivity 处理
     }
 
     @Override
-    protected void initData(Context context) {
-        myCards = new ArrayList<>();
-        player1Cards = new ArrayList<>();
-        player2Cards = new ArrayList<>();
-        player3Cards = new ArrayList<>();
-        currentPlayCards = new ArrayList<>();
-		currentPlayer = -1; //游戏开始后从后端程序获取
-		cnt_click_card = 0;
-    }
-	
-	void startGame() {
-		startButton.setEnabled(false);
-		
-		//从后端程序获取第一个开始游戏的玩家是谁
-        //currentPlayer = 后端();
-
-        //从后端程序获取分配给自己和其他三个人的牌
-        //myCards = 后端();
-		//player1Cards = 后端();
-		//player2Cards = 后端();
-		//player3Cards = 后端();
-
-        //初始化UI界面
-        if (currentPlayer == ME) {
-            whoPlay.setText("等待你出牌");
-            whoseTurn.setText("目前轮到你出牌");
-            player1CardsText.setText("玩家1剩余13张牌");
-            player2CardsText.setText("玩家2剩余13张牌");
-            player3CardsText.setText("玩家3剩余13张牌");
-            playButton.setEnabled(true);
-            passButton.setEnabled(true);
-
-            for (int i = 0; i < 52; ++i) {
-                if (myCards.contains(i)) {
-                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                    playerCardsImage.get(i).setEnabled(true);
-                }
-                else playerCardsImage.get(i).setVisibility(View.GONE);
-            }
-        }
-        else if (currentPlayer == PLAYER1) {
-            whoPlay.setText("等待玩家1出牌");
-            whoseTurn.setText("目前轮到玩家1出牌");
-            player1CardsText.setText("玩家1剩余13张牌");
-            player2CardsText.setText("玩家2剩余13张牌");
-            player3CardsText.setText("玩家3剩余13张牌");
-            playButton.setEnabled(false);
-            passButton.setEnabled(false);
-
-            for (int i = 0; i < 52; ++i) {
-                if (myCards.contains(i)) {
-                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                    playerCardsImage.get(i).setEnabled(false);
-                }
-                else playerCardsImage.get(i).setVisibility(View.GONE);
-            }
-
-            player1Play();
-        }
-        else if (currentPlayer == PLAYER2) {
-            whoPlay.setText("等待玩家2出牌");
-            whoseTurn.setText("目前轮到玩家2出牌");
-            player1CardsText.setText("玩家1剩余13张牌");
-            player2CardsText.setText("玩家2剩余13张牌");
-            player3CardsText.setText("玩家3剩余13张牌");
-            playButton.setEnabled(false);
-            passButton.setEnabled(false);
-
-            for (int i = 0; i < 52; ++i) {
-                if (myCards.contains(i)) {
-                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                    playerCardsImage.get(i).setEnabled(false);
-                }
-                else playerCardsImage.get(i).setVisibility(View.GONE);
-            }
-
-            player2Play();
-        }
-        else {
-            whoPlay.setText("等待玩家3出牌");
-            whoseTurn.setText("目前轮到玩家3出牌");
-            player1CardsText.setText("玩家1剩余13张牌");
-            player2CardsText.setText("玩家2剩余13张牌");
-            player3CardsText.setText("玩家3剩余13张牌");
-            playButton.setEnabled(false);
-            passButton.setEnabled(false);
-
-            for (int i = 0; i < 52; ++i) {
-                if (myCards.contains(i)) {
-                    playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                    playerCardsImage.get(i).setEnabled(false);
-                }
-                else playerCardsImage.get(i).setVisibility(View.GONE);
-            }
-
-            player3Play();
-        }
-	}
-
-    String currentPlayCardsToString() {
-        StringBuilder s = new StringBuilder("\n");
-        for (Integer card : currentPlayCards) {
-            if (card >= 0 && card <= 12) {
-                s.append("♣");
-                if (card == 0)
-                    s.append("A");
-                else if (card == 10)
-                    s.append("J");
-                else if (card == 11)
-                    s.append("Q");
-                else if (card == 12)
-                    s.append("K");
-                else s.append(card + 1);
-            }
-            else if (card >= 13 && card <= 25) {
-                s.append("♥");
-                if (card == 13)
-                    s.append("A");
-                else if (card == 23)
-                    s.append("J");
-                else if (card == 24)
-                    s.append("Q");
-                else if (card == 25)
-                    s.append("K");
-                else s.append(card - 12);
-            }
-            else if (card >= 26 && card <= 38) {
-                s.append("♦");
-                if (card == 26)
-                    s.append("A");
-                else if (card == 36)
-                    s.append("J");
-                else if (card == 37)
-                    s.append("Q");
-                else if (card == 38)
-                    s.append("K");
-                else s.append(card - 25);
-            }
-            else {
-                s.append("♠");
-                if (card == 39)
-                    s.append("A");
-                else if (card == 49)
-                    s.append("J");
-                else if (card == 50)
-                    s.append("Q");
-                else if (card == 51)
-                    s.append("K");
-                else s.append(card - 38);
-            }
-            s.append(" ");
-        }
-        return s.toString();
+    public void onDiscoveryFinished(List<BluetoothDevice> devices) { // 方法签名更改
+        // 不在这里处理，由 MainActivity 处理
     }
 
-    private void handlePlayCards() {
-		cnt_click_card = 0;
-		
-		for (int i = 0; i < 52; ++i) {
-            playImage.get(i).setVisibility(View.GONE);
-        }
-		
-        for (Integer card : currentPlayCards) {
-            myCards.remove(card);
-        }
-		
-        currentPlayer = (currentPlayer + 1) % 4;
-
-        //更新UI，设置按钮使能
-        playButton.setEnabled(false);
-        passButton.setEnabled(false);
-        whoPlay.setText(new StringBuilder("你出的牌为：").append(currentPlayCardsToString()).toString());
-        whoseTurn.setText("目前轮到玩家1出牌");
-        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
-        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
-        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
-        for (int i = 0; i < 52; ++i) {
-            if (myCards.contains(i)) {
-                playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                playerCardsImage.get(i).setEnabled(false);
-            }
-            else playerCardsImage.get(i).setVisibility(View.GONE);
-        }
-
-        currentPlayCards = new ArrayList<>();
-
-        player1Play();
+    @Override
+    public void onServerStarted() { // 新增服务端启动回调
+        if (!isAdded()) return;
+        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "服务端已启动，等待连接...", Toast.LENGTH_SHORT).show());
     }
 
-    private void handlePass() {
-		cnt_click_card = 0;
-
-        for (int i = 0; i < 52; ++i)
-            playImage.get(i).setVisibility(View.GONE);
-		
-        currentPlayer = (currentPlayer + 1) % 4;
-        currentPlayCards = new ArrayList<>();
-
-        //更新UI，设置按钮使能
-        playButton.setEnabled(false);
-        passButton.setEnabled(false);
-        whoPlay.setText("你未出牌");
-        whoseTurn.setText("目前轮到玩家1出牌");
-        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
-        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player1Cards.size()).append("张牌").toString());
-        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player1Cards.size()).append("张牌").toString());
-        for (int i = 0; i < 52; ++i) {
-            if (myCards.contains(i)) {
-                playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                playerCardsImage.get(i).setEnabled(false);
-            }
-            else playerCardsImage.get(i).setVisibility(View.GONE);
+    @Override
+    public void onClientConnected(BluetoothDevice device, boolean isServer) { // 客户端连接回调
+        if (!isAdded()) return;
+        if (isServer) {
+            // 当前设备是服务端，有新的客户端连接
+            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "客户端 " + (device.getName() != null ? device.getName() : device.getAddress()) + " 已连接", Toast.LENGTH_SHORT).show());
+            // 服务端接收到新连接时，可以发送当前游戏状态或者请求客户端的玩家信息
+            sendGameStateToAllPlayers(); // 服务端连接新客户端时，广播最新游戏状态
+        } else {
+            // 当前设备是客户端，已成功连接到服务端
+            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "已连接到服务端 " + (device.getName() != null ? device.getName() : device.getAddress()), Toast.LENGTH_SHORT).show());
+            // 如果连接成功，可以考虑发送本地玩家信息或者请求完整的游戏状态
+            sendPlayerInformation();
         }
-
-        player1Play();
     }
 
-    private void player1Play() {
-		whoPlay.setVisibility(View.VISIBLE);
-		
-        //通过联网程序得到玩家1出的牌
-        //currentPlayCards = network();
-
-        if (!currentPlayCards.isEmpty()) {
-            for (Integer card : currentPlayCards) {
-                player1Cards.remove(card);
-                playImage.get(card).setVisibility(View.VISIBLE);
-            }
-        }
-			
-		currentPlayer = (currentPlayer + 1) % 4;
-
-        //更新UI，设置按钮使能
-        if (currentPlayCards.isEmpty())
-            whoPlay.setText(new StringBuilder("玩家1出的牌为：").append(currentPlayCardsToString()).toString());
-        else whoPlay.setText("玩家1未出牌");
-        whoseTurn.setText("目前轮到玩家2出牌");
-        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
-        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
-        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
-
-        currentPlayCards = new ArrayList<>();
-
-        player2Play();
+    @Override
+    public void onClientDisconnected(BluetoothDevice device) { // 方法名称更改
+        if (!isAdded()) return;
+        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), (device.getName() != null ? device.getName() : device.getAddress()) + " 已断开连接", Toast.LENGTH_SHORT).show());
+        // 处理断开连接的情况，例如更新玩家列表
     }
 
-    private void player2Play() {
-        //通过联网程序得到玩家2出的牌
-        //currentPlayCards = network();
-		
-		whoPlay.setVisibility(View.VISIBLE);
-
-        if (!currentPlayCards.isEmpty()) {
-            for (Integer card : currentPlayCards) {
-                player2Cards.remove(card);
-                playImage.get(card).setVisibility(View.VISIBLE);
-            }
-        }
-			
-		currentPlayer = (currentPlayer + 1) % 4;
-
-        //更新UI，设置按钮使能
-        if (currentPlayCards.isEmpty())
-            whoPlay.setText(new StringBuilder("玩家2出的牌为：").append(currentPlayCardsToString()).toString());
-        else whoPlay.setText("玩家2未出牌");
-        whoseTurn.setText("目前轮到玩家3出牌");
-        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
-        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
-        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
-
-        currentPlayCards = new ArrayList<>();
-
-        player3Play();
+    @Override
+    public void onError(String message) { // 错误回调
+        if (!isAdded()) return;
+        requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "蓝牙错误: " + message, Toast.LENGTH_SHORT).show());
     }
 
-    private void player3Play() {
-        //通过联网程序得到玩家3出的牌
-        //currentPlayCards = network();
-		
-		whoPlay.setVisibility(View.VISIBLE);
-
-        if (!currentPlayCards.isEmpty()) {
-            for (Integer card : currentPlayCards) {
-                player3Cards.remove(card);
-                playImage.get(card).setVisibility(View.VISIBLE);
-            }
-        }
-			
-		currentPlayer = (currentPlayer + 1) % 4;
-
-        //更新UI，设置按钮使能
-        playButton.setEnabled(true);
-        passButton.setEnabled(true);
-        if (currentPlayCards.isEmpty())
-            whoPlay.setText(new StringBuilder("玩家3出的牌为：").append(currentPlayCardsToString()).toString());
-        else whoPlay.setText("玩家3未出牌");
-        whoseTurn.setText("目前轮到你出牌");
-        player1CardsText.setText(new StringBuilder("玩家1剩余").append(player1Cards.size()).append("张牌").toString());
-        player2CardsText.setText(new StringBuilder("玩家2剩余").append(player2Cards.size()).append("张牌").toString());
-        player3CardsText.setText(new StringBuilder("玩家3剩余").append(player3Cards.size()).append("张牌").toString());
-        for (int i = 0; i < 52; ++i) {
-            if (myCards.contains(i)) {
-                playerCardsImage.get(i).setVisibility(View.VISIBLE);
-                playerCardsImage.get(i).setEnabled(true);
-            }
-            else playerCardsImage.get(i).setVisibility(View.GONE);
-        }
-
-        currentPlayCards = new ArrayList<>();
+    @Override
+    public void onLog(String message) { // 新增日志回调
+        Log.d("BluetoothController_Log", message);
+        // 如果需要，可以在UI上显示这些日志信息
     }
 
+
+    private void sendPlayerInformation() {
+        if (bluetoothController != null && currentPlayer != null) {
+            // sendDataToServer 方法现在接受 Serializable 类型
+            bluetoothController.sendDataToServer(currentPlayer.getPlayerInformation()); // 发送玩家信息
+            Log.d("MultiplayerGameFragment", "Player information sent. UserID: " + currentPlayer.getPlayerInformation().getUserID());
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (bluetoothController != null) {
+            bluetoothController.setListener(this); // 确保 Fragment 处于活跃状态时监听器已设置
+        }
+        updateUI(); // 确保从其他 Fragment 返回时UI正确更新
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // 可以在这里移除监听器，如果蓝牙通信需要在后台持续进行则不移除
+        // if (bluetoothController != null) {
+        //     bluetoothController.setListener(null);
+        // }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        selectedCards.clear();
+        player1HandCardImageViews.clear();
+        // 清理UI元素引用，避免内存泄漏
+    }
 }

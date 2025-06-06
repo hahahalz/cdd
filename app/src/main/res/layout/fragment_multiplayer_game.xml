@@ -1,15 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:padding="10dp"
-    tools:context=".View.SingleplayerGameFragment"
-	android:background="@drawable/bg">
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".View.MultiplayerGameFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:padding="16dp"
+		android:background="@drawable/bg"> <LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:orientation="vertical"
+		android:gravity="center_horizontal|bottom"
+		android:paddingBottom="8dp">
+
+		<TextView
+			android:id="@+id/tv_player2_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="玩家2"
+			android:textColor="@android:color/white"
+			android:textStyle="bold"
+			android:textSize="18sp"/>
+
+		<TextView
+			android:id="@+id/tv_player2_cards_count"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="手牌: N/A"
+			android:textColor="@android:color/white"
+			android:textSize="14sp"/>
+
+		<LinearLayout
+			android:id="@+id/ll_player2_hand"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginTop="4dp"/>
+
+		<LinearLayout
+			android:id="@+id/ll_player2_played"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginTop="4dp"/>
+
+	</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="2"
+			android:orientation="vertical"
+			android:gravity="center">
+
+			<TextView
+				android:id="@+id/tv_current_turn"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="当前回合: 玩家1"
+				android:textColor="@android:color/white"
+				android:textStyle="bold"
+				android:textSize="20sp"
+				android:layout_marginBottom="8dp"/>
+
+			<TextView
+				android:id="@+id/tv_last_played_cards"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="上次出牌: 无"
+				android:textColor="@android:color/white"
+				android:textSize="16sp"
+				android:layout_marginBottom="16dp"/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:gravity="center"
+				android:layout_marginBottom="8dp">
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:orientation="vertical"
+					android:gravity="center_horizontal">
+					<TextView
+						android:id="@+id/tv_player3_name"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="玩家3"
+						android:textColor="@android:color/white"
+						android:textStyle="bold"
+						android:textSize="16sp"/>
+					<TextView
+						android:id="@+id/tv_player3_cards_count"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="手牌: N/A"
+						android:textColor="@android:color/white"
+						android:textSize="12sp"/>
+					<LinearLayout
+						android:id="@+id/ll_player3_hand"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center_vertical"
+						android:layout_marginTop="4dp"/>
+					<LinearLayout
+						android:id="@+id/ll_player3_played"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center_vertical"
+						android:layout_marginTop="4dp"/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:orientation="vertical"
+					android:gravity="center_horizontal">
+					<TextView
+						android:id="@+id/tv_player4_name"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="玩家4"
+						android:textColor="@android:color/white"
+						android:textStyle="bold"
+						android:textSize="16sp"/>
+					<TextView
+						android:id="@+id/tv_player4_cards_count"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="手牌: N/A"
+						android:textColor="@android:color/white"
+						android:textSize="12sp"/>
+					<LinearLayout
+						android:id="@+id/ll_player4_hand"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center_vertical"
+						android:layout_marginTop="4dp"/>
+					<LinearLayout
+						android:id="@+id/ll_player4_played"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center_vertical"
+						android:layout_marginTop="4dp"/>
+				</LinearLayout>
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			android:gravity="center_horizontal|top"
+			android:paddingTop="8dp">
+
+			<TextView
+				android:id="@+id/tv_player1_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="玩家1 (你)"
+				android:textColor="@android:color/white"
+				android:textStyle="bold"
+				android:textSize="18sp"/>
+
+			<TextView
+				android:id="@+id/tv_player1_cards_count"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="手牌: 13"
+
+				android:textSize="14sp"/>
+
+			<LinearLayout
+				android:id="@+id/ll_player1_hand"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:gravity="center_vertical"
+				android:layout_marginTop="4dp"/>
+
+			<LinearLayout
+				android:id="@+id/ll_player1_played"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:gravity="center_vertical"
+				android:layout_marginTop="4dp"/>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="16dp">
+
+				<Button
+					android:id="@+id/btn_play_cards"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="出牌"
+					android:layout_marginEnd="16dp"/>
+
+				<Button
+					android:id="@+id/btn_pass"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="过牌"/>
+
+				<Button
+					android:id="@+id/btn_ready"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="准备"
+					android:layout_marginStart="16dp"/>
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
+
 	<ImageView
 		android:id="@+id/btn_back"
 		android:layout_width="40dp"
@@ -22,807 +245,4 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
-	<LinearLayout
-		android:id="@+id/text_layout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:layout_gravity="center">
-			
-		<LinearLayout
-			android:id="@+id/remain_text_layout"
-			android:layout_width="410dp"
-			android:layout_height="200dp"
-			android:orientation="horizontal" 
-			android:layout_gravity="top|left" >
-			
-			<LinearLayout
-				android:id="@+id/player1_layout"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="vertical" >
-			
-				<ImageView
-					android:id="@+id/player1_image"
-					android:layout_width="80dp"
-					android:layout_height="120dp"
-					android:src="@drawable/player" />
-			
-				<TextView
-					android:id="@+id/player1_cards_text"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="玩家1剩余牌数"
-					android:textColor="#FFFFFF"
-					android:gravity="center"
-					android:layout_margin="5dp" />
-					
-			</LinearLayout>
-			
-			<LinearLayout
-				android:id="@+id/player2_layout"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="vertical" >
-				
-				<ImageView
-					android:id="@+id/player2_image"
-					android:layout_width="80dp"
-					android:layout_height="120dp"
-					android:src="@drawable/player" />
-					
-				<TextView
-					android:id="@+id/player2_cards_text"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="玩家2剩余牌数"
-					android:textColor="#FFFFFF"
-					android:gravity="center"
-					android:layout_margin="5dp" />
-					
-			</LinearLayout>
-			
-			<LinearLayout
-				android:id="@+id/player3_layout"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="vertical" >
-				
-				<ImageView
-					android:id="@+id/player3_image"
-					android:layout_width="80dp"
-					android:layout_height="120dp"
-					android:src="@drawable/player" />
-					
-				<TextView
-					android:id="@+id/player3_cards_text"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="玩家3剩余牌数"
-					android:textColor="#FFFFFF"
-					android:gravity="center"
-					android:layout_margin="5dp" />
-					
-			</LinearLayout>
-				
-		</LinearLayout>
-			
-		<TextView
-			android:id="@+id/whose_turn"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="目前轮到的玩家"
-			android:textColor="#FFFFFF"
-			android:gravity="center"
-			android:layout_margin="5dp" />
-			
-		<LinearLayout
-			android:id="@+id/button_layout"
-			android:layout_width="200dp"
-			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:layout_gravity="right|bottom" >
-			
-			<TextView
-				android:id="@+id/who_play"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="出牌者出的牌"
-				android:textColor="#FFFFFF"
-				android:gravity="center"
-				android:layout_margin="5dp" />
-			
-			<HorizontalScrollView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content" >
-				
-				<LinearLayout
-					android:id="@+id/cards_image_layout"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal">
-				
-					<ImageView
-						android:id="@+id/i_cluba"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/cluba" />
-						
-					<ImageView
-						android:id="@+id/i_club2"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club2" />
-						
-					<ImageView
-						android:id="@+id/i_club3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club3" />
-						
-					<ImageView
-						android:id="@+id/i_club4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club4" />
-						
-					<ImageView
-						android:id="@+id/i_club5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club5" />
-						
-					<ImageView
-						android:id="@+id/i_club6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club6" />
-						
-					<ImageView
-						android:id="@+id/i_club7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club7" />
-					
-					<ImageView
-						android:id="@+id/i_club8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club8" />
-					
-					<ImageView
-						android:id="@+id/i_club9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club9" />
-						
-					<ImageView
-						android:id="@+id/i_club10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/club10" />
-						
-					<ImageView
-						android:id="@+id/i_clubj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubj" />
-						
-					<ImageView
-						android:id="@+id/i_clubq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubq" />
-						
-					<ImageView
-						android:id="@+id/i_clubk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/clubk" />
-						
-					<ImageView
-						android:id="@+id/i_hearta"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/hearta" />
-						
-					<ImageView
-						android:id="@+id/i_heart2"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart2" />
-						
-					<ImageView
-						android:id="@+id/i_heart3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart3" />
-						
-					<ImageView
-						android:id="@+id/i_heart4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart4" />
-						
-					<ImageView
-						android:id="@+id/i_heart5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart5" />
-						
-					<ImageView
-						android:id="@+id/i_heart6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart6" />
-						
-					<ImageView
-						android:id="@+id/i_heart7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart7" />
-						
-					<ImageView
-						android:id="@+id/i_heart8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart8" />
-						
-					<ImageView
-						android:id="@+id/i_heart9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart9" />
-						
-					<ImageView
-						android:id="@+id/i_heart10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heart10" />
-						
-					<ImageView
-						android:id="@+id/i_heartj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartj" />
-						
-					<ImageView
-						android:id="@+id/i_heartq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartq" />
-						
-					<ImageView
-						android:id="@+id/i_heartk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/heartk" />
-						
-					<ImageView
-						android:id="@+id/i_diamonda"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamonda" />
-						
-					<ImageView
-						android:id="@+id/i_diamond2"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond2" />
-						
-					<ImageView
-						android:id="@+id/i_diamond3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond3" />
-						
-					<ImageView
-						android:id="@+id/i_diamond4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond4" />
-						
-					<ImageView
-						android:id="@+id/i_diamond5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond5" />
-						
-					<ImageView
-						android:id="@+id/i_diamond6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond6" />
-						
-					<ImageView
-						android:id="@+id/i_diamond7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond7" />
-						
-					<ImageView
-						android:id="@+id/i_diamond8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond8" />
-						
-					<ImageView
-						android:id="@+id/i_diamond9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond9" />
-						
-					<ImageView
-						android:id="@+id/i_diamond10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamond10" />
-						
-					<ImageView
-						android:id="@+id/i_diamondj"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondj" />
-						
-					<ImageView
-						android:id="@+id/i_diamondq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondq" />
-						
-					<ImageView
-						android:id="@+id/i_diamondk"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/diamondk" />
-						
-					<ImageView
-						android:id="@+id/i_spadea"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadea" />
-						
-					<ImageView
-						android:id="@+id/i_spade2"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade2" />
-						
-					<ImageView
-						android:id="@+id/i_spade3"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade3" />
-						
-					<ImageView
-						android:id="@+id/i_spade4"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade4" />
-						
-					<ImageView
-						android:id="@+id/i_spade5"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade5" />
-						
-					<ImageView
-						android:id="@+id/i_spade6"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade6" />
-						
-					<ImageView
-						android:id="@+id/i_spade7"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade7" />
-						
-					<ImageView
-						android:id="@+id/i_spade8"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade8" />
-						
-					<ImageView
-						android:id="@+id/i_spade9"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade9" />
-						
-					<ImageView
-						android:id="@+id/i_spade10"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spade10" />
-						
-					<ImageView
-						android:id="@+id/i_spadej"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadej" />
-						
-					<ImageView
-						android:id="@+id/i_spadeq"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadeq" />
-						
-					<ImageView
-						android:id="@+id/i_spadek"
-						android:layout_width="50dp"
-						android:layout_height="75dp"
-						android:src="@drawable/spadek" />
-				
-				</LinearLayout>
-				
-			</HorizontalScrollView>
-			
-			<LinearLayout
-				android:id="@+id/start_play_button_layout"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:layout_gravity="right|bottom" >
-			
-				<Button
-					android:id="@+id/start_button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="开始游戏"
-					android:layout_margin="1dp" />
-			
-				<Button
-					android:id="@+id/play_button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="出牌"
-					android:layout_margin="1dp" />
-					
-			</LinearLayout>
-
-			<Button
-				android:id="@+id/pass_button"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="过牌"
-				android:layout_margin="1dp" 
-				android:layout_gravity="right|bottom" />
-				
-		</LinearLayout>
-			
-	</LinearLayout>
-	
-	<View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-	
-	<HorizontalScrollView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="5dp">
-		
-		<LinearLayout
-			android:id="@+id/cards_layout"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-
-			<Button
-				android:id="@+id/cluba"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/cluba" />
-
-			<Button
-				android:id="@+id/club2"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club2" />
-
-			<Button
-				android:id="@+id/club3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club3" />
-				
-			<Button
-				android:id="@+id/club4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club4" />
-				
-			<Button
-				android:id="@+id/club5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club5" />
-				
-			<Button
-				android:id="@+id/club6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club6" />
-				
-			<Button
-				android:id="@+id/club7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club7" />
-				
-			<Button
-				android:id="@+id/club8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club8" />
-				
-			<Button
-				android:id="@+id/club9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club9" />
-				
-			<Button
-				android:id="@+id/club10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/club10" />
-				
-			<Button
-				android:id="@+id/clubj"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/clubj" />
-				
-			<Button
-				android:id="@+id/clubq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/clubq" />
-
-			<Button
-				android:id="@+id/clubk"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/clubk" />
-				
-			<Button
-				android:id="@+id/hearta"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/hearta" />
-				
-			<Button
-				android:id="@+id/heart2"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart2" />
-				
-			<Button
-				android:id="@+id/heart3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart3" />
-				
-			<Button
-				android:id="@+id/heart4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart4" />
-				
-			<Button
-				android:id="@+id/heart5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart5" />
-				
-			<Button
-				android:id="@+id/heart6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart6" />
-				
-			<Button
-				android:id="@+id/heart7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart7" />
-				
-			<Button
-				android:id="@+id/heart8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart8" />
-				
-			<Button
-				android:id="@+id/heart9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart9" />
-				
-			<Button
-				android:id="@+id/heart10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heart10" />
-				
-			<Button
-				android:id="@+id/heartj"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heartj" />
-				
-			<Button
-				android:id="@+id/heartq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heartq" />
-				
-			<Button
-				android:id="@+id/heartk"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/heartk" />
-				
-			<Button
-				android:id="@+id/diamonda"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamonda" />
-				
-			<Button
-				android:id="@+id/diamond2"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond2" />
-				
-			<Button
-				android:id="@+id/diamond3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond3" />
-				
-			<Button
-				android:id="@+id/diamond4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond4" />
-				
-			<Button
-				android:id="@+id/diamond5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond5" />
-				
-			<Button
-				android:id="@+id/diamond6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond6" />
-				
-			<Button
-				android:id="@+id/diamond7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond7" />
-				
-			<Button
-				android:id="@+id/diamond8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond8" />
-				
-			<Button
-				android:id="@+id/diamond9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond9" />
-				
-			<Button
-				android:id="@+id/diamond10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamond10" />
-				
-			<Button
-				android:id="@+id/diamondj"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamondj" />
-				
-			<Button
-				android:id="@+id/diamondq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamondq" />
-				
-			<Button
-				android:id="@+id/diamondk"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/diamondk" />
-				
-			<Button
-				android:id="@+id/spadea"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spadea" />
-				
-			<Button
-				android:id="@+id/spade2"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade2" />
-				
-			<Button
-				android:id="@+id/spade3"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade3" />
-				
-			<Button
-				android:id="@+id/spade4"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade4" />
-				
-			<Button
-				android:id="@+id/spade5"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade5" />
-				
-			<Button
-				android:id="@+id/spade6"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade6" />
-				
-			<Button
-				android:id="@+id/spade7"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade7" />
-				
-			<Button
-				android:id="@+id/spade8"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade8" />
-				
-			<Button
-				android:id="@+id/spade9"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade9" />
-				
-			<Button
-				android:id="@+id/spade10"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spade10" />
-				
-			<Button
-				android:id="@+id/spadej"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spadej" />
-				
-			<Button
-				android:id="@+id/spadeq"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spadeq" />
-				
-			<Button
-				android:id="@+id/spadek"
-				android:layout_width="50dp"
-				android:layout_height="75dp"
-				android:background="@drawable/spadek" />
-		
-		</LinearLayout>
-	
-	</HorizontalScrollView>
-
-</LinearLayout>
+</FrameLayout>

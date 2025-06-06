@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     mBluetoothController.findDevice(); // 开始发现设备
-                    Toast.makeText(this, "正在扫描可用房间...", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, "正在扫描可用房间...", Toast.LENGTH_SHORT).show(); // 移动到 onError 或 onDiscoveryFinished
                     showDiscoveryDialog(); // 显示扫描对话框
                 })
                 .setNeutralButton("使当前设备蓝牙可见", (dialog, which) -> {
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     mBluetoothController.enableVisibly(this);
-                    Toast.makeText(this, "已请求开启蓝牙可见性！", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, "已请求开启蓝牙可见性！", Toast.LENGTH_SHORT).show(); // 移动到 onError
                 })
                 .setNegativeButton("创建房间", (dialog, which) -> {
                     // 服务器逻辑：启动服务器
@@ -207,9 +207,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     mBluetoothController.startServer(); // 启动服务端
-                    Toast.makeText(this, "正在创建房间，等待其他设备连接...", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(this, "正在创建房间，等待其他设备连接...", Toast.LENGTH_LONG).show(); // 移动到 onServerStarted
                     // 这里可以跳转到一个等待界面，显示已连接的客户端列表
-                    replaceFragement(new MultiplayerGameFragment()); // 示例：直接跳转到游戏界面
+                    // replaceFragement(new MultiplayerGameFragment()); // 示例：直接跳转到游戏界面，这个在onClientConnected或onServerStarted更合适
                 })
                 .setCancelable(true) // 允许点击外部关闭，或者根据需求设置为 false
                 .show();
@@ -227,12 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             BluetoothDevice selectedDevice = discoveredDevices.get(position);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
-                    != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(MainActivity.this, "尝试连接到: " + selectedDevice.getName(), Toast.LENGTH_SHORT).show();
+            // 这里只需要调用 connectToDevice，Toast 的逻辑已经通过回调处理
             mBluetoothController.connectToDevice(selectedDevice); // 连接到选择的设备
             discoveryDialog.dismiss(); // 关闭发现对话框
         });
@@ -366,15 +361,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onDeviceDiscovered(BluetoothDevice device) {
+        // 在此处检查权限，以防在设备名称或地址获取时权限状态发生变化
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
                 != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "蓝牙扫描权限不足，无法显示发现的设备信息", Toast.LENGTH_SHORT).show();
             return;
         }
         if (device != null  && !discoveredDevices.contains(device)) {
             discoveredDevices.add(device);
-            deviceListAdapter.add(device.getName() + "\n" + device.getAddress());
+            // 确保设备名称可用，否则使用地址
+            String deviceName = (device.getName() != null && !device.getName().isEmpty()) ? device.getName() : "未知设备";
+            deviceListAdapter.add(deviceName + "\n" + device.getAddress());
             deviceListAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "发现设备: " + deviceName, Toast.LENGTH_SHORT).show(); // 在这里显示发现设备
         }
     }
 
@@ -395,53 +394,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onServerStarted() {
         Toast.makeText(this, "服务端已启动，等待客户端连接...", Toast.LENGTH_LONG).show();
         // 可以在这里更新UI，例如显示“等待连接中...”
+        replaceFragement(new MultiplayerGameFragment()); // 服务端启动成功后，可以跳转到游戏界面
     }
 
     @Override
     public void onClientConnected(BluetoothDevice device, boolean isServer) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+        // 在此处检查权限，以防在设备名称获取时权限状态发生变化
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) { // 连接成功后查看名称可能也需要连接权限
+            Toast.makeText(this, "蓝牙连接权限不足，无法显示设备名称", Toast.LENGTH_SHORT).show();
             return;
         }
+        String deviceName = (device != null && device.getName() != null) ? device.getName() : device.getAddress();
         if (isServer) {
-            Toast.makeText(this, "新客户端连接: " + (device.getName() != null ? device.getName() : device.getAddress()), Toast.LENGTH_LONG).show();
+            runOnUiThread(()->Toast.makeText(this, "新客户端连接: " + deviceName, Toast.LENGTH_LONG).show());
             // 作为服务器，有新客户端连接，更新已连接客户端列表UI
         } else {
-            Toast.makeText(this, "已成功连接到服务端: " + (device.getName() != null ? device.getName() : device.getAddress()), Toast.LENGTH_LONG).show();
+            runOnUiThread(()->Toast.makeText(this, "已成功连接到服务端: " + deviceName, Toast.LENGTH_LONG).show());
             // 作为客户端，连接到服务端，可以跳转到游戏界面或发送数据
-            replaceFragement(new MultiplayerGameFragment());
+            runOnUiThread(()->replaceFragement(new MultiplayerGameFragment()));
             // 此时可以发送数据
-            mBluetoothController.sendDataToServer("Hello from client!");
+            // mBluetoothController.sendDataToServer("Hello from client!"); // 示例数据发送
         }
     }
 
     @Override
-    public void onDataReceived(BluetoothDevice fromDevice, String data) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+    public void onDataReceived(BluetoothDevice fromDevice, Object data) {
+        // 在此处检查权限，以防在设备名称获取时权限状态发生变化
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) { // 收到数据时查看名称可能也需要连接权限
+            Toast.makeText(this, "蓝牙连接权限不足，无法显示发送方设备名称", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(this, "收到来自 " + (fromDevice.getName() != null ? fromDevice.getName() : fromDevice.getAddress()) + " 的数据: " + data, Toast.LENGTH_SHORT).show();
+        String deviceName = (fromDevice != null && fromDevice.getName() != null) ? fromDevice.getName() : fromDevice.getAddress();
+        Toast.makeText(this, "收到来自 " + deviceName + " 的数据: " + data, Toast.LENGTH_SHORT).show();
         // 处理接收到的数据，例如更新游戏状态
     }
 
     @Override
     public void onClientDisconnected(BluetoothDevice device) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+        // 在此处检查权限，以防在设备名称获取时权限状态发生变化
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) { // 断开连接时查看名称可能也需要连接权限
+            runOnUiThread(()->Toast.makeText(this, "蓝牙连接权限不足，无法显示断开设备名称", Toast.LENGTH_SHORT).show());
             return;
         }
         String deviceName = (device != null && device.getName() != null) ? device.getName() : "未知设备";
-        Toast.makeText(this, deviceName + " 已断开连接", Toast.LENGTH_SHORT).show();
+        runOnUiThread(()->Toast.makeText(this, deviceName + " 已断开连接", Toast.LENGTH_SHORT).show());
         // 更新UI，例如从已连接客户端列表中移除
     }
 
     @Override
     public void onError(String error) {
-        Toast.makeText(this, "蓝牙错误: " + error, Toast.LENGTH_LONG).show();
+        runOnUiThread(()->Toast.makeText(this, "蓝牙错误: " + error, Toast.LENGTH_LONG).show());
         // 处理错误，例如显示错误信息给用户
     }
 
@@ -449,5 +454,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         mBluetoothController.onDestroy(); // 清理 BluetoothController 资源
+    }
+
+    @Override
+    public void onLog(String message) {
+
     }
 }

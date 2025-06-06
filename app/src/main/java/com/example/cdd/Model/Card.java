@@ -3,11 +3,12 @@ package com.example.cdd.Model;
 import androidx.annotation.NonNull;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public class Card {
-    public enum Rank {
+public class Card implements Serializable {
+    public enum Rank implements Serializable{
         THREE(3), FOUR(4), FIVE(5), SIX(6), SEVEN(7), EIGHT(8), NINE(9), TEN(10),
         JACK(11), QUEEN(12), KING(13), ACE(14), TWO(15); // 2 最大
 
@@ -15,7 +16,7 @@ public class Card {
         Rank(int value) { this.value = value; }//构造函数通过int进行赋值
         public int getValue() { return value; }
     }//定义牌值，并且赋值便于后面比大小）
-    public enum Suit { Club, Diamond, Heart, Spade }//定义花色梅花，方块，红桃，黑桃
+    public enum Suit implements Serializable{ Club, Diamond, Heart, Spade }//定义花色梅花，方块，红桃，黑桃
 
     private Rank rank;  // 使用枚举类型
     private Suit suit;

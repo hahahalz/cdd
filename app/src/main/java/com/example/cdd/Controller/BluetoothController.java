@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentFilter; // 新增
 import android.content.pm.PackageManager;
 import android.os.Build;
+// import android.widget.Toast; // 移除 Toast 导入，因为Controller不再直接显示Toast
+import android.util.Log; // 新增 Log 导入
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,9 +21,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +38,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class BluetoothController {
+    private static final String TAG = "BluetoothController"; // 用于Logcat
+
     private BluetoothAdapter mAdapter;                 // 蓝牙适配器
     private Context mContext;
     private static final int REQUEST_CODE_BLUETOOTH_DISCOVERABLE = 1001; // 用于请求可见性的请求码
@@ -84,9 +92,10 @@ public class BluetoothController {
         void onDiscoveryFinished(List<BluetoothDevice> devices); // 扫描结束，返回所有发现的设备
         void onServerStarted();                          // 服务端启动成功
         void onClientConnected(BluetoothDevice device, boolean isServer); // 客户端连接成功 (isServer表示当前是服务端，有新客户端连接)
-        void onDataReceived(BluetoothDevice fromDevice, String data); // 收到数据，指明来源设备
+        void onDataReceived(BluetoothDevice fromDevice,Object data); // 收到数据，指明来源设备
         void onClientDisconnected(BluetoothDevice device); // 客户端断开连接
         void onError(String error);                      // 错误通知
+        void onLog(String message);
     }
 
     public BluetoothController(){
@@ -99,6 +108,14 @@ public class BluetoothController {
         this.listener = listener;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         connectedClients = new HashMap<>(); // 初始化
+        // 在这里注册广播接收器，确保 mContext 不为 null
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        if (mContext != null) {
+            mContext.registerReceiver(discoveryReceiver, filter);
+        } else {
+            Log.e(TAG, "Context is null in constructor, cannot register discoveryReceiver.");
+        }
     }
 
     /**
@@ -122,7 +139,8 @@ public class BluetoothController {
      */
     public void turnOnBluetooth(){
         if (!isSupportBluetooth()){
-            Toast.makeText(mContext, "设备不支持蓝牙", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "设备不支持蓝牙", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("设备不支持蓝牙"); // 修改为回调
             return;
         }
         if (!mAdapter.isEnabled()) {
@@ -130,7 +148,8 @@ public class BluetoothController {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 requestEnableBtLauncher.launch(enableBtIntent);
             } else {
-                Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理蓝牙开启请求", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理蓝牙开启请求", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请在Activity/Fragment中设置ActivityResultLauncher来处理蓝牙开启请求"); // 修改为回调
             }
         }
     }
@@ -143,7 +162,8 @@ public class BluetoothController {
      */
     public void enableVisibly(Activity activity){ // 保持Activity参数是为了兼容旧的startActivityForResult
         if (mContext == null) {
-            Toast.makeText(activity, "BluetoothController 未初始化 Context", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(activity, "BluetoothController 未初始化 Context", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("BluetoothController 未初始化 Context"); // 修改为回调
             return;
         }
         List<String> permissionsNeeded = new ArrayList<>();
@@ -163,9 +183,11 @@ public class BluetoothController {
         if (!permissionsNeeded.isEmpty()) {
             if (requestPermissionLauncher != null) {
                 requestPermissionLauncher.launch(permissionsNeeded.toArray(new String[0]));
-                Toast.makeText(mContext, "请求蓝牙可见性相关权限...", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请求蓝牙可见性相关权限...", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请求蓝牙可见性相关权限..."); // 修改为回调
             } else {
-                Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求"); // 修改为回调
             }
             return;
         }
@@ -181,11 +203,13 @@ public class BluetoothController {
      */
     public void findDevice(){
         if (mAdapter == null){
-            Toast.makeText(mContext, "设备不支持蓝牙", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "设备不支持蓝牙", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("设备不支持蓝牙"); // 修改为回调
             return;
         }
         if (!mAdapter.isEnabled()){
-            Toast.makeText(mContext, "请先开启蓝牙", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "请先开启蓝牙", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("请先开启蓝牙"); // 修改为回调
             return;
         }
 
@@ -220,9 +244,11 @@ public class BluetoothController {
         if (!permissionsToRequest.isEmpty()) {
             if (requestPermissionLauncher != null) {
                 requestPermissionLauncher.launch(permissionsToRequest.toArray(new String[0]));
-                Toast.makeText(mContext, "请求蓝牙扫描权限...", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请求蓝牙扫描权限...", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请求蓝牙扫描权限..."); // 修改为回调
             } else {
-                Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求"); // 修改为回调
             }
             return;
         }
@@ -233,10 +259,11 @@ public class BluetoothController {
             }
             mFoundDevices.clear(); // 清空上次扫描结果
             // 注册广播接收器。这里需要外部来处理 unregisterReceiver，或者确保在 onDestroy 中调用
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED); // 监听扫描结束
-            mContext.registerReceiver(discoveryReceiver, filter); // 这里是注册
-            Toast.makeText(mContext, "开始扫描蓝牙设备...", Toast.LENGTH_SHORT).show();
+            // IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND); // 广播接收器已在构造函数中注册
+            // filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED); // 监听扫描结束 // 广播接收器已在构造函数中注册
+            // mContext.registerReceiver(discoveryReceiver, filter); // 这里是注册 // 广播接收器已在构造函数中注册
+            // Toast.makeText(mContext, "开始扫描蓝牙设备...", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("开始扫描蓝牙设备..."); // 修改为回调，使用onError报告状态
             mAdapter.startDiscovery(); // 开始扫描
         }
     }
@@ -246,18 +273,21 @@ public class BluetoothController {
      */
     public List<BluetoothDevice> getBondedDeviceList(){
         if (mAdapter == null || !mAdapter.isEnabled()) {
-            Toast.makeText(this.mContext, "蓝牙未开启或不支持", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this.mContext, "蓝牙未开启或不支持", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("蓝牙未开启或不支持"); // 修改为回调
             return Collections.emptyList();
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this.mContext, "蓝牙连接权限不足", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this.mContext, "蓝牙连接权限不足", Toast.LENGTH_SHORT).show(); // 原代码
+                if (listener != null) listener.onError("蓝牙连接权限不足"); // 修改为回调
                 // 可以在这里请求权限，但最好在调用前确保权限已授予
                 return Collections.emptyList();
             }
         } else {
             if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show(); // 原代码
+                if (listener != null) listener.onError("蓝牙权限不足"); // 修改为回调
                 return Collections.emptyList();
             }
         }
@@ -294,9 +324,11 @@ public class BluetoothController {
         if (!permissionsNeededForServer.isEmpty()) {
             if (requestPermissionLauncher != null) {
                 requestPermissionLauncher.launch(permissionsNeededForServer.toArray(new String[0]));
-                Toast.makeText(mContext, "启动服务端需要蓝牙连接和广告权限，请求中...", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "启动服务端需要蓝牙连接和广告权限，请求中...", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("启动服务端需要蓝牙连接和广告权限，请求中..."); // 修改为回调
             } else {
-                Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求"); // 修改为回调
             }
             return;
         }
@@ -323,7 +355,8 @@ public class BluetoothController {
             clientThread.cancel();
         }
         connectedClients.clear();
-        Toast.makeText(mContext, "服务端已停止", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(mContext, "服务端已停止", Toast.LENGTH_SHORT).show(); // 原代码
+        if (listener != null) listener.onError("服务端已停止"); // 修改为回调，使用onError报告状态
     }
 
     /**
@@ -349,9 +382,11 @@ public class BluetoothController {
         if (!permissionsNeededForClient.isEmpty()) {
             if (requestPermissionLauncher != null) {
                 requestPermissionLauncher.launch(permissionsNeededForClient.toArray(new String[0]));
-                Toast.makeText(mContext, "连接设备需要蓝牙连接权限，请求中...", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "连接设备需要蓝牙连接权限，请求中...", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("连接设备需要蓝牙连接权限，请求中..."); // 修改为回调
             } else {
-                Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, "请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求", Toast.LENGTH_LONG).show(); // 原代码
+                if (listener != null) listener.onError("请在Activity/Fragment中设置ActivityResultLauncher来处理权限请求"); // 修改为回调
             }
             return;
         }
@@ -380,7 +415,8 @@ public class BluetoothController {
             clientConnectedThread.cancel();
             clientConnectedThread = null;
             if (listener != null) listener.onClientDisconnected(null); // 通知客户端已断开
-            Toast.makeText(mContext, "客户端已断开连接", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "客户端已断开连接", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("客户端已断开连接"); // 修改为回调，使用onError报告状态
         }
     }
 
@@ -389,10 +425,10 @@ public class BluetoothController {
      * @param deviceAddress 客户端设备的MAC地址
      * @param data 要发送的字符串
      */
-    public void sendDataToClient(String deviceAddress, String data) {
+    public void sendDataToClient(String deviceAddress, Serializable data) {
         ConnectedThread clientThread = connectedClients.get(deviceAddress);
         if (clientThread != null) {
-            clientThread.write(data.getBytes());
+            clientThread.write(data);
         } else {
             if (listener != null) listener.onError("客户端 " + deviceAddress + " 未连接或已断开");
         }
@@ -402,13 +438,13 @@ public class BluetoothController {
      * 作为服务端，向所有连接的客户端广播数据
      * @param data 要广播的字符串
      */
-    public void broadcastDataToClients(String data) {
+    public void broadcastDataToClients(Serializable data) {
         if (connectedClients.isEmpty()) {
             if (listener != null) listener.onError("没有客户端连接，无法广播数据");
             return;
         }
         for (ConnectedThread clientThread : connectedClients.values()) {
-            clientThread.write(data.getBytes());
+            clientThread.write(data);
         }
     }
 
@@ -416,9 +452,9 @@ public class BluetoothController {
      * 作为客户端，向服务端发送数据
      * @param data 要发送的字符串
      */
-    public void sendDataToServer(String data) {
+    public void sendDataToServer(Serializable data) {
         if (clientConnectedThread != null) {
-            clientConnectedThread.write(data.getBytes());
+            clientConnectedThread.write(data);
         } else {
             if (listener != null) listener.onError("未连接到服务端，无法发送数据");
         }
@@ -450,7 +486,8 @@ public class BluetoothController {
                 }
                 serverSocket = mAdapter.listenUsingRfcommWithServiceRecord(SERVICE_NAME, GAME_UUID);
                 if (listener != null) listener.onServerStarted();
-                Toast.makeText(mContext, "服务端已启动，等待连接...", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(mContext, "服务端已启动，等待连接...", Toast.LENGTH_SHORT).show(); // 原代码
+                // 修改为回调，由UI线程处理Toast
             } catch (IOException e) {
                 if (listener != null) listener.onError("服务端Socket创建失败: " + e.getMessage());
                 serverSocket = null;
@@ -517,9 +554,12 @@ public class BluetoothController {
         }
 
         public void run() {
+            // ContextCompat.checkSelfPermission 在主线程调用是安全的，但在后台线程中直接使用 mContext 显示 Toast 会有问题。
+            // 这里我们只是检查权限，没有直接使用 Toast。
             if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
                     != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show(); // 原代码
+                if (listener != null) listener.onError("蓝牙扫描权限不足"); // 修改为回调
                 return;
             }
             // 连接之前确保取消发现，因为它会降低连接速度
@@ -592,52 +632,74 @@ public class BluetoothController {
         }
 
         public void run() {
-            if (listener != null) listener.onClientConnected(mmDevice, isServerSide);
-
-            byte[] buffer = new byte[1024];
-            int bytes;
+            if (mmInStream == null) {
+                listener.onError("输入流未初始化，无法读取数据。");
+                return;
+            }
 
             // 持续监听输入流
             while (true) {
                 try {
-                    bytes = mmInStream.read(buffer); // 阻塞，直到有数据
-                    String data = new String(buffer, 0, bytes);
-                    if (listener != null) listener.onDataReceived(mmDevice, data);
+                    // 缓冲输入流，以支持 ObjectInputStream 的 reset() 方法（如果有必要）
+                    // 虽然这里没有显式调用 reset，但为了健壮性，通常会这么做
+                    // 对于蓝牙流，可能需要更复杂的缓冲策略，但这里我们直接使用ObjectInputStream
+                    ObjectInputStream ois = new ObjectInputStream(mmInStream); // 直接从 InputStream 创建
+                    Object receivedObject = ois.readObject(); // 读取 Serializable 对象
+
+                    if (listener != null) {
+                        listener.onDataReceived(mmDevice, receivedObject);
+                        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        listener.onLog("ConnectedThread: Received object from " + mmDevice.getName() + ": " + receivedObject.getClass().getSimpleName());
+                    }
                 } catch (IOException e) {
-                    if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
-                        return;
+                    Log.e(TAG, "Input stream was disconnected", e);
+                    if (listener != null) {
+                        // 在此检查权限，以防在设备名称获取时权限状态发生变化
+                        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                            listener.onError("蓝牙连接权限不足，无法显示断开设备名称");
+                            return;
+                        }
+                        listener.onClientDisconnected(mmDevice);
                     }
-                    if (listener != null) listener.onError("连接断开: " + mmDevice.getName() + " - " + e.getMessage());
-                    // 连接断开后，从管理列表中移除此客户端
-                    if (isServerSide) {
-                        connectedClients.remove(mmDevice.getAddress());
-                    } else {
-                        // 如果是客户端模式，清空自身连接
-                        clientConnectedThread = null;
-                    }
-                    if (listener != null) listener.onClientDisconnected(mmDevice);
-                    break; // 退出循环
+                    connectedClients.remove(mmDevice); // 从连接列表中移除
+                    break;
+                } catch (ClassNotFoundException e) {
+                    Log.e(TAG, "Received object class not found", e);
+                    if (listener != null) listener.onError("接收到的对象类未找到: " + e.getMessage());
                 }
             }
         }
 
         /**
          * 向输出流写入数据
-         * @param bytes 要发送的字节
+         * @param data 要发送的字节
          */
-        public void write(byte[] bytes) {
+        public void write(Serializable data) {
             try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(bos);
+                oos.writeObject(data);
+                oos.flush();
+                byte[] bytes = bos.toByteArray();
+
                 mmOutStream.write(bytes);
                 mmOutStream.flush(); // 确保数据立即发送
-            } catch (IOException e) {
-                if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
-                    return;
+
+                if (listener != null) {
+                    if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show(); // 原代码
+                        if (listener != null) listener.onError("蓝牙扫描权限不足 (发送数据失败)"); // 修改为回调
+                    }
+                    listener.onLog("ConnectedThread: Sent object to " + mmDevice.getName() + ": " + data.getClass().getSimpleName());
                 }
-                if (listener != null) listener.onError("发送数据到 " + mmDevice.getName() + " 失败: " + e.getMessage());
+            } catch (IOException e) {
+                Log.e(TAG, "Error during write", e);
+                if (listener != null) listener.onError("发送数据失败: " + e.getMessage());
             }
         }
 
@@ -663,16 +725,13 @@ public class BluetoothController {
         if (isServer) {
             // 如果是服务端，将此客户端线程加入管理列表
             connectedClients.put(socket.getRemoteDevice().getAddress(), connectedThread);
-            if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
-                    != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(mContext, "客户端 " + socket.getRemoteDevice().getName() + " 已连接", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "客户端 " + socket.getRemoteDevice().getName() + " 已连接", Toast.LENGTH_SHORT).show(); // 原代码
+            // 移除这里的Toast，ConnectedThread的run方法中会回调onClientConnected
         } else {
             // 如果是客户端，则设置其连接线程
             clientConnectedThread = connectedThread;
-            Toast.makeText(mContext, "已连接到服务端 " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "已连接到服务端 " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show(); // 原代码
+            // 移除这里的Toast，ConnectedThread的run方法中会回调onClientConnected
         }
         executorService.execute(connectedThread); // 在线程池中启动通信线程
     }
@@ -691,9 +750,11 @@ public class BluetoothController {
     public void onDestroy() {
         if (acceptThread != null) {
             acceptThread.cancel();
+            acceptThread = null;
         }
         if (clientConnectedThread != null) {
             clientConnectedThread.cancel();
+            clientConnectedThread = null;
         }
         for (ConnectedThread clientThread : connectedClients.values()) {
             clientThread.cancel();
@@ -712,14 +773,18 @@ public class BluetoothController {
     }
 
     public void cancelDiscovery() {
+        // ContextCompat.checkSelfPermission 在主线程调用是安全的，但在后台线程中直接使用 mContext 显示 Toast 会有问题。
+        // 这里我们只是检查权限，没有直接使用 Toast。
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
                 != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("蓝牙扫描权限不足 (取消发现)"); // 修改为回调
             return;
         }
         if (mAdapter != null && mAdapter.isDiscovering()) {
             mAdapter.cancelDiscovery();
-            Toast.makeText(mContext, "已取消蓝牙扫描", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mContext, "已取消蓝牙扫描", Toast.LENGTH_SHORT).show(); // 原代码
+            if (listener != null) listener.onError("已取消蓝牙扫描"); // 修改为回调，使用onError报告状态
         }
         // 取消注册广播接收器，避免内存泄漏
         try {

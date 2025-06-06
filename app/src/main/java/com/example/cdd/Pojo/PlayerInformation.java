@@ -1,6 +1,8 @@
 package com.example.cdd.Pojo;
 
-public class PlayerInformation {    // 玩家账号信息
+import java.io.Serializable;
+
+public class PlayerInformation implements Serializable {    // 玩家账号信息
     private String userID;
     private String password;
     private int score;              //游戏得分

@@ -42,6 +42,8 @@ public class  MainActivity extends AppCompatActivity implements View.OnClickList
 
     private BluetoothController mBluetoothController = new BluetoothController();   //蓝牙功能控制器
 
+
+
     private static final int REQUEST_BLUETOOTH_PERMISSIONS = 1;
     private static final int REQUEST_ADVERTISE = 100;        //用于权限检查
     private final String[] bluetoothPermissions = {

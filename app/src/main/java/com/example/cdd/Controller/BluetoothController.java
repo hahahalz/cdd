@@ -22,12 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class BluetoothController {
     private BluetoothAdapter mAdapter;                 //蓝牙适配器
     private Context mContext;
+    private static final int REQUEST_CODE_BLUETOOTH_DISCOVERABLE = 1001; // 用于请求可见性的请求码
+    private static final int PERMISSION_REQUEST_CODE_BLUETOOTH = 1002; // 用于请求蓝牙权限的请求码
+    private static final int PERMISSION_REQUEST_CODE_BLUETOOTH_SCAN = 2001; // 用于请求蓝牙扫描权限的请求码
     // 定义启动器成员变量
     private static final UUID GAME_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -39,8 +44,11 @@ public class BluetoothController {
     private OutputStream outputStream;          // 输出流（发送数据）
 
     private ActivityResultLauncher<Intent> requestEnableBtLauncher;
-
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
+    // 用于存储发现的设备
+    private ArrayList<BluetoothDevice> mFoundDevices = new ArrayList<>();
+//    // 用于展示设备名称的 ArrayAdapter (可选，取决于你的UI)
+//    private ArrayAdapter<String> mNewDevicesArrayAdapter;
 
     // 设备发现广播接收器
     private final BroadcastReceiver discoveryReceiver = new BroadcastReceiver() {
@@ -106,7 +114,7 @@ public class BluetoothController {
 //    private void initPermissionLauncher() {
 //        requestPermissionLauncher = ((Activity) mContext).registerForActivityResult(
 //                new ActivityResultContracts.RequestMultiplePermissions(),
-//                permissions -> {
+//                (Map<String , Boolean> permissions) -> {
 //                    // 处理权限请求结果
 //                    boolean allGranted = true;
 //                    for (Boolean granted : permissions.values()) {
@@ -128,47 +136,93 @@ public class BluetoothController {
 //        );
 //    }
 
-    // 检查是否需要申请 BLUETOOTH_ADVERTISE 权限（Android 12+）
-    public boolean needsAdvertisePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return ContextCompat.checkSelfPermission(mContext,
-                    Manifest.permission.BLUETOOTH_ADVERTISE)
-                    != PackageManager.PERMISSION_GRANTED;
+    /**
+     * 打开蓝牙的可见性,若权限不足，会请求开启
+     * @param activity
+     */
+    public void enableVisibly(Activity activity){
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_ADVERTISE)
+                        != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+            String[] permissionsNeeded;
+            permissionsNeeded = new String[]{
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_ADVERTISE
+            };
+            activity.requestPermissions(permissionsNeeded, PERMISSION_REQUEST_CODE_BLUETOOTH);
+            // 提示用户需要权限
+            Toast.makeText(mContext, "请求蓝牙相关权限...", Toast.LENGTH_LONG).show();
+            return;
         }
-        return false; // 旧版本无需该权限
+        else{
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            activity.startActivityForResult(discoverableIntent,REQUEST_CODE_BLUETOOTH_DISCOVERABLE);
+        }
     }
 
-//    /**
-//     * 打开蓝牙的可见性
-//     * @param context
-//     */
-//    public void enableVisibly(Context context){
-//        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-//        context.startActivity(discoverableIntent);
-//    }
+    /**
+     * 查找设备
+     */
+    public void findDevice(){
+        if (mAdapter != null){
+            if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
+                    != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            else{
+                mAdapter.startDiscovery();
+            }
+        }
+    }
 
-//    /**
-//     * 查找设备
-//     */
-//    public void findDevice(){
-//        if (mAdapter != null){
-//            try {
-//                mAdapter.startDiscovery();
-//            } catch (SecurityException e) {
-//                e.printStackTrace();
-//                Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
+    // 检查并请求蓝牙权限(以下是很多蓝牙的相关权限)
+    private boolean checkAndRequestPermissions() {
+        if (mContext == null) return false;
+
+        List<String> permissionsNeeded = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.BLUETOOTH_SCAN);
+            }
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.BLUETOOTH_CONNECT);
+            }
+        } else {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.BLUETOOTH);
+            }
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_ADMIN)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.BLUETOOTH_ADMIN);
+            }
+        }
+
+        if (!permissionsNeeded.isEmpty()) {
+            requestPermissionLauncher.launch(permissionsNeeded.toArray(new String[0]));
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 获取绑定设备
      * @return
      */
-//    public List<BluetoothDevice> getBondedDeviceList(){
-//        return new ArrayList<>(mAdapter.getBondedDevices());
-//    }
+    public List<BluetoothDevice> getBondedDeviceList(){
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this.mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(mAdapter.getBondedDevices());
+    }
 
 //    /**
 //     * 启动服务端，等待客户端连接
@@ -207,6 +261,91 @@ public class BluetoothController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+//    }
+
+//    /**
+//     * 客户端代码，扫描附近蓝牙设备
+//     */
+//    public void scanDevices() {
+//        if (!checkBluetoothReady()) return;
+//
+//        // 注册广播接收器，监听设备发现事件
+//        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+//        mContext.registerReceiver(discoveryReceiver, filter);
+//
+//        mAdapter.startDiscovery(); // 开始扫描
+//    }
+//
+//    /**
+//     * 连接到指定设备（作为客户端）
+//     * @param device 要连接的蓝牙设备
+//     */
+//    public void connectToDevice(BluetoothDevice device) {
+//        if (!checkBluetoothReady()) return;
+//
+//        new Thread(() -> {
+//            try {
+//                // 1. 创建客户端Socket
+//                clientSocket = device.createRfcommSocketToServiceRecord(GAME_UUID);
+//                // 2. 尝试连接（阻塞操作）
+//                clientSocket.connect();
+//                inputStream = clientSocket.getInputStream();
+//                outputStream = clientSocket.getOutputStream();
+//
+//                if (listener != null) listener.onClientConnected();
+//                startReading(); // 开始接收数据
+//            } catch (IOException e) {
+//                if (listener != null) listener.onError("连接失败: " + e.getMessage());
+//                closeClient();
+//            }
+//        }).start();
+//    }
+//
+//    // 关闭客户端连接
+//    private void closeClient() {
+//        try {
+//            if (clientSocket != null) clientSocket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    /**
+//     * 发送数据（线程安全）
+//     * @param data 要发送的字符串
+//     */
+//    public void sendData(String data) {
+//        if (outputStream == null) {
+//            if (listener != null) listener.onError("未建立连接");
+//            return;
+//        }
+//
+//        new Thread(() -> {
+//            try {
+//                outputStream.write(data.getBytes());
+//                outputStream.flush();
+//            } catch (IOException e) {
+//                if (listener != null) listener.onError("发送失败: " + e.getMessage());
+//            }
+//        }).start();
+//    }
+
+    // 持续读取数据（后台线程）
+//    private void startReading() {
+//        new Thread(() -> {
+//            byte[] buffer = new byte[1024];
+//            int bytes;
+//            try {
+//                while ((bytes = inputStream.read(buffer)) != -1) {
+//                    String data = new String(buffer, 0, bytes);
+//                    if (listener != null) listener.onDataReceived(data);
+//                }
+//            } catch (IOException e) {
+//                if (listener != null) listener.onError("连接断开: " + e.getMessage());
+//                closeClient();
+//                closeServer();
+//            }
+//        }).start();
 //    }
 
     public void setRequestEnableBtLauncher(ActivityResultLauncher<Intent> Launcher){

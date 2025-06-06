@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mBluetoothController.findDevice(); // 开始发现设备
                     // Toast.makeText(this, "正在扫描可用房间...", Toast.LENGTH_SHORT).show(); // 移动到 onError 或 onDiscoveryFinished
                     showDiscoveryDialog(); // 显示扫描对话框
+
                 })
                 .setNeutralButton("使当前设备蓝牙可见", (dialog, which) -> {
                     // 请求蓝牙可见性
@@ -208,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
                     mBluetoothController.startServer(); // 启动服务端
+
                     // Toast.makeText(this, "正在创建房间，等待其他设备连接...", Toast.LENGTH_LONG).show(); // 移动到 onServerStarted
                     // 这里可以跳转到一个等待界面，显示已连接的客户端列表
                     // replaceFragement(new MultiplayerGameFragment()); // 示例：直接跳转到游戏界面，这个在onClientConnected或onServerStarted更合适
@@ -428,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         String deviceName = (fromDevice != null && fromDevice.getName() != null) ? fromDevice.getName() : fromDevice.getAddress();
-        Toast.makeText(this, "收到来自 " + deviceName + " 的数据: " + data, Toast.LENGTH_SHORT).show();
+        runOnUiThread(()->Toast.makeText(this, "收到来自 " + deviceName + " 的数据: " + data, Toast.LENGTH_SHORT).show());
         // 处理接收到的数据，例如更新游戏状态
     }
 

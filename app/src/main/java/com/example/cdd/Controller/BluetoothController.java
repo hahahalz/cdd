@@ -557,6 +557,7 @@ public class BluetoothController {
                     }
                 }
                 tmp = device.createRfcommSocketToServiceRecord(GAME_UUID);
+                if (listener != null) listener.onClientConnected(device,false);
             } catch (IOException e) {
                 if (listener != null) listener.onError("客户端Socket创建失败: " + e.getMessage());
             }
@@ -660,7 +661,7 @@ public class BluetoothController {
                         listener.onDataReceived(mmDevice, receivedObject);
                         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN)
                                 != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext, "蓝牙权限不足", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         listener.onLog("ConnectedThread: Received object from " + mmDevice.getName() + ": " + receivedObject.getClass().getSimpleName());

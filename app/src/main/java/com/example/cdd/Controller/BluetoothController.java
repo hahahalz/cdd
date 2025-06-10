@@ -454,6 +454,7 @@ public class BluetoothController {
             return;
         }
         for (ConnectedThread clientThread : connectedClients.values()) {
+
             clientThread.write(data);
         }
     }
@@ -617,7 +618,7 @@ public class BluetoothController {
     /**
      * 连接成功后的通信线程，用于读写数据
      */
-    private class ConnectedThread extends Thread {
+    public class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;

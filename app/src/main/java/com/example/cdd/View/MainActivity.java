@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<BluetoothDevice> discoveredDevices = new ArrayList<>();
     private ArrayAdapter<String> deviceListAdapter;
     private AlertDialog discoveryDialog;
+
+    private int  clientIndex=0 ;
     //private Context mContext;
 
 
@@ -415,7 +417,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             runOnUiThread(()->Toast.makeText(this, "已成功连接到服务端: " + deviceName, Toast.LENGTH_LONG).show());
             // 作为客户端，连接到服务端，可以跳转到游戏界面或发送数据
-            runOnUiThread(()->replaceFragement(new MultiplayerGameFragment(false)));
+            clientIndex++;
+            runOnUiThread(()->replaceFragement(new MultiplayerGameFragment(false,clientIndex)));
             // 此时可以发送数据
             // mBluetoothController.sendDataToServer("Hello from client!"); // 示例数据发送
         }

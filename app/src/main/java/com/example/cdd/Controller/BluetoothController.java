@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
 
 public class BluetoothController {
     private static final String TAG = "BluetoothController"; // 用于Logcat
-
+    private ObjectInputStream ois;
     private BluetoothAdapter mAdapter;                 // 蓝牙适配器
     private Context mContext;
     private static final int REQUEST_CODE_BLUETOOTH_DISCOVERABLE = 1001; // 用于请求可见性的请求码
@@ -54,7 +54,7 @@ public class BluetoothController {
     private ConnectedThread clientConnectedThread; // 客户端连接后的通信线程 (如果只连接一个服务器)
     public Map<String, ConnectedThread> connectedClients; // 服务端管理多个客户端的通信线程
 
-    private Map<Integer, String> Clients;
+    public Map<Integer, String> Clients;
 
     private BluetoothServerSocket serverSocket; // 服务端socket
     private BluetoothSocket clientSocket;       // 客户端socket (对于客户端模式)
@@ -122,6 +122,7 @@ public class BluetoothController {
         this.listener = listener;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         connectedClients = new HashMap<>(); // 初始化
+        Clients = new HashMap<>();
         // 在这里注册广播接收器，确保 mContext 不为 null
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -437,11 +438,18 @@ public class BluetoothController {
     /**
      * 作为服务端，向特定客户端发送数据
      *
-     * @param deviceAddress 客户端设备的MAC地址
+     * @param deviceNum 客户端设备的MAC地址
      * @param data          要发送的字符串
      */
-    public void sendDataToClient(String deviceAddress, Serializable data) {
-
+    public void sendDataToClient(int deviceNum, Serializable data) {
+        if (connectedClients.isEmpty()) {
+            if (listener != null) listener.onError("没有客户端连接，无法广播数据");
+            return;
+        }
+        ConnectedThread clientThread = connectedClients.get(Clients.get(deviceNum));
+        assert clientThread != null;
+        clientThread.write(data);
+        System.out.println("一次传递");
     }
 
     /**
@@ -497,8 +505,6 @@ public class BluetoothController {
                 }
                 serverSocket = mAdapter.listenUsingRfcommWithServiceRecord(SERVICE_NAME, GAME_UUID);
                 if (listener != null) listener.onServerStarted();
-                // Toast.makeText(mContext, "服务端已启动，等待连接...", Toast.LENGTH_SHORT).show(); // 原代码
-                // 修改为回调，由UI线程处理Toast
             } catch (IOException e) {
                 if (listener != null) listener.onError("服务端Socket创建失败: " + e.getMessage());
                 serverSocket = null;
@@ -518,6 +524,10 @@ public class BluetoothController {
                 if (socket != null) {
                     // 连接成功，为每个客户端创建一个独立的通信线程
                     manageConnectedSocket(socket, true); // true 表示是服务端接收的连接
+                    // 新增：调用 onClientConnected 方法
+                    if (listener != null) {
+                        listener.onClientConnected(socket.getRemoteDevice(), true);
+                    }
                 }
             }
             closeServerSocket(); // 循环结束时关闭服务端Socket
@@ -647,6 +657,14 @@ public class BluetoothController {
             if (mmInStream == null) {
                 listener.onError("输入流未初始化，无法读取数据。");
                 return;
+            }
+
+            try {
+                ois = new ObjectInputStream(mmInStream); // 只创建一次 OIS
+            } catch (IOException e) {
+                Log.e(TAG, "无法初始化 ObjectInputStream", e);
+                listener.onError("无法初始化数据读取器: " + e.getMessage());
+                return; // 如果 OIS 创建失败则退出
             }
 
             // 持续监听输入流
@@ -820,4 +838,13 @@ public class BluetoothController {
         return Collections.unmodifiableMap(this.connectedClients);
     }
 
+    public void sendDataToClient(String deviceAddress, Serializable data) {
+        if (connectedClients.isEmpty()) {
+            if (listener != null) listener.onError("没有客户端连接，无法广播数据");
+            return;
+        }
+        ConnectedThread clientThread = connectedClients.get(deviceAddress);
+        assert clientThread != null;
+        clientThread.write(data);
+    }
 }

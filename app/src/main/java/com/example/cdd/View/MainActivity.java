@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AlertDialog discoveryDialog;
 
     private int  clientIndex=0 ;
-    //private Context mContext;
+
 
 
     @Override
@@ -267,26 +267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void handleBluetoothAndStartMultiplayer() {
-        if (!mBluetoothController.isSupportBluetooth()) {
-            Toast.makeText(this, "设备不支持蓝牙", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        if (mBluetoothController.getBluetoothStatus()) {
-            // 蓝牙已经开启，直接进入游戏
-            replaceFragement(new MultiplayerGameFragment(true));
-        } else {
-            // 蓝牙未开启，检查并请求权限
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, bluetoothPermissions, REQUEST_BLUETOOTH_PERMISSIONS);
-            } else {
-                // 已有权限，请求开启蓝牙（但不立即跳转界面）
-                mBluetoothController.turnOnBluetooth();
-            }
-        }
-    }
 
     // 移除 handleBluetoothAndStartMultiplayer，其逻辑已整合到 showMultiplayerDialog
     // @Override

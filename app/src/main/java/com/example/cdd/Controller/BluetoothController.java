@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
 
 public class BluetoothController {
     private static final String TAG = "BluetoothController"; // 用于Logcat
-    private ObjectInputStream ois;
+//    private ObjectInputStream ois;
     private BluetoothAdapter mAdapter;                 // 蓝牙适配器
     private Context mContext;
     private static final int REQUEST_CODE_BLUETOOTH_DISCOVERABLE = 1001; // 用于请求可见性的请求码
@@ -659,13 +659,13 @@ public class BluetoothController {
                 return;
             }
 
-            try {
-                ois = new ObjectInputStream(mmInStream); // 只创建一次 OIS
-            } catch (IOException e) {
-                Log.e(TAG, "无法初始化 ObjectInputStream", e);
-                listener.onError("无法初始化数据读取器: " + e.getMessage());
-                return; // 如果 OIS 创建失败则退出
-            }
+//            try {
+//                ois = new ObjectInputStream(mmInStream); // 只创建一次 OIS
+//            } catch (IOException e) {
+//                Log.e(TAG, "无法初始化 ObjectInputStream", e);
+//                listener.onError("无法初始化数据读取器: " + e.getMessage());
+//                return; // 如果 OIS 创建失败则退出
+//            }
 
             // 持续监听输入流
             while (true) {
@@ -673,6 +673,7 @@ public class BluetoothController {
                     // 缓冲输入流，以支持 ObjectInputStream 的 reset() 方法（如果有必要）
                     // 虽然这里没有显式调用 reset，但为了健壮性，通常会这么做
                     // 对于蓝牙流，可能需要更复杂的缓冲策略，但这里我们直接使用ObjectInputStream
+                    // 直接从 InputStream 创建
                     ObjectInputStream ois = new ObjectInputStream(mmInStream); // 直接从 InputStream 创建
                     Object receivedObject = ois.readObject(); // 读取 Serializable 对象
 

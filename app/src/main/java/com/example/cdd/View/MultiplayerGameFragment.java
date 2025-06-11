@@ -59,6 +59,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private List<Card> LastPlayedCards = new ArrayList<>();
 
+    private List<Card>  wantToPlay=new ArrayList<>();
 
     private int minNeed=1;
 
@@ -144,7 +145,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private void playSelectedCards() {
         if (selectedCards.isEmpty()) {
-            Toast.makeText(getContext(), "请选择要出的牌", Toast.LENGTH_SHORT).show();
+            requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "请选择要出的牌", Toast.LENGTH_SHORT).show());
             return;
         }
 
@@ -153,7 +154,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         } else { // 客户端发送选中的牌给房主
             if (bluetoothController != null) {
                 bluetoothController.sendDataToServer(new ArrayList<>(selectedCards));
-                Toast.makeText(getContext(), "已发送出牌请求，等待房主判断", Toast.LENGTH_SHORT).show();
+                wantToPlay=new ArrayList<>(selectedCards);
+                requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "已发送出牌请求，等待房主判断", Toast.LENGTH_SHORT).show());
                 selectedCards.clear();
                 updateUI(false,false); // 立即更新UI，清除选中状态
             }
@@ -166,7 +168,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         } else { // 客户端发送空列表表示过牌给房主
             if (bluetoothController != null) {
                 bluetoothController.sendDataToServer(new ArrayList<Card>()); // 发送空列表
-                Toast.makeText(getContext(), "已发送过牌请求，等待房主判断", Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "已发送过牌请求，等待房主判断", Toast.LENGTH_SHORT).show());
             }
         }
     }
@@ -176,7 +178,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     private void handlePlayerAction(List<Card> cards, @Nullable BluetoothDevice fromDevice) {
         GameState gameState = GameState.getInstance();
         if (gameState == null) {
-            Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show();
+            requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "游戏状态未初始化", Toast.LENGTH_SHORT).show());
             // 如果是客户端的请求，告诉它失败
             if (fromDevice != null && bluetoothController != null) {
                 bluetoothController.sendDataToClient(gameController.getNowIndex(), new ActionInvalidMessage("游戏状态未初始化。"));
@@ -190,7 +192,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         if (actionSuccessful) {
             if(fromDevice==null) {
                 selectedCards.clear(); // 房主本地也清除选中牌
-                Toast.makeText(getContext(), "出牌成功！", Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "出牌成功！", Toast.LENGTH_SHORT).show());
 
                 int winnerIndex = gameController.getWinnerIndex();
                 bluetoothController.broadcastDataToClients((Serializable) cards);
@@ -223,7 +225,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
         } else {
 
-            Toast.makeText(getContext(), "出牌不合法", Toast.LENGTH_SHORT).show();
+            if(fromDevice==null)
+                requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "出牌不合法", Toast.LENGTH_SHORT).show());
             // 如果是客户端的请求，告诉它失败
             if (fromDevice != null && bluetoothController != null) {
                 bluetoothController.sendDataToClient(gameController.getNowIndex(), 1);
@@ -351,13 +354,13 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
         updateUI(false,true); // 更新UI
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("游戏结束")
+        requireActivity().runOnUiThread(() ->builder.setTitle("游戏结束")
                 .setMessage("游戏结束 " )
                 .setNegativeButton("返回主菜单", (dialog, which) -> {
                     // 退出游戏，返回主菜单
                     handleExitGame();
                 })
-                .setCancelable(true); // 不允许点击对话框外部取消
+                .setCancelable(true)); // 不允许点击对话框外部取消
 
     }
 
@@ -409,7 +412,17 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             }
             else if(data.equals(Integer.valueOf(3)))
             {
-
+                if(!wantToPlay.isEmpty())
+                {
+                    for (int i=0;i<wantToPlay.size();i++){
+                        for (int j=0;j<myHandCard.size();j++){
+                            if (wantToPlay.get(i).equals(myHandCard.get(j))){
+                                myHandCard.remove(j);
+                                break;
+                            }
+                        }
+                    }
+                }
                 requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "操作成功！", Toast.LENGTH_LONG).show());
             }
             else if(data.equals(Integer.valueOf(4)))
@@ -575,14 +588,14 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private void showExitConfirmationDialog() {
         if (!isAdded()) return; // 确保 Fragment 附加到 Activity
-        new AlertDialog.Builder(requireContext())
+        requireActivity().runOnUiThread(() ->new AlertDialog.Builder(requireContext())
                 .setTitle("退出游戏")
                 .setMessage("确定要退出当前游戏吗？这会结束本局游戏。")
                 .setPositiveButton("确定", (dialog, which) -> {
                     navigateToMainPage();
                 })
                 .setNegativeButton("取消", null)
-                .show();
+                .show());
     }
 
     private void handleExitGame() {
@@ -604,7 +617,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
         if (getActivity() instanceof MainActivity) { // 假设你的主 Activity 是 MainActivity
             navigateToMainPage(); // 导航回主Fragment
-            Toast.makeText(getContext(), "有人已退出游戏。", Toast.LENGTH_SHORT).show();
+            requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "有人已退出游戏。", Toast.LENGTH_SHORT).show());
         }
     }
 

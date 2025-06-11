@@ -501,7 +501,6 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         } else {
             // 如果断开连接的是房主，客户端需要提示游戏中断或尝试重连
 
-
             requireActivity().runOnUiThread(() ->  new AlertDialog.Builder(requireContext())
                     .setTitle("连接断开")
                     .setMessage("房主已断开连接，游戏结束。")

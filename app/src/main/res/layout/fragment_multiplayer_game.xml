@@ -5,12 +5,18 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context=".View.MultiplayerGameFragment">
-
+	
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="horizontal"  android:padding="16dp"
+		android:orientation="vertical"  
+		android:padding="16dp"
 		android:background="@drawable/bg">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
 
 		<LinearLayout
 			android:layout_width="0dp"
@@ -21,11 +27,10 @@
 
 			<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_weight="1"
+				android:layout_height="wrap_content"
 				android:orientation="vertical"
 				android:gravity="center_horizontal|bottom"
-				android:paddingBottom="8dp">
+				android:paddingBottom="3dp">
 
 				<TextView
 					android:id="@+id/tv_player2_name"
@@ -34,7 +39,7 @@
 					android:text="玩家2"
 					android:textColor="@android:color/white"
 					android:textStyle="bold"
-					android:textSize="18sp"/>
+					android:textSize="14sp"/>
 
 				<TextView
 					android:id="@+id/tv_player2_cards_count"
@@ -64,11 +69,12 @@
 
 			<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_weight="1"
+				android:layout_height="wrap_content"
 				android:orientation="vertical"
 				android:gravity="center_horizontal|top"
-				android:paddingTop="8dp">
+				android:paddingTop="3dp"
+				android:paddingBottom="3dp">
+				
 				<TextView
 					android:id="@+id/tv_player3_name"
 					android:layout_width="wrap_content"
@@ -76,7 +82,8 @@
 					android:text="玩家3"
 					android:textColor="@android:color/white"
 					android:textStyle="bold"
-					android:textSize="18sp"/>
+					android:textSize="14sp"/>
+					
 				<TextView
 					android:id="@+id/tv_player3_cards_count"
 					android:layout_width="wrap_content"
@@ -84,6 +91,7 @@
 					android:text="手牌: N/A"
 					android:textColor="@android:color/white"
 					android:textSize="14sp"/>
+					
 				<LinearLayout
 					android:id="@+id/ll_player3_hand"
 					android:layout_width="wrap_content"
@@ -91,6 +99,7 @@
 					android:orientation="horizontal"
 					android:gravity="center_vertical"
 					android:layout_marginTop="4dp"/>
+					
 				<LinearLayout
 					android:id="@+id/ll_player3_played"
 					android:layout_width="wrap_content"
@@ -98,6 +107,46 @@
 					android:orientation="horizontal"
 					android:gravity="center_vertical"
 					android:layout_marginTop="4dp"/>
+					
+			</LinearLayout>
+			
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:gravity="center_horizontal"
+				android:paddingTop="8dp">
+				
+				<TextView
+					android:id="@+id/tv_player4_name"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="玩家4"
+					android:textColor="@android:color/white"
+					android:textStyle="bold"
+					android:textSize="14sp"/>
+				<TextView
+					android:id="@+id/tv_player4_cards_count"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="手牌: N/A"
+					android:textColor="@android:color/white"
+					android:textSize="14sp"/>
+				<LinearLayout
+					android:id="@+id/ll_player4_hand"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+				<LinearLayout
+					android:id="@+id/ll_player4_played"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical"
+					android:layout_marginTop="4dp"/>
+					
 			</LinearLayout>
 
 		</LinearLayout>
@@ -127,82 +176,720 @@
 				android:textColor="@android:color/white"
 				android:textSize="16sp"
 				android:layout_marginBottom="16dp"/>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:gravity="center_horizontal"
-				android:layout_marginBottom="8dp">
-				<TextView
-					android:id="@+id/tv_player4_name"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="玩家4"
-					android:textColor="@android:color/white"
-					android:textStyle="bold"
-					android:textSize="18sp"/>
-				<TextView
-					android:id="@+id/tv_player4_cards_count"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="手牌: N/A"
-					android:textColor="@android:color/white"
-					android:textSize="14sp"/>
+				
+			<HorizontalScrollView
+				android:layout_width="100dp"
+				android:layout_height="wrap_content" >
+				
 				<LinearLayout
-					android:id="@+id/ll_player4_hand"
-					android:layout_width="wrap_content"
+					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-					android:gravity="center_vertical"
-					android:layout_marginTop="4dp"/>
-				<LinearLayout
-					android:id="@+id/ll_player4_played"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-					android:gravity="center_vertical"
-					android:layout_marginTop="4dp"/>
-			</LinearLayout>
+					android:orientation="horizontal">
+				
+					<ImageView
+						android:id="@+id/i2_cluba"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/cluba" />
+						
+					<ImageView
+						android:id="@+id/i2_diamonda"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamonda" />
+						
+					<ImageView
+						android:id="@+id/i2_hearta"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/hearta" />
+						
+					<ImageView
+						android:id="@+id/i2_spadea"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spadea" />
+						
+					<ImageView
+						android:id="@+id/i2_club2"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club2" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond2"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond2" />
+						
+					<ImageView
+						android:id="@+id/i2_heart2"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart2" />
+						
+					<ImageView
+						android:id="@+id/i2_spade2"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade2" />
+						
+					<ImageView
+						android:id="@+id/i2_club3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club3" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond3" />
+						
+					<ImageView
+						android:id="@+id/i2_heart3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart3" />
+						
+					<ImageView
+						android:id="@+id/i2_spade3"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade3" />
+						
+					<ImageView
+						android:id="@+id/i2_club4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club4" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond4" />
+						
+					<ImageView
+						android:id="@+id/i2_heart4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart4" />
+						
+					<ImageView
+						android:id="@+id/i2_spade4"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade4" />
+						
+					<ImageView
+						android:id="@+id/i2_club5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club5" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond5" />
+						
+					<ImageView
+						android:id="@+id/i2_heart5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart5" />
+						
+					<ImageView
+						android:id="@+id/i2_spade5"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade5" />
+						
+					<ImageView
+						android:id="@+id/i2_club6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club6" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond6" />
+						
+					<ImageView
+						android:id="@+id/i2_heart6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart6" />
+						
+					<ImageView
+						android:id="@+id/i2_spade6"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade6" />
+						
+					<ImageView
+						android:id="@+id/i2_club7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club7" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond7" />
+						
+					<ImageView
+						android:id="@+id/i2_heart7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart7" />
+						
+					<ImageView
+						android:id="@+id/i2_spade7"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade7" />
+						
+					<ImageView
+						android:id="@+id/i2_club8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club8" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond8" />
+						
+					<ImageView
+						android:id="@+id/i2_heart8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart8" />
+						
+					<ImageView
+						android:id="@+id/i2_spade8"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade8" />
+						
+					<ImageView
+						android:id="@+id/i2_club9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club9" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond9" />
+						
+					<ImageView
+						android:id="@+id/i2_heart9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart9" />
+						
+					<ImageView
+						android:id="@+id/i2_spade9"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade9" />
+						
+					<ImageView
+						android:id="@+id/i2_club10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/club10" />
+						
+					<ImageView
+						android:id="@+id/i2_diamond10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamond10" />
+						
+					<ImageView
+						android:id="@+id/i2_heart10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heart10" />
+						
+					<ImageView
+						android:id="@+id/i2_spade10"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spade10" />
+						
+					<ImageView
+						android:id="@+id/i2_clubj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubj" />
+						
+					<ImageView
+						android:id="@+id/i2_diamondj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondj" />
+						
+					<ImageView
+						android:id="@+id/i2_heartj"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartj" />
+						
+					<ImageView
+						android:id="@+id/i2_spadej"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spadej" />
+						
+					<ImageView
+						android:id="@+id/i2_clubq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubq" />
+						
+					<ImageView
+						android:id="@+id/i2_diamondq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondq" />
+						
+					<ImageView
+						android:id="@+id/i2_heartq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartq" />
+						
+					<ImageView
+						android:id="@+id/i2_spadeq"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spadeq" />
+						
+					<ImageView
+						android:id="@+id/i2_clubk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/clubk" />
+						
+					<ImageView
+						android:id="@+id/i2_diamondk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/diamondk" />
+						
+					<ImageView
+						android:id="@+id/i2_heartk"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/heartk" />
+						
+					<ImageView
+						android:id="@+id/i2_spadek"
+						android:layout_width="50dp"
+						android:layout_height="75dp"
+						android:src="@drawable/spadek" />
+				
+				</LinearLayout>
+				
+			</HorizontalScrollView>
 
 		</LinearLayout>
 
 		<LinearLayout
 			android:layout_width="0dp"
 			android:layout_height="match_parent"
-			android:layout_weight="2"  android:orientation="vertical"
-			android:gravity="center_horizontal|bottom" android:paddingTop="8dp">
-
-			<TextView
-				android:id="@+id/tv_player1_name"
+			android:layout_weight="2"  
+			android:orientation="vertical"
+			android:gravity="center_horizontal|bottom" 
+			android:paddingTop="8dp">
+			
+			<LinearLayout
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="玩家1 (你)"
-				android:textColor="@android:color/white"
-				android:textStyle="bold"
-				android:textSize="18sp"/>
-
-			<TextView
-				android:id="@+id/tv_player1_cards_count"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="手牌: 13"
-				android:textColor="@android:color/white"
-				android:textSize="14sp"/>
-
-			<HorizontalScrollView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="4dp"
-				android:layout_marginBottom="8dp">
+				android:layout_height="match_parent"
+				android:orientation="horizontal" >
+			
 				<LinearLayout
-					android:id="@+id/ll_player1_hand"
 					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-					android:gravity="center_vertical"/>
-			</HorizontalScrollView>
+					android:layout_height="match_parent"
+					android:orientation="vertical"
+					android:gravity="center_horizontal|top" >
 
+					<TextView
+						android:id="@+id/tv_player1_name"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="玩家1 (你)"
+						android:textColor="@android:color/white"
+						android:textStyle="bold"
+						android:textSize="18sp"/>
+
+					<TextView
+						android:id="@+id/tv_player1_cards_count"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="手牌: 13"
+						android:textColor="@android:color/white"
+						android:textSize="14sp"/>
+				
+				</LinearLayout>
+			
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:orientation="vertical"
+					android:gravity="center_horizontal|bottom" >
+				
+					<TextView
+						android:id="@+id/tv_player1_name"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="你选择的牌:"
+						android:textColor="@android:color/white"
+						android:textStyle="bold"
+						android:textSize="18sp"
+						android:layout_marginTop="10dp"/>
+
+					<HorizontalScrollView
+						android:layout_width="100dp"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="4dp"
+						android:layout_marginBottom="8dp">
+						
+						<LinearLayout
+							android:id="@+id/ll_player1_hand"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:orientation="horizontal"
+							android:gravity="center_vertical">
+							
+							<ImageView
+								android:id="@+id/i_cluba"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/cluba" />
+								
+							<ImageView
+								android:id="@+id/i_diamonda"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamonda" />
+								
+							<ImageView
+								android:id="@+id/i_hearta"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/hearta" />
+								
+							<ImageView
+								android:id="@+id/i_spadea"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spadea" />
+								
+							<ImageView
+								android:id="@+id/i_club2"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club2" />
+								
+							<ImageView
+								android:id="@+id/i_diamond2"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond2" />
+								
+							<ImageView
+								android:id="@+id/i_heart2"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart2" />
+								
+							<ImageView
+								android:id="@+id/i_spade2"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade2" />
+								
+							<ImageView
+								android:id="@+id/i_club3"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club3" />
+								
+							<ImageView
+								android:id="@+id/i_diamond3"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond3" />
+								
+							<ImageView
+								android:id="@+id/i_heart3"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart3" />
+								
+							<ImageView
+								android:id="@+id/i_spade3"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade3" />
+								
+							<ImageView
+								android:id="@+id/i_club4"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club4" />
+								
+							<ImageView
+								android:id="@+id/i_diamond4"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond4" />
+								
+							<ImageView
+								android:id="@+id/i_heart4"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart4" />
+								
+							<ImageView
+								android:id="@+id/i_spade4"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade4" />
+								
+							<ImageView
+								android:id="@+id/i_club5"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club5" />
+								
+							<ImageView
+								android:id="@+id/i_diamond5"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond5" />
+								
+							<ImageView
+								android:id="@+id/i_heart5"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart5" />
+								
+							<ImageView
+								android:id="@+id/i_spade5"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade5" />
+								
+							<ImageView
+								android:id="@+id/i_club6"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club6" />
+								
+							<ImageView
+								android:id="@+id/i_diamond6"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond6" />
+								
+							<ImageView
+								android:id="@+id/i_heart6"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart6" />
+								
+							<ImageView
+								android:id="@+id/i_spade6"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade6" />
+								
+							<ImageView
+								android:id="@+id/i_club7"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club7" />
+								
+							<ImageView
+								android:id="@+id/i_diamond7"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond7" />
+								
+							<ImageView
+								android:id="@+id/i_heart7"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart7" />
+								
+							<ImageView
+								android:id="@+id/i_spade7"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade7" />
+								
+							<ImageView
+								android:id="@+id/i_club8"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club8" />
+								
+							<ImageView
+								android:id="@+id/i_diamond8"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond8" />
+								
+							<ImageView
+								android:id="@+id/i_heart8"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart8" />
+								
+							<ImageView
+								android:id="@+id/i_spade8"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade8" />
+								
+							<ImageView
+								android:id="@+id/i_club9"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club9" />
+								
+							<ImageView
+								android:id="@+id/i_diamond9"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond9" />
+								
+							<ImageView
+								android:id="@+id/i_heart9"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart9" />
+								
+							<ImageView
+								android:id="@+id/i_spade9"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade9" />
+								
+							<ImageView
+								android:id="@+id/i_club10"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/club10" />
+								
+							<ImageView
+								android:id="@+id/i_diamond10"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamond10" />
+								
+							<ImageView
+								android:id="@+id/i_heart10"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heart10" />
+								
+							<ImageView
+								android:id="@+id/i_spade10"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spade10" />
+								
+							<ImageView
+								android:id="@+id/i_clubj"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/clubj" />
+								
+							<ImageView
+								android:id="@+id/i_diamondj"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamondj" />
+								
+							<ImageView
+								android:id="@+id/i_heartj"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heartj" />
+								
+							<ImageView
+								android:id="@+id/i_spadej"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spadej" />
+								
+							<ImageView
+								android:id="@+id/i_clubq"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/clubq" />
+								
+							<ImageView
+								android:id="@+id/i_diamondq"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamondq" />
+								
+							<ImageView
+								android:id="@+id/i_heartq"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heartq" />
+								
+							<ImageView
+								android:id="@+id/i_spadeq"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spadeq" />
+								
+							<ImageView
+								android:id="@+id/i_clubk"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/clubk" />
+								
+							<ImageView
+								android:id="@+id/i_diamondk"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/diamondk" />
+								
+							<ImageView
+								android:id="@+id/i_heartk"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/heartk" />
+								
+							<ImageView
+								android:id="@+id/i_spadek"
+								android:layout_width="50dp"
+								android:layout_height="75dp"
+								android:src="@drawable/spadek" />
+							
+						</LinearLayout>
+						
+					</HorizontalScrollView>
+					
+				</LinearLayout>
+				
+			</LinearLayout>
 
 			<LinearLayout
 				android:id="@+id/ll_player1_played"
@@ -215,36 +902,363 @@
 			<LinearLayout
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:layout_marginTop="16dp">
+				android:orientation="horizontal">
 
 				<Button
 					android:id="@+id/btn_play_cards"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+					android:layout_width="75dp"
+					android:layout_height="40dp"
 					android:text="出牌"
-					android:layout_marginEnd="16dp"/>
+					android:layout_marginEnd="5dp"/>
 
 				<Button
 					android:id="@+id/btn_pass"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+					android:layout_width="75dp"
+					android:layout_height="40dp"
 					android:text="过牌"/>
 
 				<Button
 					android:id="@+id/btn_ready"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
+					android:layout_width="75dp"
+					android:layout_height="40dp"
 					android:text="准备"
-					android:layout_marginStart="16dp"/>
+					android:layout_marginStart="5dp"/>
 			</LinearLayout>
 		</LinearLayout>
+	</LinearLayout>
+	
+	<HorizontalScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="5dp">
+		
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<Button
+				android:id="@+id/cluba"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/cluba" />
+				
+			<Button
+				android:id="@+id/diamonda"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamonda" />
+				
+			<Button
+				android:id="@+id/hearta"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/hearta" />
+				
+			<Button
+				android:id="@+id/spadea"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spadea" />
+
+			<Button
+				android:id="@+id/club2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club2" />
+				
+			<Button
+				android:id="@+id/diamond2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond2" />
+				
+			<Button
+				android:id="@+id/heart2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart2" />
+				
+			<Button
+				android:id="@+id/spade2"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade2" />
+				
+			<Button
+				android:id="@+id/club3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club3" />
+				
+			<Button
+				android:id="@+id/diamond3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond3" />
+				
+			<Button
+				android:id="@+id/heart3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart3" />
+				
+			<Button
+				android:id="@+id/spade3"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade3" />
+				
+			<Button
+				android:id="@+id/club4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club4" />
+				
+			<Button
+				android:id="@+id/diamond4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond4" />
+				
+			<Button
+				android:id="@+id/heart4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart4" />
+				
+			<Button
+				android:id="@+id/spade4"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade4" />
+				
+			<Button
+				android:id="@+id/club5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club5" />
+				
+			<Button
+				android:id="@+id/diamond5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond5" />
+				
+			<Button
+				android:id="@+id/heart5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart5" />
+				
+			<Button
+				android:id="@+id/spade5"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade5" />
+				
+			<Button
+				android:id="@+id/club6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club6" />
+				
+			<Button
+				android:id="@+id/diamond6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond6" />
+				
+			<Button
+				android:id="@+id/heart6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart6" />
+				
+			<Button
+				android:id="@+id/spade6"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade6" />
+				
+			<Button
+				android:id="@+id/club7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club7" />
+				
+			<Button
+				android:id="@+id/diamond7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond7" />
+				
+			<Button
+				android:id="@+id/heart7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart7" />
+				
+			<Button
+				android:id="@+id/spade7"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade7" />
+				
+			<Button
+				android:id="@+id/club8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club8" />
+				
+			<Button
+				android:id="@+id/diamond8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond8" />
+				
+			<Button
+				android:id="@+id/heart8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart8" />
+				
+			<Button
+				android:id="@+id/spade8"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade8" />
+				
+			<Button
+				android:id="@+id/club9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club9" />
+				
+			<Button
+				android:id="@+id/diamond9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond9" />
+				
+			<Button
+				android:id="@+id/heart9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart9" />
+				
+			<Button
+				android:id="@+id/spade9"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade9" />
+				
+			<Button
+				android:id="@+id/club10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/club10" />
+				
+			<Button
+				android:id="@+id/diamond10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamond10" />
+				
+			<Button
+				android:id="@+id/heart10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heart10" />
+				
+			<Button
+				android:id="@+id/spade10"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spade10" />
+				
+			<Button
+				android:id="@+id/clubj"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/clubj" />
+				
+			<Button
+				android:id="@+id/diamondj"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamondj" />
+				
+			<Button
+				android:id="@+id/heartj"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heartj" />
+				
+			<Button
+				android:id="@+id/spadej"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spadej" />
+				
+			<Button
+				android:id="@+id/clubq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/clubq" />
+				
+			<Button
+				android:id="@+id/diamondq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamondq" />
+				
+			<Button
+				android:id="@+id/heartq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heartq" />
+				
+			<Button
+				android:id="@+id/spadeq"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spadeq" />
+				
+			<Button
+				android:id="@+id/clubk"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/clubk" />
+				
+			<Button
+				android:id="@+id/diamondk"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/diamondk" />
+				
+			<Button
+				android:id="@+id/heartk"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/heartk" />
+				
+			<Button
+				android:id="@+id/spadek"
+				android:layout_width="50dp"
+				android:layout_height="75dp"
+				android:background="@drawable/spadek" />
+		
+		</LinearLayout>
+	
+	</HorizontalScrollView>
+	
 	</LinearLayout>
 
 	<ImageView
 		android:id="@+id/btn_back"
-		android:layout_width="40dp"
-		android:layout_height="40dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
 		android:layout_marginStart="16dp"
 		android:layout_marginTop="16dp"
 		android:contentDescription="返回"

@@ -1,6 +1,8 @@
 package com.example.cdd.View;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +42,9 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private BluetoothController bluetoothController;
     private MutipleController gameController;
+    private List<Button> playerHandCardsButton = new ArrayList<>();
+    private List<ImageView> selectedCardsImage = new ArrayList<>();
+    private List<ImageView> lastPlayedCardsImage = new ArrayList<>();
 
     private TextView tvPlayer1Name, tvPlayer2Name, tvPlayer3Name, tvPlayer4Name;
     private TextView tvPlayer1CardsCount, tvPlayer2CardsCount, tvPlayer3CardsCount, tvPlayer4CardsCount;
@@ -49,7 +55,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     private Button btnPlayCards, btnPass, btnReady;
     private ImageView btnBack;
     private List<Card> selectedCards = new ArrayList<>();
-    private List<ImageView> player1HandCardImageViews = new ArrayList<>();
+    //private List<ImageView> player1HandCardImageViews = new ArrayList<>();
 
     private Player currentPlayer; // 当前本地玩家对象 (从 GameState 中获取其手牌，仅房主维持 GameState)
     private int myPlayerIndex = -1; // 本地玩家的序号，房主为0，客户端为1-3，弃用
@@ -110,6 +116,189 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     }
 
     private void initViews(View view) {
+        playerHandCardsButton.add(view.findViewById(R.id.cluba));
+        playerHandCardsButton.add(view.findViewById(R.id.club2));
+        playerHandCardsButton.add(view.findViewById(R.id.club3));
+        playerHandCardsButton.add(view.findViewById(R.id.club4));
+        playerHandCardsButton.add(view.findViewById(R.id.club5));
+        playerHandCardsButton.add(view.findViewById(R.id.club6));
+        playerHandCardsButton.add(view.findViewById(R.id.club7));
+        playerHandCardsButton.add(view.findViewById(R.id.club8));
+        playerHandCardsButton.add(view.findViewById(R.id.club9));
+        playerHandCardsButton.add(view.findViewById(R.id.club10));
+        playerHandCardsButton.add(view.findViewById(R.id.clubj));
+        playerHandCardsButton.add(view.findViewById(R.id.clubq));
+        playerHandCardsButton.add(view.findViewById(R.id.clubk));
+
+        playerHandCardsButton.add(view.findViewById(R.id.hearta));
+        playerHandCardsButton.add(view.findViewById(R.id.heart2));
+        playerHandCardsButton.add(view.findViewById(R.id.heart3));
+        playerHandCardsButton.add(view.findViewById(R.id.heart4));
+        playerHandCardsButton.add(view.findViewById(R.id.heart5));
+        playerHandCardsButton.add(view.findViewById(R.id.heart6));
+        playerHandCardsButton.add(view.findViewById(R.id.heart7));
+        playerHandCardsButton.add(view.findViewById(R.id.heart8));
+        playerHandCardsButton.add(view.findViewById(R.id.heart9));
+        playerHandCardsButton.add(view.findViewById(R.id.heart10));
+        playerHandCardsButton.add(view.findViewById(R.id.heartj));
+        playerHandCardsButton.add(view.findViewById(R.id.heartq));
+        playerHandCardsButton.add(view.findViewById(R.id.heartk));
+
+        playerHandCardsButton.add(view.findViewById(R.id.diamonda));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond2));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond3));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond4));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond5));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond6));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond7));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond8));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond9));
+        playerHandCardsButton.add(view.findViewById(R.id.diamond10));
+        playerHandCardsButton.add(view.findViewById(R.id.diamondj));
+        playerHandCardsButton.add(view.findViewById(R.id.diamondq));
+        playerHandCardsButton.add(view.findViewById(R.id.diamondk));
+
+        playerHandCardsButton.add(view.findViewById(R.id.spadea));
+        playerHandCardsButton.add(view.findViewById(R.id.spade2));
+        playerHandCardsButton.add(view.findViewById(R.id.spade3));
+        playerHandCardsButton.add(view.findViewById(R.id.spade4));
+        playerHandCardsButton.add(view.findViewById(R.id.spade5));
+        playerHandCardsButton.add(view.findViewById(R.id.spade6));
+        playerHandCardsButton.add(view.findViewById(R.id.spade7));
+        playerHandCardsButton.add(view.findViewById(R.id.spade8));
+        playerHandCardsButton.add(view.findViewById(R.id.spade9));
+        playerHandCardsButton.add(view.findViewById(R.id.spade10));
+        playerHandCardsButton.add(view.findViewById(R.id.spadej));
+        playerHandCardsButton.add(view.findViewById(R.id.spadeq));
+        playerHandCardsButton.add(view.findViewById(R.id.spadek));
+
+        for (int i = 0; i < 52; ++i)
+            playerHandCardsButton.get(i).setVisibility(View.GONE);
+
+
+
+        selectedCardsImage.add(view.findViewById(R.id.i_cluba));
+        selectedCardsImage.add(view.findViewById(R.id.i_club2));
+        selectedCardsImage.add(view.findViewById(R.id.i_club3));
+        selectedCardsImage.add(view.findViewById(R.id.i_club4));
+        selectedCardsImage.add(view.findViewById(R.id.i_club5));
+        selectedCardsImage.add(view.findViewById(R.id.i_club6));
+        selectedCardsImage.add(view.findViewById(R.id.i_club7));
+        selectedCardsImage.add(view.findViewById(R.id.i_club8));
+        selectedCardsImage.add(view.findViewById(R.id.i_club9));
+        selectedCardsImage.add(view.findViewById(R.id.i_club10));
+        selectedCardsImage.add(view.findViewById(R.id.i_clubj));
+        selectedCardsImage.add(view.findViewById(R.id.i_clubq));
+        selectedCardsImage.add(view.findViewById(R.id.i_clubk));
+
+        selectedCardsImage.add(view.findViewById(R.id.i_hearta));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart2));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart3));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart4));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart5));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart6));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart7));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart8));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart9));
+        selectedCardsImage.add(view.findViewById(R.id.i_heart10));
+        selectedCardsImage.add(view.findViewById(R.id.i_heartj));
+        selectedCardsImage.add(view.findViewById(R.id.i_heartq));
+        selectedCardsImage.add(view.findViewById(R.id.i_heartk));
+
+        selectedCardsImage.add(view.findViewById(R.id.i_diamonda));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond2));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond3));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond4));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond5));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond6));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond7));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond8));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond9));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamond10));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamondj));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamondq));
+        selectedCardsImage.add(view.findViewById(R.id.i_diamondk));
+
+        selectedCardsImage.add(view.findViewById(R.id.i_spadea));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade2));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade3));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade4));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade5));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade6));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade7));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade8));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade9));
+        selectedCardsImage.add(view.findViewById(R.id.i_spade10));
+        selectedCardsImage.add(view.findViewById(R.id.i_spadej));
+        selectedCardsImage.add(view.findViewById(R.id.i_spadeq));
+        selectedCardsImage.add(view.findViewById(R.id.i_spadek));
+
+        for (int i = 0; i < 52; ++i)
+            selectedCardsImage.get(i).setVisibility(View.GONE);
+
+
+
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_cluba));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club2));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club3));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club4));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club5));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club6));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club7));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club8));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club9));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_club10));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_clubj));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_clubq));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_clubk));
+
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_hearta));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart2));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart3));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart4));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart5));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart6));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart7));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart8));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart9));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heart10));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heartj));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heartq));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_heartk));
+
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamonda));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond2));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond3));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond4));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond5));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond6));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond7));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond8));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond9));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamond10));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamondj));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamondq));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_diamondk));
+
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spadea));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade2));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade3));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade4));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade5));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade6));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade7));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade8));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade9));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spade10));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spadej));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spadeq));
+        lastPlayedCardsImage.add(view.findViewById(R.id.i2_spadek));
+
+        for (int i = 0; i < 52; ++i)
+            lastPlayedCardsImage.get(i).setVisibility(View.GONE);
+
+
+
         tvPlayer1Name = view.findViewById(R.id.tv_player1_name);
         tvPlayer2Name = view.findViewById(R.id.tv_player2_name);
         tvPlayer3Name = view.findViewById(R.id.tv_player3_name);
@@ -137,6 +326,34 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         btnPass.setOnClickListener(v -> passTurn());
         //btnReady.setOnClickListener(v -> sendReadySignal());
         btnBack.setOnClickListener(v -> showExitConfirmationDialog());
+
+        for (int i = 0; i < 52; ++i) {
+            final Card card = integerToCard(i);
+            playerHandCardsButton.get(i).setOnClickListener(v -> {
+                if (selectedCards.contains(card)) {
+                    selectedCards.remove(card);
+                    selectedCardsImage.get(cardToInteger(card)).setVisibility(View.GONE);
+                } else {
+                    selectedCards.add(card);
+                    selectedCardsImage.get(cardToInteger(card)).setVisibility(View.VISIBLE);
+                }
+
+                playerHandCardsButton.get(cardToInteger(card));
+
+                // 上移动画 - 向上移动50像素
+                ObjectAnimator moveUp = ObjectAnimator.ofFloat(v, "translationY", -50f);
+                moveUp.setDuration(200); // 动画持续时间200毫秒
+
+                // 下移动画 - 回到原位
+                ObjectAnimator moveDown = ObjectAnimator.ofFloat(v, "translationY", 0f);
+                moveDown.setDuration(200);
+
+                // 按顺序执行动画
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playSequentially(moveUp, moveDown);
+                animatorSet.start();
+            });
+        }
     }
 
     private void sendReadySignal() {
@@ -156,6 +373,17 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
                 bluetoothController.sendDataToServer(new ArrayList<>(selectedCards));
                 wantToPlay=new ArrayList<>(selectedCards);
                 requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "已发送出牌请求，等待房主判断", Toast.LENGTH_SHORT).show());
+
+                //清除自己选择的牌图片
+                for (int i = 0; i < 52; ++i)
+                    selectedCardsImage.get(i).setVisibility(View.GONE);
+
+                //把自己的牌呈现在上次选的牌区域
+                for (int i = 0; i < 52; ++i)
+                    lastPlayedCardsImage.get(i).setVisibility(View.GONE);
+                for (Card card : selectedCards)
+                    lastPlayedCardsImage.get(cardToInteger(card)).setVisibility(View.VISIBLE);
+
                 selectedCards.clear();
                 updateUI(false,false); // 立即更新UI，清除选中状态
             }
@@ -170,6 +398,11 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
                 bluetoothController.sendDataToServer(new ArrayList<Card>()); // 发送空列表
                 requireActivity().runOnUiThread(() ->Toast.makeText(getContext(), "已发送过牌请求，等待房主判断", Toast.LENGTH_SHORT).show());
             }
+        }
+
+        for (int i = 0; i < 52; ++i) {
+            selectedCardsImage.get(i).setVisibility(View.GONE);
+            lastPlayedCardsImage.get(i).setVisibility(View.GONE);
         }
     }
 
@@ -249,22 +482,23 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         }
         requireActivity().runOnUiThread(() -> {
 
-
                 // 清空自己手牌显示区域
                 llPlayer1Hand.removeAllViews();
-                player1HandCardImageViews.clear();
+
+                //player1HandCardImageViews.clear();
+                for (int i = 0; i < 52; ++i)
+                    playerHandCardsButton.get(i).setVisibility(View.GONE);
 
                 if (myHandCard != null) {
                     for (Card card : myHandCard) {
-                        ImageView cardImage = createCardImageView(card);
-                        cardImage.setOnClickListener(v -> toggleCardSelection(card, cardImage));
-                        if (selectedCards.contains(card)) {
-                            cardImage.setTranslationY(-20);
-                        } else {
-                            cardImage.setTranslationY(0);
-                        }
-                        llPlayer1Hand.addView(cardImage);
-                        player1HandCardImageViews.add(cardImage);
+//                        ImageView cardImage = createCardImageView(card);
+//                        if (selectedCards.contains(card)) {
+//                            cardImage.setTranslationY(-20);
+//                        } else {
+//                            cardImage.setTranslationY(0);
+//                        }
+//                        llPlayer1Hand.addView(cardImage);
+                        playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);
                     }
                     tvPlayer1CardsCount.setText("手牌: " + myHandCard.size());
                 } else {
@@ -339,16 +573,6 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    private void toggleCardSelection(Card card, ImageView cardImage) {
-        if (selectedCards.contains(card)) {
-            selectedCards.remove(card);
-            cardImage.setTranslationY(0); // 牌回到原位
-        } else {
-            selectedCards.add(card);
-            cardImage.setTranslationY(-20); // 牌上移
-        }
-    }
-
     private void showGameEndDialog() {
         if (!isAdded()) return; // Fragment未附加到Activity
 
@@ -394,9 +618,17 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
             myHandCard=new ArrayList<>((ArrayList<Card>)data);
 
+            for (Card card : myHandCard)
+                playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);
 
             }  else if (data instanceof ArrayList &&!(myHandCard.isEmpty()) ) {
                 LastPlayedCards=new ArrayList<>((ArrayList<Card>)data);
+
+                for (int i = 0; i < 52; ++i)
+                    lastPlayedCardsImage.get(i).setVisibility(View.GONE);
+                for(Card card : LastPlayedCards)
+                    lastPlayedCardsImage.get(cardToInteger(card)).setVisibility(View.VISIBLE);
+
                 updateUI(false,false); // 更新UI
                 requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "手牌已更新！", Toast.LENGTH_SHORT).show());
             }
@@ -458,6 +690,9 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
             Log.d("MultiplayerGameFragment", "发牌");
             myHandCard=new ArrayList<>(all.get(0));
+
+            for (Card card : myHandCard)
+                playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);
 
             updateUI(false,false); // 更新UI以显示发牌后的手牌
 
@@ -557,7 +792,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     public void onDestroyView() {
         super.onDestroyView();
         selectedCards.clear();
-        player1HandCardImageViews.clear();
+        //player1HandCardImageViews.clear();
     }
 
     // 新增：表示轮次信息的类
@@ -657,6 +892,63 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
                 bluetoothController.broadcastDataToClients(4);
             else
                 bluetoothController.sendDataToClient(i, 1);
+        }
+    }
+
+    public static int cardToInteger(Card card) {
+        if (card.getSuit() == Card.Suit.Club) {
+            if (card.getRank() == Card.Rank.ACE)
+                return 0;
+            else if (card.getRank() == Card.Rank.TWO)
+                return 1;
+            else return card.getRank().getValue() - 1;
+        }
+        else if (card.getSuit() == Card.Suit.Heart) {
+            if (card.getRank() == Card.Rank.ACE)
+                return 13;
+            else if (card.getRank() == Card.Rank.TWO)
+                return 14;
+            else return 13 + card.getRank().getValue() - 1;
+        }
+        else if (card.getSuit() == Card.Suit.Diamond) {
+            if (card.getRank() == Card.Rank.ACE)
+                return 26;
+            else if (card.getRank() == Card.Rank.TWO)
+                return 27;
+            else return 26 + card.getRank().getValue() - 1;
+        }
+        else {
+            if (card.getRank() == Card.Rank.ACE)
+                return 39;
+            else if (card.getRank() == Card.Rank.TWO)
+                return 40;
+            else return 39 + card.getRank().getValue() - 1;
+        }
+    }
+
+    public static Card integerToCard(int i) {
+        if (i >= 0 && i <= 12) {
+            if (i >= 2) i -= 2;
+            else i += 11;
+            return new Card(i, 0);
+        }
+        else if (i >= 13 && i <= 25) {
+            i -= 13;
+            if (i >= 2) i -= 2;
+            else i += 11;
+            return new Card(i, 2);
+        }
+        else if (i >= 26 && i <= 38) {
+            i -= 26;
+            if (i >= 2) i -= 2;
+            else i += 11;
+            return new Card(i, 1);
+        }
+        else {
+            i -= 39;
+            if (i >= 2) i -= 2;
+            else i += 11;
+            return new Card(i, 3);
         }
     }
 }

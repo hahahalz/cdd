@@ -42,9 +42,9 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private BluetoothController bluetoothController;
     private MutipleController gameController;
-    private List<Button> playerHandCardsButton = new ArrayList<>();
-    private List<ImageView> selectedCardsImage = new ArrayList<>();
-    private List<ImageView> lastPlayedCardsImage = new ArrayList<>();
+    private List<Button> playerHandCardsButton;
+    private List<ImageView> selectedCardsImage;
+    private List<ImageView> lastPlayedCardsImage;
 
     private TextView tvPlayer1Name, tvPlayer2Name, tvPlayer3Name, tvPlayer4Name;
     private TextView tvPlayer1CardsCount, tvPlayer2CardsCount, tvPlayer3CardsCount, tvPlayer4CardsCount;
@@ -116,6 +116,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
     }
 
     private void initViews(View view) {
+        playerHandCardsButton = new ArrayList<>();
+
         playerHandCardsButton.add(view.findViewById(R.id.cluba));
         playerHandCardsButton.add(view.findViewById(R.id.club2));
         playerHandCardsButton.add(view.findViewById(R.id.club3));
@@ -177,6 +179,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
 
 
+        selectedCardsImage = new ArrayList<>();
+
         selectedCardsImage.add(view.findViewById(R.id.i_cluba));
         selectedCardsImage.add(view.findViewById(R.id.i_club2));
         selectedCardsImage.add(view.findViewById(R.id.i_club3));
@@ -237,6 +241,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             selectedCardsImage.get(i).setVisibility(View.GONE);
 
 
+
+        lastPlayedCardsImage = new ArrayList<>();
 
         lastPlayedCardsImage.add(view.findViewById(R.id.i2_cluba));
         lastPlayedCardsImage.add(view.findViewById(R.id.i2_club2));

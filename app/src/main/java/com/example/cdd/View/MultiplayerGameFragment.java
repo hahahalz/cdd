@@ -624,16 +624,19 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
             myHandCard=new ArrayList<>((ArrayList<Card>)data);
 
-            for (Card card : myHandCard)
-                playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);
+                requireActivity().runOnUiThread(() -> {for (Card card : myHandCard)
+                playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);});
 
             }  else if (data instanceof ArrayList &&!(myHandCard.isEmpty()) ) {
                 LastPlayedCards=new ArrayList<>((ArrayList<Card>)data);
 
-                for (int i = 0; i < 52; ++i)
+                requireActivity().runOnUiThread(() ->
+                {for (int i = 0; i < 52; ++i)
                     lastPlayedCardsImage.get(i).setVisibility(View.GONE);
                 for(Card card : LastPlayedCards)
                     lastPlayedCardsImage.get(cardToInteger(card)).setVisibility(View.VISIBLE);
+                });
+
 
                 updateUI(false,false); // 更新UI
                 requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "手牌已更新！", Toast.LENGTH_SHORT).show());
@@ -697,8 +700,10 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             Log.d("MultiplayerGameFragment", "发牌");
             myHandCard=new ArrayList<>(all.get(0));
 
-            for (Card card : myHandCard)
-                playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);
+            requireActivity().runOnUiThread(() ->
+            {for (Card card : myHandCard)
+                playerHandCardsButton.get(cardToInteger(card)).setVisibility(View.VISIBLE);}
+            );
 
             updateUI(false,false); // 更新UI以显示发牌后的手牌
 

@@ -67,7 +67,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private List<Card>  wantToPlay=new ArrayList<>();
 
-    private int minNeed=1;
+    private int minNeed=3;
 
     //状态码
     //0，到你出牌；1，操作失败；3，操作成功；4.玩家过牌;5，游戏结束;6.我退出；7.有人提前溜了
@@ -446,6 +446,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
             else
             {
+                LastPlayedCards=new ArrayList<>(cards);
                 int winnerIndex = gameController.getWinnerIndex();
                 bluetoothController.broadcastDataToClients((Serializable) cards);
                 if (winnerIndex != -1) {
@@ -453,13 +454,11 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
                     updateUI(false,true);
                     bluetoothController.broadcastDataToClients(5);
                 }
-                else
-                    updateUI(false,false);
-
+                else {
+                    updateUI(false, false);
+                    bluetoothController.sendDataToClient(gameController.getNowIndex(),0);
+                }
             }
-
-
-
 
 
         } else {
@@ -514,13 +513,10 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
 
             // 更新牌桌中央区显示最新打出的牌
-            llPlayer1Played.removeAllViews();
-            if (LastPlayedCards != null && !LastPlayedCards.isEmpty()) {
-                for (Card card : LastPlayedCards) {
-                    ImageView cardImage = createCardImageView(card);
-                    llPlayer1Played.addView(cardImage);
-                }
-            }
+            for (int i = 0; i < 52; ++i)
+                lastPlayedCardsImage.get(i).setVisibility(View.GONE);
+            for(Card card : LastPlayedCards)
+                lastPlayedCardsImage.get(cardToInteger(card)).setVisibility(View.VISIBLE);
 
             // 清空其他玩家的已出牌区域
             llPlayer2Played.removeAllViews();
@@ -542,42 +538,9 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
         });
     }
 
-    private ImageView createCardImageView(Card card) {
-        ImageView imageView = new ImageView(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                dpToPx(50), // 牌的宽度
-                dpToPx(70)  // 牌的高度
-        );
-        params.setMargins(0, 0, dpToPx(4), 0); // 右边距
-        imageView.setLayoutParams(params);
-
-        String cardResourceName = getCardResourceName(card);
-        int resId = getResources().getIdentifier(cardResourceName, "drawable", requireContext().getPackageName());
-
-            imageView.setImageResource(resId);
-
-        return imageView;
-    }
-
-    private String getCardResourceName(Card card) {
-        String rank = card.getRank().name().toLowerCase();
-        String suit = card.getSuit().name().toLowerCase();
-        // 特殊处理 10, J, Q, K, A, 2
-        if (card.getRank() == Card.Rank.TEN) rank = "t";
-        else if (card.getRank() == Card.Rank.JACK) rank = "j";
-        else if (card.getRank() == Card.Rank.QUEEN) rank = "q";
-        else if (card.getRank() == Card.Rank.KING) rank = "k";
-        else if (card.getRank() == Card.Rank.ACE) rank = "a";
-        else if (card.getRank() == Card.Rank.TWO) rank = "2";
-        else rank = String.valueOf(card.getRank().getValue()); // 3-9
-
-        return suit + "_" + rank;
-    }
 
 
-    private int dpToPx(int dp) {
-        return (int) (dp * getResources().getDisplayMetrics().density);
-    }
+
 
     private void showGameEndDialog() {
         if (!isAdded()) return; // Fragment未附加到Activity
@@ -602,7 +565,6 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "蓝牙连接权限不足，无法显示发送方设备名称", Toast.LENGTH_SHORT).show());
             return;
         }
-
 
 
         if (isHost) { // 房主端接收数据
@@ -630,16 +592,8 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
             }  else if (data instanceof ArrayList &&!(myHandCard.isEmpty()) ) {
                 LastPlayedCards=new ArrayList<>((ArrayList<Card>)data);
 
-                requireActivity().runOnUiThread(() ->
-                {for (int i = 0; i < 52; ++i)
-                    lastPlayedCardsImage.get(i).setVisibility(View.GONE);
-                for(Card card : LastPlayedCards)
-                    lastPlayedCardsImage.get(cardToInteger(card)).setVisibility(View.VISIBLE);
-                });
-
-
                 updateUI(false,false); // 更新UI
-                requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "手牌已更新！", Toast.LENGTH_SHORT).show());
+
             }
             else if(data.equals(Integer.valueOf(0)))
             {
@@ -719,7 +673,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
                 }
             }
 
-            bluetoothController.sendDataToClient(1,0);
+            bluetoothController.sendDataToClient(gameController.getNowIndex(),0);
 
             requireActivity().runOnUiThread(() -> Toast.makeText(getContext(), "游戏开始！", Toast.LENGTH_LONG).show());
 

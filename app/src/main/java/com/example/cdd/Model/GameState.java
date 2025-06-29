@@ -18,6 +18,7 @@ public class GameState {                 // 游戏当前状态（手牌、已出
 
     private int roundscore;
 
+
     private static GameState instance;    // 单例实例
 
     private GameState(List<Actor> players) {                 //权限已修改过

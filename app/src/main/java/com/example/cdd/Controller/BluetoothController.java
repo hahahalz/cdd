@@ -90,7 +90,7 @@ public class BluetoothController {
     private ExecutorService executorService = Executors.newCachedThreadPool(); // 新增
 
     public void setDeviceByIndex() {
-        int cnt=0;
+        int cnt=1;
         for(Map.Entry<String, ConnectedThread> entry : connectedClients.entrySet()){
             Clients.put(++cnt,entry.getKey());
         }
@@ -447,6 +447,7 @@ public class BluetoothController {
             return;
         }
         ConnectedThread clientThread = connectedClients.get(Clients.get(deviceNum));
+        System.out.println("对象序号"+deviceNum);
         assert clientThread != null;
         clientThread.write(data);
         System.out.println("一次传递");

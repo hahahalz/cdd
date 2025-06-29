@@ -90,7 +90,7 @@ public class BluetoothController {
     private ExecutorService executorService = Executors.newCachedThreadPool(); // 新增
 
     public void setDeviceByIndex() {
-        int cnt=1;
+        int cnt=0;
         for(Map.Entry<String, ConnectedThread> entry : connectedClients.entrySet()){
             Clients.put(++cnt,entry.getKey());
         }

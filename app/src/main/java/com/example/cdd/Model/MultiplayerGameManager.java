@@ -153,7 +153,6 @@ public class MultiplayerGameManager extends ViewModel {
             Actor nowplay= gameState.getCurrentPlayer();
             nowplay.playCards(cards);
             gameState.setLastPlayedCards(cards);
-            gameState.nextPlayer();
             gameState.setPasstime(0);
             if(nowplay.getHandCards().isEmpty())
             {

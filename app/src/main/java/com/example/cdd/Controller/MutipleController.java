@@ -3,6 +3,7 @@ package com.example.cdd.Controller;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.example.cdd.Model.Card;
+import com.example.cdd.Model.GameState;
 import com.example.cdd.Model.MultiplayerGameManager;
 
 import java.util.List;

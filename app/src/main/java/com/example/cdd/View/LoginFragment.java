@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.FrameLayout;
 import com.example.cdd.Controller.LoginController;
+import com.example.cdd.Pojo.PlayerInformation;
 import com.example.cdd.R;
 
 public class LoginFragment extends BaseFragment implements View.OnClickListener {
@@ -172,6 +174,14 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
             }
             fragmentContainer.setClickable(false); // 禁用点击拦截
             fragmentContainer.setVisibility(View.INVISIBLE); // 隐藏容器（仍保留布局空间）
+        }
+        TextView loginStatus = getActivity().findViewById(R.id.login_status);
+        String userid = PlayerInformation.getThePlayerInformation().getUserID();
+
+        if (userid != null && !userid.isEmpty()) {
+            loginStatus.setText("您好：" + userid);
+        } else {
+            loginStatus.setText("未登录");
         }
     }
 }

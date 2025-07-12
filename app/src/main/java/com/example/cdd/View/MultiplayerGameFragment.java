@@ -68,7 +68,7 @@ public class MultiplayerGameFragment extends Fragment implements BluetoothContro
 
     private List<Card>  wantToPlay=new ArrayList<>();
 
-    private int minNeed=3;
+    private int minNeed=1;
 
     //状态码
     //0，到你出牌；1，操作失败；3，操作成功；4.玩家过牌;5，游戏结束;6.我退出；7.有人提前溜了

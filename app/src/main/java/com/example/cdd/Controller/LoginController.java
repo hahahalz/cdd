@@ -37,7 +37,13 @@ public class LoginController  {
 
     public boolean registerresult(String userid, String password)
     {
-        return this.userService.register(userid, password);
+        if(this.userService.register(userid, password))
+        {
+            PlayerInformation.setThePlayerInformation(userid,password,0);
+            return true;
+        }
+        else
+        return false;
     }
     // 负责登录/注册界面的逻辑
 
